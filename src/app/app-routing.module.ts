@@ -7,7 +7,7 @@ const routes: Routes = [
     loadChildren: () => import('./pages/pages.module')
       .then(m => m.PagesModule),
   },
-  { path: 'access_token', redirectTo: 'pages', pathMatch: 'full' }
+  { path: 'access_token', redirectTo: 'pages/dashboard', pathMatch: 'full' }
 ];
 
 @NgModule({
