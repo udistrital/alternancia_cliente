@@ -14,6 +14,7 @@ export const environment = {
   NUXEO: {
     PATH: 'https://documental.udistrital.edu.co/nuxeo/',
   },
+  TERCEROS: "https://autenticacion.portaloas.udistrital.edu.co/apioas/terceros_crud/v1/",
   CONFIGURACION_SERVICE: 'https://autenticacion.portaloas.udistrital.edu.co/apioas/configuracion_crud_api/v1/',
   CONF_MENU_SERVICE: 'https://autenticacion.portaloas.udistrital.edu.co/apioas/configuracion_crud_api/v1/menu_opcion_padre/ArbolMenus/',
   NOTIFICACION_SERVICE: 'wss://pruebasapi.portaloas.udistrital.edu.co:8116/ws',
