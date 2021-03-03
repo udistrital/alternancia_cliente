@@ -21,6 +21,7 @@ export class AppComponent implements OnInit {
     oas.addEventListener('user', (event: any) => {
       if (event.detail) {
         this.loadRouting = true;
+        console.log(event.detail)
       }
     });
 

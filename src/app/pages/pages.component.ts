@@ -5,8 +5,9 @@ import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-pages',
-  templateUrl: './pages.component.html',
-  styleUrls: ['./pages.component.scss']
+  template: `<div *ngIf="loaded" class="main-container">
+              <router-outlet></router-outlet>
+            </div>`,
 })
 export class PagesComponent implements OnInit {
   loaded = false;
