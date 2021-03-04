@@ -4,7 +4,7 @@ export const environment = {
     autenticacion: true,
     notificaciones: false,
     menuApps: true,
-    appname: 'sga',
+    appname: 'alternancia',
     appMenu: 'alternancia',
     NUXEO: {
         PATH: 'https://documental.udistrital.edu.co/nuxeo/',
