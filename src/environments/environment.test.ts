@@ -15,7 +15,7 @@ export const environment = {
     NOTIFICACION_SERVICE: 'wss://pruebasapi.portaloas.udistrital.edu.co:8116/ws',
     TOKEN: {
         AUTORIZATION_URL: 'https://autenticacion.portaloas.udistrital.edu.co/oauth2/authorize',
-        CLIENTE_ID: 'AMYTVzeZyHljpTPT1UrTfuQKMvca', // RgZGDAPQLhEm1UFwyltcMfaAe74a - google
+        CLIENTE_ID: 'AMYTVzeZyHljpTPT1UrTfuQKMvca',
         RESPONSE_TYPE: 'id_token token',
         SCOPE: 'openid email',
         REDIRECT_URL: 'https://pruebasconfiguracion.portaloas.udistrital.edu.co/',
