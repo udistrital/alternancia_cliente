@@ -14,7 +14,7 @@ export class InformacionBasicaComponent implements OnInit {
 
   ngOnInit(): void {
     
-    this.request.get(environment.TERCEROS_SERVICE,`tercero/?query=UsuarioWSO2:` )
+    this.request.get(environment.TERCEROS_SERVICE,`tercero` )
     .subscribe((res: any) => {
       this.terceros = res;
     })
