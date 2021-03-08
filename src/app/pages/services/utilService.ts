@@ -9,7 +9,7 @@ export class UtilService {
 
     constructor() {}
 
-    submitAlert({ option, type, fn, data, info }) {
+    submitAlert({ option, type, fn, data, info, fnReturn }) {
         Swal.fire({
             title: `Se ${option === 'update' ? 'actualizará' : 'creará'} el ${type}`,
             text: info,
@@ -36,8 +36,7 @@ export class UtilService {
                         `Se ha ${option === 'update' ? 'actualizado' : 'Creado'} el ${type} ${response} de forma exitosa`,
                         'success'
                     ).then((data2) => {
-                        const buttonReturn = document.getElementById('return');
-                        buttonReturn.click();
+                        fnReturn();
                     })
                     })
                     .catch(err => {

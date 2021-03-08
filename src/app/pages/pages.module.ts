@@ -22,6 +22,7 @@ import { MatNativeDateModule, DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } f
 import { MatGridListModule } from '@angular/material/grid-list';
 import { SaludActualComponent } from './salud-actual/salud-actual.component';
 import {MatCheckboxModule} from '@angular/material/checkbox';
+import { PreexistenciaComponent } from './preexistencia/preexistencia.component';
 
 
 
@@ -29,7 +30,8 @@ const pagesComponents = [
   DashboardComponent,
   PagesComponent,
   InformacionBasicaComponent,
-  SaludActualComponent
+  SaludActualComponent,
+  PreexistenciaComponent,
 ];
 
 const materialModules = [
@@ -49,7 +51,7 @@ const materialModules = [
 @NgModule({
   declarations: [
     ...pagesComponents,
-     ],
+    ],
   imports: [
     HttpClientModule,
     CommonModule,

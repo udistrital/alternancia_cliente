@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import {ThemePalette} from '@angular/material/core';
 import { UtilService } from '../services/utilService';
+
 
 export interface Task {
   name: string;
@@ -9,12 +9,13 @@ export interface Task {
 }
 
 @Component({
-  selector: 'app-salud-actual',
-  templateUrl: './salud-actual.component.html',
-  styleUrls: ['./salud-actual.component.scss']
+  selector: 'app-preexistencia',
+  templateUrl: './preexistencia.component.html',
+  styleUrls: ['./preexistencia.component.scss']
 })
-export class SaludActualComponent implements OnInit {
+export class PreexistenciaComponent implements OnInit {
 
+  
   constructor(private utilService: UtilService) {
   }
 
@@ -33,6 +34,10 @@ export class SaludActualComponent implements OnInit {
     this.task = this.task.map((option)=>({...option, ...{isSelected: false}}))
   }
 
+  functionReturn(){
+    
+  }
+
 
   save(): void {
     let saveData = {
@@ -42,13 +47,15 @@ export class SaludActualComponent implements OnInit {
     this.task.map((data)=> {
       saveData.info[data.name] = data.isSelected;
     })
+    console.log(saveData);
     this.utilService.submitAlert({ 
       option:'update', 
       type:'Estado de salud', 
-      fn: this.sendData , 
+      fn: this.sendData, 
       data: saveData, 
-      info: 'Estado de salud', 
-      fnReturn: this.functionReturn}) 
+      info: 'Estado de salud',
+      fnReturn: this.functionReturn
+     }) 
     
   }
 
@@ -57,9 +64,5 @@ export class SaludActualComponent implements OnInit {
       const dataSave = localStorage.setItem('health_state',JSON.stringify(data))
       resolve('dato');
     })
-  }
-
-  functionReturn(){
-    
   }
 }

@@ -1,4 +1,4 @@
-<mat-card class="card-oas" *ngIf="loaded">
+<mat-card class="card-oas" *ngIf="tercero && datosIdentificacion">
     <mat-card-header>
         <!-- <mat-card-title>Terceros</mat-card-title>
         <mat-card-subtitle>Ambiente de pruebas</mat-card-subtitle>
@@ -22,7 +22,7 @@
             <mat-grid-tile>
                 <mat-form-field appearance="fill" [style.width.%]="100">
                     <mat-label>Fecha de expedicion del documento</mat-label>
-                    <input matInput [matDatepicker]="fechaExpedicionDocPicker" disabled>
+                    <input matInput [matDatepicker]="fechaExpedicionDocPicker" [value]="datosIdentificacion.FechaExpedicion" disabled>
                     <mat-datepicker-toggle matSuffix [for]="fechaExpedicionDocPicker"></mat-datepicker-toggle>
                     <mat-datepicker #fechaExpedicionDocPicker></mat-datepicker>
                 </mat-form-field>
@@ -34,7 +34,7 @@
             <mat-grid-tile>
                 <mat-form-field appearance="fill" [style.width.%]="100">
                     <mat-label>Primer nombre</mat-label>
-                    <input matInput type="text" value="{{tercero.PrimerNombre}}" disabled>
+                    <input matInput type="text" [value]="tercero.PrimerNombre" disabled>
                 </mat-form-field>
             </mat-grid-tile>
             <mat-grid-tile>
@@ -73,7 +73,7 @@
             <mat-grid-tile>
                 <mat-form-field appearance="fill" [style.width.%]="100">
                     <mat-label>Fecha de nacimiento</mat-label>
-                    <input matInput [matDatepicker]="fechaNacimientoPicker" disabled>
+                    <input matInput [matDatepicker]="fechaNacimientoPicker" [value]="datosIdentificacion.FechaExpedicion" disabled>
                     <mat-datepicker-toggle matSuffix [for]="fechaNacimientoPicker"></mat-datepicker-toggle>
                     <mat-datepicker #fechaNacimientoPicker></mat-datepicker>
                 </mat-form-field>
