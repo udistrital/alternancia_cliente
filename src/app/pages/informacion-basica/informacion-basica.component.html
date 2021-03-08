@@ -1,9 +1,85 @@
-<mat-card>
+<mat-card class="prueba">
     <mat-card-header>
-        <mat-card-title>Terceros</mat-card-title>
+        <!-- <mat-card-title>Terceros</mat-card-title>
         <mat-card-subtitle>Ambiente de pruebas</mat-card-subtitle>
+        -->
+        <mat-card-title>Información básica</mat-card-title>
     </mat-card-header>
     <mat-card-content>
-        {{ terceros | json }}
+        <mat-grid-list cols="3" rowHeight="80px" gutterSize="10px">
+            <mat-grid-tile>
+                <mat-form-field appearance="outline" [style.width.%]="100">
+                    <mat-label>Tipo de documento</mat-label>
+                    <input matInput type="text" value="Cedula de ciudadania" disabled>
+                </mat-form-field>
+            </mat-grid-tile>
+            <mat-grid-tile>
+                <mat-form-field appearance="outline" [style.width.%]="100">
+                    <mat-label>Número de documento</mat-label>
+                    <input matInput type="number" value="12345678" disabled>
+                </mat-form-field>
+            </mat-grid-tile>
+            <mat-grid-tile>
+                <mat-form-field appearance="outline" [style.width.%]="100">
+                    <mat-label>Fecha de expedicion del documento</mat-label>
+                    <input matInput [matDatepicker]="fechaExpedicionDocPicker" disabled>
+                    <mat-datepicker-toggle matSuffix [for]="fechaExpedicionDocPicker"></mat-datepicker-toggle>
+                    <mat-datepicker #fechaExpedicionDocPicker></mat-datepicker>
+                </mat-form-field>
+            </mat-grid-tile>
+
+        </mat-grid-list>
+
+        <mat-grid-list cols="2" rowHeight="80px" gutterSize="10px">
+            <mat-grid-tile>
+                <mat-form-field appearance="outline" [style.width.%]="100">
+                    <mat-label>Primer nombre</mat-label>
+                    <input matInput type="text" value="primer nombre" disabled>
+                </mat-form-field>
+            </mat-grid-tile>
+            <mat-grid-tile>
+                <mat-form-field appearance="outline" [style.width.%]="100">
+                    <mat-label>Segundo nombre</mat-label>
+                    <input matInput type="text" value="segundo nombre" disabled>
+                </mat-form-field>
+            </mat-grid-tile>
+            <mat-grid-tile>
+                <mat-form-field appearance="outline" [style.width.%]="100">
+                    <mat-label>Primer apellido</mat-label>
+                    <input matInput type="text" value="primer apellido" disabled>
+                </mat-form-field>
+            </mat-grid-tile>
+            <mat-grid-tile>
+                <mat-form-field appearance="outline" [style.width.%]="100">
+                    <mat-label>Segundo apellido</mat-label>
+                    <input matInput type="text" value="segundo apellido" disabled>
+                </mat-form-field>
+            </mat-grid-tile>
+        </mat-grid-list>
+
+        <mat-grid-list cols="3" rowHeight="80px" gutterSize="10px">
+            <mat-grid-tile>
+                <mat-form-field appearance="outline" [style.width.%]="100">
+                    <mat-label>Estado civil</mat-label>
+                    <input matInput type="text" value="Estado civil" disabled>
+                </mat-form-field>
+            </mat-grid-tile>
+            <mat-grid-tile>
+                <mat-form-field appearance="outline" [style.width.%]="100">
+                    <mat-label>Género</mat-label>
+                    <input matInput type="text" value="Genero " disabled>
+                </mat-form-field>
+            </mat-grid-tile>
+            <mat-grid-tile>
+                <mat-form-field appearance="outline" [style.width.%]="100">
+                    <mat-label>Fecha de nacimiento</mat-label>
+                    <input matInput [matDatepicker]="fechaNacimientoPicker" disabled>
+                    <mat-datepicker-toggle matSuffix [for]="fechaNacimientoPicker"></mat-datepicker-toggle>
+                    <mat-datepicker #fechaNacimientoPicker></mat-datepicker>
+                </mat-form-field>
+            </mat-grid-tile>
+        </mat-grid-list>
+        <br />
+
     </mat-card-content>
 </mat-card>
