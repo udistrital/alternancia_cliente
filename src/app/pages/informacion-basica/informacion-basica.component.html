@@ -10,13 +10,13 @@
             <mat-grid-tile>
                 <mat-form-field appearance="fill" [style.width.%]="100">
                     <mat-label>Tipo de documento</mat-label>
-                    <input matInput type="text" value="Cedula de ciudadania" disabled>
+                    <input matInput type="text" value="{{datosIdentificacion.TipoDocumentoId.Nombre}}" disabled>
                 </mat-form-field>
             </mat-grid-tile>
             <mat-grid-tile>
                 <mat-form-field appearance="fill" [style.width.%]="100">
                     <mat-label>Número de documento</mat-label>
-                    <input matInput type="number" value="12345678" disabled>
+                    <input matInput type="number" value="{{datosIdentificacion.Numero}}" disabled>
                 </mat-form-field>
             </mat-grid-tile>
             <mat-grid-tile>
@@ -34,25 +34,25 @@
             <mat-grid-tile>
                 <mat-form-field appearance="fill" [style.width.%]="100">
                     <mat-label>Primer nombre</mat-label>
-                    <input matInput type="text" value="primer nombre" disabled>
+                    <input matInput type="text" value="{{tercero.PrimerNombre}}" disabled>
                 </mat-form-field>
             </mat-grid-tile>
             <mat-grid-tile>
                 <mat-form-field appearance="fill" [style.width.%]="100">
                     <mat-label>Segundo nombre</mat-label>
-                    <input matInput type="text" value="segundo nombre" disabled>
+                    <input matInput type="text" value="{{tercero.SegundoNombre}}" disabled>
                 </mat-form-field>
             </mat-grid-tile>
             <mat-grid-tile>
                 <mat-form-field appearance="fill" [style.width.%]="100">
                     <mat-label>Primer apellido</mat-label>
-                    <input matInput type="text" value="primer apellido" disabled>
+                    <input matInput type="text" value="{{tercero.PrimerApellido}}" disabled>
                 </mat-form-field>
             </mat-grid-tile>
             <mat-grid-tile>
                 <mat-form-field appearance="fill" [style.width.%]="100">
                     <mat-label>Segundo apellido</mat-label>
-                    <input matInput type="text" value="segundo apellido" disabled>
+                    <input matInput type="text" value="{{tercero.SegundoApellido}}" disabled>
                 </mat-form-field>
             </mat-grid-tile>
         </mat-grid-list>
