@@ -12,7 +12,6 @@ import { environment } from './../../../environments/environment'
 export class InformacionBasicaComponent implements OnInit {
   tercero: any;
   datosIdentificacion: any;
-  loaded: boolean = false;
   constructor(
     private request: RequestManager,
     private userService: UserService
@@ -40,12 +39,11 @@ export class InformacionBasicaComponent implements OnInit {
   
         this.request.get(environment.TERCEROS_SERVICE,`datos_identificacion/?query=TerceroId.Id:`+ this.tercero.Id)
         .subscribe((datosTercero: any) => {
-          debugger;
           this.datosIdentificacion = {
             ...datosTercero[0],
             ...{ FechaExpedicion: datosTercero[0].FechaExpedicion?new Date(datosTercero[0].FechaExpedicion):'' }
           }
-          this.loaded = true;
+          Swal.close();
         })
 
       })
