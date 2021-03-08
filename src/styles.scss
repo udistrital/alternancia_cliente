@@ -67,3 +67,11 @@ mat-label {
     background-color: #fff !important;
 
 }
+
+.swal2-styled.swal2-confirm {
+    background-color: var(--primary)!important;
+}
+
+.swal2-loader {
+    border-color: var(--primary) transparent var(--primary) transparent !important;
+}

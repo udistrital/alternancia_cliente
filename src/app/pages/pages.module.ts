@@ -20,35 +20,41 @@ import { MatStepperModule } from '@angular/material/stepper';
 //import { MAT_MOMENT_DATE_FORMATS, MomentDateAdapter, MAT_MOMENT_DATE_ADAPTER_OPTIONS,} from '@angular/material-moment-adapter';
 import { MatNativeDateModule, DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material/core';
 import { MatGridListModule } from '@angular/material/grid-list';
-
+import { SaludActualComponent } from './salud-actual/salud-actual.component';
+import {MatCheckboxModule} from '@angular/material/checkbox';
 
 
 
 const pagesComponents = [
   DashboardComponent,
   PagesComponent,
-  InformacionBasicaComponent
-]
+  InformacionBasicaComponent,
+  SaludActualComponent
+];
 
+const materialModules = [
+  MatCardModule,
+  MatListModule,
+  MatIconModule,
+  MatInputModule,
+  MatSelectModule,
+  MatCheckboxModule,
+  MatDatepickerModule,
+  MatNativeDateModule,
+  MatFormFieldModule,
+  MatGridListModule,    
+  MatButtonModule,
+  MatStepperModule
+];
 @NgModule({
   declarations: [
-    ...pagesComponents
+    ...pagesComponents,
      ],
   imports: [
     HttpClientModule,
     CommonModule,
     PagesRoutingModule,
-    MatCardModule,
-    MatListModule,
-    MatIconModule,
-    MatInputModule,
-    MatSelectModule,
-    MatDatepickerModule,
-    MatNativeDateModule,
-    MatFormFieldModule,
-    MatGridListModule,    
-    MatButtonModule,
-    MatStepperModule
+    ...materialModules
   ],
   providers: [
     RequestManager,

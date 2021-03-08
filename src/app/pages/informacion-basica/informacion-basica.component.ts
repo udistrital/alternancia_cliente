@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import Swal from 'sweetalert2';
 import { RequestManager } from '../services/requestManager';
 import Swal from 'sweetalert2';
 import { UserService } from '../services/userService';
@@ -11,9 +12,14 @@ import { environment } from './../../../environments/environment'
   styleUrls: ['./informacion-basica.component.scss']
 })
 export class InformacionBasicaComponent implements OnInit {
+<<<<<<< HEAD
   tercero: Tercero;
   loaded: boolean = false;
   datosIdentificacion: DatosIdentificacion;
+=======
+  terceros: any;
+  loaded: boolean = false;
+>>>>>>> 86c62825abea2ac4bd95636f9df10e8006737e22
   constructor(
     private request: RequestManager,
     private userService: UserService
