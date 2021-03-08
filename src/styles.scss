@@ -47,3 +47,45 @@ $mat-mytheme-accent: mat-palette($mat-green, A200, A100, A400);
 
 $mat-mytheme: mat-light-theme($mat-mytheme-primary, $mat-mytheme-accent);
 @include angular-material-theme($mat-mytheme);
+
+
+.card-oas {
+    width:calc(100vw - 60px)
+}
+
+mat-label {
+    color: var(--primary);
+}
+
+
+.mat-input-element:disabled, .mat-form-field-type-mat-native-select.mat-form-field-disabled .mat-form-field-infix::after {
+    color: #333;
+}
+
+
+.mat-form-field-flex  {
+    background-color: #fff !important;
+
+}
+
+.swal2-styled.swal2-confirm {
+    background-color: var(--primary)!important;
+}
+
+.swal2-loader {
+    border-color: var(--primary) transparent var(--primary) transparent !important;
+}
+
+
+.example-section {
+    margin: 12px 0;
+}
+
+.example-margin {
+margin: 0 12px;
+}
+
+ul {
+list-style-type: none;
+margin-top: 4px;
+}
