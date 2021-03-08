@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import Swal from 'sweetalert2';
 import { RequestManager } from '../services/requestManager';
 import { UserService } from '../services/userService';
 import { environment } from './../../../environments/environment' 
@@ -9,6 +10,7 @@ import { environment } from './../../../environments/environment'
 })
 export class InformacionBasicaComponent implements OnInit {
   terceros: any;
+  loaded: boolean = false;
   constructor(
     private request: RequestManager,
     private userService: UserService
@@ -18,13 +20,23 @@ export class InformacionBasicaComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    
+    Swal.fire({
+      title: 'Por favor espere!',
+      html: 'Cargando información del recurso ...',
+      allowOutsideClick: false,
+      onBeforeOpen: () => {
+        Swal.showLoading()
+      },
+    });
     this.userService.user$.subscribe((data)=> {
       console.log("tercero",  data)
+
     })
     this.request.get(environment.TERCEROS_SERVICE,`tercero` )
     .subscribe((res: any) => {
       this.terceros = res;
+      Swal.close();
+      this.loaded = true;
     })
   }
 
