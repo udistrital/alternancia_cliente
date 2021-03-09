@@ -6,27 +6,7 @@
         <mat-card-title>Información básica</mat-card-title>
     </mat-card-header>
     <mat-card-content>
-        <mat-grid-list [appOasGridCols]="{xs: 1, sm: 2, md: 3, lg: 4, xl: 5}" rowHeight="80px" gutterSize="10px">
-            <mat-grid-tile>
-                <mat-form-field appearance="fill" [style.width.%]="100">
-                    <mat-label>Tipo de documento</mat-label>
-                    <input matInput type="text" value="{{datosIdentificacion.TipoDocumentoId.Nombre}}" disabled>
-                </mat-form-field>
-            </mat-grid-tile>
-            <mat-grid-tile>
-                <mat-form-field appearance="fill" [style.width.%]="100">
-                    <mat-label>Número de documento</mat-label>
-                    <input matInput type="number" value="{{datosIdentificacion.Numero}}" disabled>
-                </mat-form-field>
-            </mat-grid-tile>
-            <mat-grid-tile>
-                <mat-form-field appearance="fill" [style.width.%]="100">
-                    <mat-label>Fecha de expedicion del documento</mat-label>
-                    <input matInput [matDatepicker]="fechaExpedicionDocPicker" [value]="datosIdentificacion.FechaExpedicion" disabled>
-                    <mat-datepicker-toggle matSuffix [for]="fechaExpedicionDocPicker"></mat-datepicker-toggle>
-                    <mat-datepicker #fechaExpedicionDocPicker></mat-datepicker>
-                </mat-form-field>
-            </mat-grid-tile>
+        <mat-grid-list [appOasGridCols]="{xs: 1, sm: 2, md: 3, lg: 4, xl: 4}" rowHeight="80px" gutterSize="10px">
 
             <mat-grid-tile>
                 <mat-form-field appearance="fill" [style.width.%]="100">
@@ -52,29 +32,234 @@
                     <input matInput type="text" value="{{tercero.SegundoApellido}}" disabled>
                 </mat-form-field>
             </mat-grid-tile>
-            
+
+        </mat-grid-list>
+
+        <mat-grid-list [appOasGridCols]="{xs: 1, sm: 2, md: 3, lg: 4, xl: 4}" rowHeight="80px" gutterSize="10px">
+
             <mat-grid-tile>
                 <mat-form-field appearance="fill" [style.width.%]="100">
-                    <mat-label>Estado civil</mat-label>
-                    <input matInput type="text" value="Estado civil" disabled>
+                    <mat-label>Tipo de documento</mat-label>
+                    <input matInput type="text" value="{{datosIdentificacion.TipoDocumentoId.Nombre}}" disabled>
                 </mat-form-field>
             </mat-grid-tile>
             <mat-grid-tile>
                 <mat-form-field appearance="fill" [style.width.%]="100">
-                    <mat-label>Género</mat-label>
-                    <input matInput type="text" value="Genero " disabled>
+                    <mat-label>Número de documento</mat-label>
+                    <input matInput type="number" value="{{datosIdentificacion.Numero}}" disabled>
                 </mat-form-field>
             </mat-grid-tile>
             <mat-grid-tile>
                 <mat-form-field appearance="fill" [style.width.%]="100">
-                    <mat-label>Fecha de nacimiento</mat-label>
-                    <input matInput [matDatepicker]="fechaNacimientoPicker" disabled>
-                    <mat-datepicker-toggle matSuffix [for]="fechaNacimientoPicker"></mat-datepicker-toggle>
-                    <mat-datepicker #fechaNacimientoPicker></mat-datepicker>
+                    <mat-label>Fecha de expedicion del documento</mat-label>
+                    <input matInput type="text" [value]="datosIdentificacion.FechaExpedicion | date: 'dd/MM/yyyy'" disabled>
                 </mat-form-field>
             </mat-grid-tile>
         </mat-grid-list>
-        <br />
+
+
+        <mat-grid-list [appOasGridCols]="{xs: 1, sm: 2, md: 3, lg: 4, xl: 4}" rowHeight="80px" gutterSize="10px">
+            <mat-grid-tile>
+                <mat-form-field appearance="fill" [style.width.%]="100">
+                    <mat-label>Género</mat-label>
+                    <input matInput type="text" value="MASCULINO" disabled>
+                </mat-form-field>
+            </mat-grid-tile>
+            <mat-grid-tile>
+                <mat-form-field appearance="fill" [style.width.%]="100">
+                    <mat-label>Estado civil</mat-label>
+                    <input matInput type="text" value="SOLTERO" disabled>
+                </mat-form-field>
+            </mat-grid-tile>
+            <mat-grid-tile>
+                <mat-form-field appearance="fill" [style.width.%]="100">
+                    <mat-label>Edad</mat-label>
+                    <input matInput type="text" [value]="37" disabled>
+                </mat-form-field>
+            </mat-grid-tile>
+        </mat-grid-list>
+
 
     </mat-card-content>
+</mat-card>
+<br />
+<mat-card class="card-oas" *ngIf="tercero && datosIdentificacion">
+
+    <mat-card-header>
+
+        <mat-card-title>Información vinculación</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+        <mat-accordion>
+
+
+            <mat-expansion-panel>
+                <mat-expansion-panel-header>
+                    <mat-panel-title>
+                        Contratista
+                    </mat-panel-title>
+
+                </mat-expansion-panel-header>
+
+                <mat-grid-list [appOasGridCols]="{xs: 1, sm: 2, md: 3, lg: 4, xl: 5}" rowHeight="80px" gutterSize="10px">
+
+                    <mat-grid-tile>
+                        <mat-form-field appearance="fill" [style.width.%]="100">
+                            <mat-label>Número contrato</mat-label>
+                            <input matInput type="text" [value]="1402" disabled>
+                        </mat-form-field>
+                    </mat-grid-tile>
+                    <mat-grid-tile>
+                        <mat-form-field appearance="fill" [style.width.%]="100">
+                            <mat-label>Vigencia</mat-label>
+                            <input matInput type="text" value="2020" disabled>
+                        </mat-form-field>
+                    </mat-grid-tile>
+                    <mat-grid-tile>
+                        <mat-form-field appearance="fill" [style.width.%]="100">
+                            <mat-label>RP</mat-label>
+                            <input matInput type="text" value="19967" disabled>
+                        </mat-form-field>
+                    </mat-grid-tile>
+                    <mat-grid-tile>
+                        <mat-form-field appearance="fill" [style.width.%]="100">
+                            <mat-label>CDP</mat-label>
+                            <input matInput type="text" value="2406" disabled>
+                        </mat-form-field>
+                    </mat-grid-tile>
+                    <mat-grid-tile>
+                        <mat-form-field appearance="fill" [style.width.%]="100">
+                            <mat-label>Dependencia</mat-label>
+                            <input matInput type="text" value="OFICINA ASESORA DE SISTEMAS" disabled>
+                        </mat-form-field>
+                    </mat-grid-tile>
+                </mat-grid-list>
+
+            </mat-expansion-panel>
+
+
+
+
+            <mat-expansion-panel>
+                <mat-expansion-panel-header>
+                    <mat-panel-title>
+                        Estudiante
+                    </mat-panel-title>
+
+                </mat-expansion-panel-header>
+
+                <mat-grid-list [appOasGridCols]="{xs: 1, sm: 2, md: 3, lg: 4, xl: 5}" rowHeight="80px" gutterSize="10px">
+
+                    <mat-grid-tile>
+                        <mat-form-field appearance="fill" [style.width.%]="100">
+                            <mat-label>Código</mat-label>
+                            <input matInput type="text" [value]="20202495005" disabled>
+                        </mat-form-field>
+                    </mat-grid-tile>
+                    <mat-grid-tile>
+                        <mat-form-field appearance="fill" [style.width.%]="100">
+                            <mat-label>Facultad</mat-label>
+                            <input matInput type="text" value="Ingeniería" disabled>
+                        </mat-form-field>
+                    </mat-grid-tile>
+                    <mat-grid-tile>
+                        <mat-form-field appearance="fill" [style.width.%]="100">
+                            <mat-label>Proyecto Curricular</mat-label>
+                            <input matInput type="text" value="495" disabled>
+                        </mat-form-field>
+                    </mat-grid-tile>
+                    <mat-grid-tile>
+                        <mat-form-field appearance="fill" [style.width.%]="100">
+                            <mat-label>Plan de Estudios</mat-label>
+                            <!-- <input matInput type="text" value="2 - MAE. EN CIENCIAS DE LA INF. Y LAS COMUNICACIONES ENFASIS EN ING. SOFT" disabled> -->
+                            <textarea matInput disabled>2 - MAE. EN CIENCIAS DE LA INF. Y LAS COMUNICACIONES ENFASIS EN ING. SOFT</textarea>
+
+                        </mat-form-field>
+                    </mat-grid-tile>
+                    <mat-grid-tile>
+                        <mat-form-field appearance="fill" [style.width.%]="100">
+                            <mat-label>Estado</mat-label>
+                            <input matInput type="text" value="Activo" disabled>
+                        </mat-form-field>
+                    </mat-grid-tile>
+                </mat-grid-list>
+                <div class="div-table" style="text-align:center">
+                    <b><span>Horario de Clases Período 2021-1</span></b>
+                    <br>
+                    <br>
+
+
+
+
+                    <table class="tg" align="center">
+                        <thead>
+                            <tr>
+                                <td class="tg-head">Cod.</td>
+                                <td class="tg-head">Nombre Espacio<br>Académico</td>
+                                <td class="tg-head">Grupo</td>
+                                <td class="tg-head">Créditos</td>
+                                <td class="tg-head">Clasificación</td>
+                                <td class="tg-head">Lun</td>
+                                <td class="tg-head">Mar</td>
+                                <td class="tg-head">Mie</td>
+                                <td class="tg-head">Jue</td>
+                                <td class="tg-head">Vie</td>
+                                <td class="tg-head">Sáb</td>
+                                <td class="tg-head">Dom</td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="tg-body">19502005</td>
+                                <td class="tg-body">TESIS I<br><span style="font-weight:bold">Docente por asignar.</span></td>
+                                <td class="tg-body">195-1</td>
+                                <td class="tg-body">4</td>
+                                <td class="tg-body"></td>
+                                <td class="tg-body"></td>
+                                <td class="tg-body"></td>
+                                <td class="tg-body"></td>
+                                <td class="tg-body"></td>
+                                <td class="tg-body"></td>
+                                <td class="tg-body"></td>
+                                <td class="tg-body">6-10<br>Sede:FICC<br>Edificio:ADMINISTRATIVO<br>Salón: MAESTRIA EN CIENCIAS DE LA INFORMACION Y LAS COMUNICACIONES<br></td>
+                            </tr>
+                            <tr>
+                                <td class="tg-body">49501001</td>
+                                <td class="tg-body">INGENIERÍA DE SOFTWARE I<br><span style="font-weight:bold">Docente: ALEJANDRO PAOLO DAZA CORREDOR.</span><br></td>
+                                <td class="tg-body">495-1</td>
+                                <td class="tg-body">4</td>
+                                <td class="tg-body"></td>
+                                <td class="tg-body"></td>
+                                <td class="tg-body"></td>
+                                <td class="tg-body"></td>
+                                <td class="tg-body"></td>
+                                <td class="tg-body"></td>
+                                <td class="tg-body">10-14<br>Sede:FICC<br>Edificio:SABIO CALDAS<br>Salón: SALA DE INFORMATICA 508<br></td>
+                                <td class="tg-body"></td>
+                            </tr>
+                            <tr>
+                                <td class="tg-body">49503005</td>
+                                <td class="tg-body">MINERÍA DE DATOS<br><span style="font-weight:bold">Docente: JORGE ENRIQUE RODRIGUEZ RODRIGUEZ.</span></td>
+                                <td class="tg-body">495-1</td>
+                                <td class="tg-body">4</td>
+                                <td class="tg-body"></td>
+                                <td class="tg-body"></td>
+                                <td class="tg-body"></td>
+                                <td class="tg-body"></td>
+                                <td class="tg-body"></td>
+                                <td class="tg-body"></td>
+                                <td class="tg-body">6-10<br>Sede:FICC<br>Edificio:SABIO CALDAS<br>Salón: SALA DE INFORMATICA 508<br></td>
+                                <td class="tg-body"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </mat-expansion-panel>
+
+
+
+        </mat-accordion>
+
+    </mat-card-content>
+
 </mat-card>
