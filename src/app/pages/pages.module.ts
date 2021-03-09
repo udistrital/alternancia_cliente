@@ -21,7 +21,8 @@ import { MatStepperModule } from '@angular/material/stepper';
 import { MatNativeDateModule, DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material/core';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { SaludActualComponent } from './salud-actual/salud-actual.component';
-import {MatCheckboxModule} from '@angular/material/checkbox';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatExpansionModule } from '@angular/material/expansion';
 import { PreexistenciaComponent } from './preexistencia/preexistencia.component';
 import { FormsModule } from '@angular/forms';
 import { OasGridColsDirective } from './directives/oas-grid-cols.directive';
@@ -46,7 +47,8 @@ const materialModules = [
   MatDatepickerModule,
   MatNativeDateModule,
   MatFormFieldModule,
-  MatGridListModule,    
+  MatGridListModule,
+  MatExpansionModule,
   MatButtonModule,
   MatStepperModule
 ];
