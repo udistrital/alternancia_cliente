@@ -6,7 +6,7 @@
         <mat-card-title>Información básica</mat-card-title>
     </mat-card-header>
     <mat-card-content>
-        <mat-grid-list cols="3" rowHeight="80px" gutterSize="10px">
+        <mat-grid-list [appOasGridCols]="{xs: 1, sm: 2, md: 3, lg: 4, xl: 5}" rowHeight="80px" gutterSize="10px">
             <mat-grid-tile>
                 <mat-form-field appearance="fill" [style.width.%]="100">
                     <mat-label>Tipo de documento</mat-label>
@@ -28,9 +28,6 @@
                 </mat-form-field>
             </mat-grid-tile>
 
-        </mat-grid-list>
-
-        <mat-grid-list cols="2" rowHeight="80px" gutterSize="10px">
             <mat-grid-tile>
                 <mat-form-field appearance="fill" [style.width.%]="100">
                     <mat-label>Primer nombre</mat-label>
@@ -55,9 +52,7 @@
                     <input matInput type="text" value="{{tercero.SegundoApellido}}" disabled>
                 </mat-form-field>
             </mat-grid-tile>
-        </mat-grid-list>
-
-        <mat-grid-list cols="3" rowHeight="80px" gutterSize="10px">
+            
             <mat-grid-tile>
                 <mat-form-field appearance="fill" [style.width.%]="100">
                     <mat-label>Estado civil</mat-label>
@@ -73,7 +68,7 @@
             <mat-grid-tile>
                 <mat-form-field appearance="fill" [style.width.%]="100">
                     <mat-label>Fecha de nacimiento</mat-label>
-                    <input matInput [matDatepicker]="fechaNacimientoPicker" [value]="datosIdentificacion.FechaExpedicion" disabled>
+                    <input matInput [matDatepicker]="fechaNacimientoPicker" disabled>
                     <mat-datepicker-toggle matSuffix [for]="fechaNacimientoPicker"></mat-datepicker-toggle>
                     <mat-datepicker #fechaNacimientoPicker></mat-datepicker>
                 </mat-form-field>

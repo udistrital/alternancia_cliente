@@ -11,7 +11,7 @@ export class UtilService {
 
     submitAlert({ option, type, fn, data, info, fnReturn }) {
         Swal.fire({
-            title: `Se ${option === 'update' ? 'actualizará' : 'creará'} el ${type}`,
+            title: `Se ${option === 'update' ? 'actualizará' : 'creará'} ${type}`,
             text: info,
             icon: 'warning',
             showCancelButton: true,
@@ -22,7 +22,7 @@ export class UtilService {
                 if (result.value) {
                 Swal.fire({
                     title: 'Por favor espere!',
-                    html: `${option === 'update' ? 'Actualizando' : 'Creando'} el ${type}`,
+                    html: `${option === 'update' ? 'Actualizando' : 'Creando'} ${type}`,
                     allowOutsideClick: false,
                     onBeforeOpen: () => {
                         Swal.showLoading()
@@ -33,7 +33,7 @@ export class UtilService {
                     Swal.close();
                     Swal.fire(
                         `${option === 'update' ? 'Actualizado' : 'Creado'}`,
-                        `Se ha ${option === 'update' ? 'actualizado' : 'Creado'} el ${type} ${response} de forma exitosa`,
+                        `Se ha ${option === 'update' ? 'actualizado' : 'Creado'}  ${type} ${response} de forma exitosa`,
                         'success'
                     ).then((data2) => {
                         fnReturn();
@@ -42,7 +42,7 @@ export class UtilService {
                     .catch(err => {
                     Swal.close();
                     Swal.fire(
-                        `No se ha podido ${option === 'update' ? 'Actualizar' : 'Crear'} el ${type}`,
+                        `No se ha podido ${option === 'update' ? 'Actualizar' : 'Crear'}  ${type}`,
                         `error: ${err}`,
                         'error'
                     )
