@@ -22,6 +22,9 @@ import { MatNativeDateModule, DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } f
 import { MatGridListModule } from '@angular/material/grid-list';
 import { SaludActualComponent } from './salud-actual/salud-actual.component';
 import {MatCheckboxModule} from '@angular/material/checkbox';
+import { PreexistenciaComponent } from './preexistencia/preexistencia.component';
+import { FormsModule } from '@angular/forms';
+import { OasGridColsDirective } from './directives/oas-grid-cols.directive';
 
 
 
@@ -29,7 +32,8 @@ const pagesComponents = [
   DashboardComponent,
   PagesComponent,
   InformacionBasicaComponent,
-  SaludActualComponent
+  SaludActualComponent,
+  PreexistenciaComponent,
 ];
 
 const materialModules = [
@@ -49,10 +53,13 @@ const materialModules = [
 @NgModule({
   declarations: [
     ...pagesComponents,
-     ],
+    OasGridColsDirective
+
+    ],
   imports: [
     HttpClientModule,
     CommonModule,
+    FormsModule,
     PagesRoutingModule,
     ...materialModules
   ],

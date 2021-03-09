@@ -19,7 +19,6 @@ export class SaludActualComponent implements OnInit {
   }
 
   task: Task[] = [
-      {name: 'fiebre', isSelected: false, label: 'Fiebre  - Temperatura mayor de 37.5 °C '},
       {name: 'congestion_nasal', isSelected: false, label: 'Congestión Nasal'},
       {name: 'dificultad_respiratoria', isSelected: false, label: 'Dificultad respiratoria'},
       {name: 'gotamiento', isSelected: false, label: 'Agotamiento'},
@@ -43,7 +42,13 @@ export class SaludActualComponent implements OnInit {
     this.task.map((data)=> {
       saveData.info[data.name] = data.isSelected;
     })
-    this.utilService.submitAlert({ option:'update', type:'Estado de salud', fn: this.sendData , data: saveData, info: 'Estado de salud' }) 
+    this.utilService.submitAlert({ 
+      option:'update', 
+      type:'Estado de salud', 
+      fn: this.sendData , 
+      data: saveData, 
+      info: 'Estado de salud', 
+      fnReturn: this.functionReturn}) 
     
   }
 
@@ -52,5 +57,9 @@ export class SaludActualComponent implements OnInit {
       const dataSave = localStorage.setItem('health_state',JSON.stringify(data))
       resolve('dato');
     })
+  }
+
+  functionReturn(){
+    
   }
 }
