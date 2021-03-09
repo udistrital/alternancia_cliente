@@ -44,7 +44,6 @@ export class PreexistenciaComponent implements OnInit {
     const comorbilidad = localStorage.getItem('comorbilidad');
     if(comorbilidad) {
       const objComorbilidades = JSON.parse(comorbilidad);
-      console.log(objComorbilidades)
       this.comorbilidades = this.comorbilidades.map((c: Opcion) => {
         return {
           ...c,
@@ -72,7 +71,6 @@ export class PreexistenciaComponent implements OnInit {
     this.comorbilidades.map((data)=> {
       saveData.info[data.name] = data.isSelected;
     })
-    console.log(saveData);
     this.utilService.submitAlert({ 
       option:'update', 
       type:'Comorbilidades', 
