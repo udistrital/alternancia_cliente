@@ -22,7 +22,7 @@ export class InformacionBasicaComponent implements OnInit {
   ngOnInit(): void {
     Swal.fire({
       title: 'Por favor espere!',
-      html: 'Cargando información del recurso ...',
+      html: 'Cargando datos de usuario',
       allowOutsideClick: false,
       onBeforeOpen: () => {
         Swal.showLoading()
