@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { UtilService } from '../services/utilService';
 
 
-export interface Task {
+export interface Opcion {
   name: string;
   isSelected: boolean;
   label: string;
@@ -19,7 +19,7 @@ export class PreexistenciaComponent implements OnInit {
   constructor(private utilService: UtilService) {
   }
 
-  task: Task[] = [
+  comorbilidades: Opcion[] = [
     { name: "asma", isSelected: false, label: "Asma"}, 
     { name: "enfermedad_cerebrobascular", isSelected: false, label: "Enfermedad Cerebrovascular"}, 
     { name: "fibrosis_quistica", isSelected: false, label: "Fibrosis quística"}, 
@@ -41,10 +41,21 @@ export class PreexistenciaComponent implements OnInit {
   ]
 
   ngOnInit(): void {
+    const comorbilidad = localStorage.getItem('comorbilidad');
+    if(comorbilidad) {
+      const objComorbilidades = JSON.parse(comorbilidad);
+      this.comorbilidades = this.comorbilidades.map((c: Opcion) => {
+        return {
+          ...c,
+          isSelected: objComorbilidades.info.hasOwnProperty(c.name)? objComorbilidades.info[c.name]:false
+        }
+      })
+    }
+
   }
 
   clear(): void {
-    this.task = this.task.map((option)=>({...option, ...{isSelected: false}}))
+    this.comorbilidades = this.comorbilidades.map((option)=>({...option, ...{isSelected: false}}))
   }
 
   functionReturn(){
@@ -57,16 +68,15 @@ export class PreexistenciaComponent implements OnInit {
       info: {},
       date: new Date()
     };
-    this.task.map((data)=> {
+    this.comorbilidades.map((data)=> {
       saveData.info[data.name] = data.isSelected;
     })
-    console.log(saveData);
     this.utilService.submitAlert({ 
       option:'update', 
-      type:'Estado de salud', 
+      type:'Comorbilidades', 
       fn: this.sendData, 
       data: saveData, 
-      info: 'Estado de salud',
+      info: '¿Desea actualizar sus comorbilidades?',
       fnReturn: this.functionReturn
      }) 
     
@@ -74,8 +84,8 @@ export class PreexistenciaComponent implements OnInit {
 
   sendData(data){
     return new Promise((resolve, reject)=> {
-      const dataSave = localStorage.setItem('health_state',JSON.stringify(data))
-      resolve('dato');
+      const dataSave = localStorage.setItem('comorbilidad',JSON.stringify(data))
+      resolve('saved');
     })
   }
 }

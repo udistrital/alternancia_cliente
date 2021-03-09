@@ -23,6 +23,8 @@ import { MatGridListModule } from '@angular/material/grid-list';
 import { SaludActualComponent } from './salud-actual/salud-actual.component';
 import {MatCheckboxModule} from '@angular/material/checkbox';
 import { PreexistenciaComponent } from './preexistencia/preexistencia.component';
+import { FormsModule } from '@angular/forms';
+import { OasGridColsDirective } from './directives/oas-grid-cols.directive';
 
 
 
@@ -51,10 +53,13 @@ const materialModules = [
 @NgModule({
   declarations: [
     ...pagesComponents,
+    OasGridColsDirective
+
     ],
   imports: [
     HttpClientModule,
     CommonModule,
+    FormsModule,
     PagesRoutingModule,
     ...materialModules
   ],
