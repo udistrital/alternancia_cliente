@@ -1,4 +1,4 @@
-export class TipoDocumento {
+export class InfoComplementaria{
   Id: number;
   Nombre: string;
 }

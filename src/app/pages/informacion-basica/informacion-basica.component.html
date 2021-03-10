@@ -11,7 +11,7 @@
             <mat-grid-tile>
                 <mat-form-field appearance="fill" [style.width.%]="100">
                     <mat-label>Primer nombre</mat-label>
-                    <input matInput type="text" [value]="tercero.PrimerNombre" disabled>
+                    <input matInput type="text" value="{{tercero.PrimerNombre}}" disabled>
                 </mat-form-field>
             </mat-grid-tile>
             <mat-grid-tile>
@@ -62,19 +62,19 @@
             <mat-grid-tile>
                 <mat-form-field appearance="fill" [style.width.%]="100">
                     <mat-label>Género</mat-label>
-                    <input matInput type="text" value="MASCULINO" disabled>
+                    <input matInput type="text" value="{{datosGenero.InfoComplementariaId.Nombre}}" disabled>
                 </mat-form-field>
             </mat-grid-tile>
             <mat-grid-tile>
                 <mat-form-field appearance="fill" [style.width.%]="100">
                     <mat-label>Estado civil</mat-label>
-                    <input matInput type="text" value="SOLTERO" disabled>
+                    <input matInput type="text" value="{{datosEstadoCivil.InfoComplementariaId.Nombre}}" disabled>
                 </mat-form-field>
             </mat-grid-tile>
             <mat-grid-tile>
                 <mat-form-field appearance="fill" [style.width.%]="100">
-                    <mat-label>Edad</mat-label>
-                    <input matInput type="text" [value]="37" disabled>
+                    <mat-label>Fecha de nacimiento</mat-label>
+                    <input matInput type="number" value="{{edad}}" disabled>
                 </mat-form-field>
             </mat-grid-tile>
         </mat-grid-list>
@@ -96,7 +96,7 @@
             <mat-expansion-panel>
                 <mat-expansion-panel-header>
                     <mat-panel-title>
-                        Contratista
+                        Contratista: {{vinculaciones[0].TipoVinculacion.Nombre}}
                     </mat-panel-title>
 
                 </mat-expansion-panel-header>
@@ -106,31 +106,31 @@
                     <mat-grid-tile>
                         <mat-form-field appearance="fill" [style.width.%]="100">
                             <mat-label>Número contrato</mat-label>
-                            <input matInput type="text" [value]="1402" disabled>
+                            <input matInput type="text" value="1402" disabled>
                         </mat-form-field>
                     </mat-grid-tile>
                     <mat-grid-tile>
                         <mat-form-field appearance="fill" [style.width.%]="100">
                             <mat-label>Vigencia</mat-label>
-                            <input matInput type="text" value="2020" disabled>
+                            <input matInput type="text" value="{{(vinculaciones[0].FechaInicioVinculacion | date: 'dd/MM/yyyy' ).substring(6)}}" disabled>
                         </mat-form-field>
                     </mat-grid-tile>
                     <mat-grid-tile>
                         <mat-form-field appearance="fill" [style.width.%]="100">
-                            <mat-label>RP</mat-label>
-                            <input matInput type="text" value="19967" disabled>
+                            <mat-label>Fecha de inicio</mat-label>
+                            <input matInput type="text" value="{{vinculaciones[0].FechaInicioVinculacion | date: 'dd/MM/yyyy'}}" disabled>
                         </mat-form-field>
                     </mat-grid-tile>
                     <mat-grid-tile>
                         <mat-form-field appearance="fill" [style.width.%]="100">
-                            <mat-label>CDP</mat-label>
-                            <input matInput type="text" value="2406" disabled>
+                            <mat-label>Fecha de finalización</mat-label>
+                            <input matInput type="text" value="{{vinculaciones[0].FechaFinVinculacion | date: 'dd/MM/yyyy'}}" disabled>
                         </mat-form-field>
                     </mat-grid-tile>
                     <mat-grid-tile>
                         <mat-form-field appearance="fill" [style.width.%]="100">
                             <mat-label>Dependencia</mat-label>
-                            <input matInput type="text" value="OFICINA ASESORA DE SISTEMAS" disabled>
+                            <input matInput type="text" value="{{vinculaciones[0].Dependencia.Nombre}}" disabled>
                         </mat-form-field>
                     </mat-grid-tile>
                 </mat-grid-list>
