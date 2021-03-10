@@ -26,7 +26,8 @@ import { MatExpansionModule } from '@angular/material/expansion';
 import { PreexistenciaComponent } from './preexistencia/preexistencia.component';
 import { FormsModule } from '@angular/forms';
 import { OasGridColsDirective } from './directives/oas-grid-cols.directive';
-
+import { QrCodeModule } from 'ng-qrcode';
+import { QrComponent } from './qr/qr.component';
 
 
 const pagesComponents = [
@@ -55,7 +56,8 @@ const materialModules = [
 @NgModule({
   declarations: [
     ...pagesComponents,
-    OasGridColsDirective
+    OasGridColsDirective,
+    QrComponent
 
     ],
   imports: [
@@ -63,6 +65,7 @@ const materialModules = [
     CommonModule,
     FormsModule,
     PagesRoutingModule,
+    QrCodeModule,
     ...materialModules
   ],
   providers: [
