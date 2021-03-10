@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { QrService } from '../services/qrService';
 import { UtilService } from '../services/utilService';
 
 
@@ -16,7 +17,8 @@ export interface Opcion {
 export class PreexistenciaComponent implements OnInit {
 
   
-  constructor(private utilService: UtilService) {
+  constructor(private utilService: UtilService,
+    private qrService: QrService) {
   }
 
   comorbilidades: Opcion[] = [
@@ -44,6 +46,7 @@ export class PreexistenciaComponent implements OnInit {
     const comorbilidad = localStorage.getItem('comorbilidad');
     if(comorbilidad) {
       const objComorbilidades = JSON.parse(comorbilidad);
+      this.qrService.updateData(objComorbilidades);
       this.comorbilidades = this.comorbilidades.map((c: Opcion) => {
         return {
           ...c,

@@ -8,7 +8,6 @@ import { HashLocationStrategy, LocationStrategy } from '@angular/common';
 import { AppComponent } from './app.component';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { environment } from '../environments/environment';
-import { OasGridColsDirective } from './pages/directives/oas-grid-cols.directive';
 
 @NgModule({
   declarations: [
