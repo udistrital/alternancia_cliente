@@ -9,6 +9,8 @@ import { Tercero } from '../../@core/models/tercero';
 import { Vinculacion } from '../../@core/models/vinculacion';
 import { Parametro } from '../../@core/models/parametro';
 import { CargaAcademica } from '../../@core/models/carga_academica';
+import { LocalDataSource } from 'ng2-smart-table';
+
 @Component({
   selector: 'app-informacion-basica',
   templateUrl: './informacion-basica.component.html',
@@ -25,12 +27,56 @@ export class InformacionBasicaComponent implements OnInit {
   datosEstadoCivil: InfoComplementariaTercero;
   vinculaciones: Vinculacion[];
   edad: number;
+  source: LocalDataSource = new LocalDataSource();
+  settings: any;
+
   constructor(
     private request: RequestManager,
     private userService: UserService
   ) {
   }
 
+  cargarCampos() {
+    this.settings = {
+      // add: {
+      //   addButtonContent: '<span class="material-icons md-30">add_circle</span>',
+      //   createButtonContent: '<i class="nb-checkmark"></i>',
+      //   cancelButtonContent: '<i class="nb-close"></i>',
+      // },
+      // edit: {
+      //   editButtonContent: '<span class="material-icons">edit</span>',
+      //   saveButtonContent: '<i class="nb-checkmark"></i>',
+      //   cancelButtonContent: '<i class="nb-close"></i>',
+      // },
+      // delete: {
+      //   deleteButtonContent: '<span class="material-icons">delete</span>',
+      //   confirmDelete: true,
+      // },
+      actions: false,
+      mode: 'external',
+      columns: {
+        // Id: {
+        //   title: this.translate.instant('GLOBAL.id'),
+        //   // type: 'number;',
+        //   valuePrepareFunction: (value) => {
+        //     return value;
+        //   },
+        // },
+        Nombre: {
+          title: 'Nombre',
+          // type: 'string;',
+          valuePrepareFunction: (value) => `${value.primerNombre} ${value.segundoNombre}`,
+        },
+        Aplicacion: {
+          title: 'Aplicación',
+          // type: 'aplicacion;',
+          valuePrepareFunction: (value) => value,
+          // eslint-disable-next-line max-len
+          filterFunction: (cell?: any, search?: string): boolean => (((cell.Nombre).toLowerCase()).indexOf(search.toLowerCase()) !== -1 || search === ''),
+        },
+      },
+    };
+  }
 
   public calcularEdad(fechaNacimientoStr: string): number {
     const actual = new Date();
@@ -68,6 +114,10 @@ export class InformacionBasicaComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.cargarCampos();
+    this.source.load([
+      {Aplicacion: 'prueba', Nombre: {primerNombre: 'Fabian', segundoNombre: 'Sánchez'} }
+    ])
     Swal.fire({
       title: 'Por favor espere!',
       html: 'Cargando datos de usuario',

@@ -6,7 +6,7 @@
         <mat-card-title>Información básica</mat-card-title>
     </mat-card-header>
     <mat-card-content>
-        <mat-grid-list [appOasGridCols]="{xs: 1, sm: 2, md: 3, lg: 4, xl: 4}" rowHeight="80px" gutterSize="10px">
+        <mat-grid-list [appOasGridCols]="{xs: 1, sm: 2, md: 2, lg: 3, xl: 4}" rowHeight="80px" gutterSize="10px">
 
             <mat-grid-tile>
                 <mat-form-field appearance="fill" [style.width.%]="100">
@@ -62,13 +62,13 @@
             <mat-grid-tile>
                 <mat-form-field appearance="fill" [style.width.%]="100">
                     <mat-label>Género</mat-label>
-                    <input matInput type="text" value="{{datosGenero.InfoComplementariaId.Nombre}}" disabled>
+                    <input matInput type="text" value="{{datosGenero?datosGenero.InfoComplementariaId?datosGenero.InfoComplementariaId.Nombre:'':''}}" disabled>
                 </mat-form-field>
             </mat-grid-tile>
             <mat-grid-tile>
                 <mat-form-field appearance="fill" [style.width.%]="100">
                     <mat-label>Estado civil</mat-label>
-                    <input matInput type="text" value="{{datosEstadoCivil.InfoComplementariaId.Nombre}}" disabled>
+                    <input matInput type="text" value="{{datosEstadoCivil?datosEstadoCivil.InfoComplementariaId?datosEstadoCivil.InfoComplementariaId.Nombre:'':''}}" disabled>
                 </mat-form-field>
             </mat-grid-tile>
             <mat-grid-tile>
@@ -101,7 +101,7 @@
 
                 </mat-expansion-panel-header>
 
-                <mat-grid-list [appOasGridCols]="{xs: 1, sm: 2, md: 3, lg: 4, xl: 5}" rowHeight="80px" gutterSize="10px">
+                <mat-grid-list [appOasGridCols]="{xs: 1, sm: 2, md: 2, lg: 2, xl: 4}" rowHeight="80px" gutterSize="10px">
 
                     <mat-grid-tile>
                         <mat-form-field appearance="fill" [style.width.%]="100">
@@ -118,7 +118,7 @@
                     <mat-grid-tile>
                         <mat-form-field appearance="fill" [style.width.%]="100">
                             <mat-label>Dependencia</mat-label>
-                            <input matInput type="text" value="{{vinculacion.Dependencia.Nombre}}" disabled>
+                            <input matInput type="text" value="{{vinculacion?vinculacion.Dependencia?vinculacion.Dependencia.Nombre:'':''}}" disabled>
                         </mat-form-field>
                     </mat-grid-tile>
                 </mat-grid-list>
@@ -175,10 +175,6 @@
                     <b><span>Horario de Clases Período 2021-1</span></b>
                     <br>
                     <br>
-
-
-
-
                     <table class="tg" align="center">
                         <thead>
                             <tr>
@@ -241,6 +237,8 @@
                             </tr>
                         </tbody>
                     </table>
+                    <ng2-smart-table  [settings]="settings" [source]="source" >
+                </ng2-smart-table>
                 </div>
             </mat-expansion-panel>
 

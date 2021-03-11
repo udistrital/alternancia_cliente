@@ -29,6 +29,8 @@ import { OasGridColsDirective } from './directives/oas-grid-cols.directive';
 import { QrCodeModule } from 'ng-qrcode';
 import { QrComponent } from './qr/qr.component';
 
+import { Ng2SmartTableModule } from 'ng2-smart-table';
+
 
 const pagesComponents = [
   DashboardComponent,
@@ -66,6 +68,7 @@ const materialModules = [
     FormsModule,
     PagesRoutingModule,
     QrCodeModule,
+    Ng2SmartTableModule,
     ...materialModules
   ],
   providers: [
