@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import {ThemePalette} from '@angular/material/core';
+import { QrService } from '../services/qrService';
 import { UtilService } from '../services/utilService';
 
 export interface Task {
@@ -15,7 +16,8 @@ export interface Task {
 })
 export class SaludActualComponent implements OnInit {
 
-  constructor(private utilService: UtilService) {
+  constructor(private utilService: UtilService,
+    private qrService: QrService) {
   }
 
   task: Task[] = [
@@ -39,16 +41,24 @@ export class SaludActualComponent implements OnInit {
       info: {},
       date: new Date()
     };
+
     this.task.map((data)=> {
       saveData.info[data.name] = data.isSelected;
     })
+
+
+
     this.utilService.submitAlert({ 
       option:'update', 
       type:'Estado de salud', 
       fn: this.sendData , 
       data: saveData, 
       info: 'Estado de salud', 
-      fnReturn: this.functionReturn}) 
+      fnReturn: this.functionReturn
+    }) 
+    
+    this.qrService.updateData(saveData);
+
     
   }
 
@@ -60,6 +70,5 @@ export class SaludActualComponent implements OnInit {
   }
 
   functionReturn(){
-    
   }
 }
