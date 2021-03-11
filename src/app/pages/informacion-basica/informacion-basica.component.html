@@ -73,7 +73,7 @@
             </mat-grid-tile>
             <mat-grid-tile>
                 <mat-form-field appearance="fill" [style.width.%]="100">
-                    <mat-label>Fecha de nacimiento</mat-label>
+                    <mat-label>Edad</mat-label>
                     <input matInput type="number" value="{{edad}}" disabled>
                 </mat-form-field>
             </mat-grid-tile>
@@ -93,10 +93,10 @@
         <mat-accordion>
 
 
-            <mat-expansion-panel>
+            <mat-expansion-panel *ngFor="let vinculacion of vinculacionesOtros">
                 <mat-expansion-panel-header>
                     <mat-panel-title>
-                        Contratista: {{vinculaciones[0].TipoVinculacion.Nombre}}
+                        {{vinculacion.TipoVinculacion.Nombre}}
                     </mat-panel-title>
 
                 </mat-expansion-panel-header>
@@ -105,32 +105,20 @@
 
                     <mat-grid-tile>
                         <mat-form-field appearance="fill" [style.width.%]="100">
-                            <mat-label>Número contrato</mat-label>
-                            <input matInput type="text" value="1402" disabled>
-                        </mat-form-field>
-                    </mat-grid-tile>
-                    <mat-grid-tile>
-                        <mat-form-field appearance="fill" [style.width.%]="100">
-                            <mat-label>Vigencia</mat-label>
-                            <input matInput type="text" value="{{(vinculaciones[0].FechaInicioVinculacion | date: 'dd/MM/yyyy' ).substring(6)}}" disabled>
-                        </mat-form-field>
-                    </mat-grid-tile>
-                    <mat-grid-tile>
-                        <mat-form-field appearance="fill" [style.width.%]="100">
                             <mat-label>Fecha de inicio</mat-label>
-                            <input matInput type="text" value="{{vinculaciones[0].FechaInicioVinculacion | date: 'dd/MM/yyyy'}}" disabled>
+                            <input matInput type="text" value="{{vinculacion.FechaInicioVinculacion | date: 'dd/MM/yyyy'}}" disabled>
                         </mat-form-field>
                     </mat-grid-tile>
                     <mat-grid-tile>
                         <mat-form-field appearance="fill" [style.width.%]="100">
                             <mat-label>Fecha de finalización</mat-label>
-                            <input matInput type="text" value="{{vinculaciones[0].FechaFinVinculacion | date: 'dd/MM/yyyy'}}" disabled>
+                            <input matInput type="text" value="{{vinculacion.FechaFinVinculacion | date: 'dd/MM/yyyy'}}" disabled>
                         </mat-form-field>
                     </mat-grid-tile>
                     <mat-grid-tile>
                         <mat-form-field appearance="fill" [style.width.%]="100">
                             <mat-label>Dependencia</mat-label>
-                            <input matInput type="text" value="{{vinculaciones[0].Dependencia.Nombre}}" disabled>
+                            <input matInput type="text" value="{{vinculacion.Dependencia.Nombre}}" disabled>
                         </mat-form-field>
                     </mat-grid-tile>
                 </mat-grid-list>
@@ -140,10 +128,10 @@
 
 
 
-            <mat-expansion-panel>
+            <mat-expansion-panel *ngFor="let vinculacion of vinculacionesOtros">
                 <mat-expansion-panel-header>
                     <mat-panel-title>
-                        Estudiante
+                        {{vinculacion.TipoVinculacion.Nombre}}
                     </mat-panel-title>
 
                 </mat-expansion-panel-header>

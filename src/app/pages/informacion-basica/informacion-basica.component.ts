@@ -7,6 +7,8 @@ import { environment } from './../../../environments/environment'
 import { InfoComplementariaTercero } from '../../@core/models/info_complementaria_tercero';
 import { Tercero } from '../../@core/models/tercero';
 import { Vinculacion } from '../../@core/models/vinculacion';
+import { Parametro } from '../../@core/models/parametro';
+import { CargaAcademica } from '../../@core/models/carga_academica';
 @Component({
   selector: 'app-informacion-basica',
   templateUrl: './informacion-basica.component.html',
@@ -16,6 +18,10 @@ export class InformacionBasicaComponent implements OnInit {
   tercero: Tercero;
   datosIdentificacion: DatosIdentificacion;
   datosGenero: InfoComplementariaTercero;
+  vinculacionesDocente: Vinculacion[];
+  vinculacionesEstudiante: Vinculacion[];
+  cargaAcademica: CargaAcademica[];
+  vinculacionesOtros: Vinculacion[];
   datosEstadoCivil: InfoComplementariaTercero;
   vinculaciones: Vinculacion[];
   edad: number;
@@ -23,7 +29,6 @@ export class InformacionBasicaComponent implements OnInit {
     private request: RequestManager,
     private userService: UserService
   ) {
-
   }
 
 
@@ -38,6 +43,28 @@ export class InformacionBasicaComponent implements OnInit {
     }
 
     return edad;
+  }
+
+  public asignarVinculacion(vinculacion: Vinculacion){
+    let idRol: number = vinculacion.TipoVinculacion.Id;
+
+
+    if (idRol != 293 && idRol != 294 && vinculacion.TipoVinculacion.ParametroPadreId != null) {
+      vinculacion.TipoVinculacion.Nombre = vinculacion.TipoVinculacion.ParametroPadreId.Nombre;    
+    }
+    
+    if (idRol == 293 || idRol == 294 || (idRol >= 296 && idRol <= 299)) {
+      this.vinculacionesDocente.push(vinculacion);
+       this.request.get(environment.ACADEMICA_JBPM_SERVICE, `carga_academica/2020/3/41782864/3`)
+         .subscribe((carga: any) => {
+          this.cargaAcademica = carga['carga_academica']['docente'];
+        })
+
+    } else if (idRol >= 9999 && idRol <= 99999) {//VERFIFICAR IDS DE PARAMETRO PARA ESTUDIANTE
+      this.vinculacionesEstudiante.push(vinculacion);
+    } else {
+      this.vinculacionesOtros.push(vinculacion);
+    }
   }
 
   ngOnInit(): void {
@@ -55,18 +82,23 @@ export class InformacionBasicaComponent implements OnInit {
     this.userService.user$.subscribe((data) => {
       console.log("tercero", data)
 
-      this.request.get(environment.TERCEROS_SERVICE, `tercero/?query=UsuarioWSO2:jgcastellanosj`)
-      //this.request.get(environment.TERCEROS_SERVICE, `tercero/?query=UsuarioWSO2:`+ data['user']['sub'])
-        .subscribe((tercero: any) => {
-          this.tercero = tercero[0];
-          this.edad = this.calcularEdad(this.tercero.FechaNacimiento);
-          this.request.get(environment.TERCEROS_SERVICE, `datos_identificacion/?query=TerceroId.Id:` + this.tercero.Id)
-            .subscribe((datosTercero: any) => {
-              this.datosIdentificacion = {
-                ...datosTercero[0],
-                ...{ FechaExpedicion: datosTercero[0].FechaExpedicion ? new Date(datosTercero[0].FechaExpedicion) : '' }
-              }
-            })
+      this.request.get(environment.ACADEMICA_JBPM_SERVICE, `carga_academica/2020/3/41782864/3`)
+      .subscribe((carga: any) => {
+        this.cargaAcademica = carga['carga_academica']['docente'];
+        console.log("carga academica: ", this.cargaAcademica)
+       })
+
+
+      
+      //this.request.get(environment.TERCEROS_SERVICE, `datos_identificacion/?query=Numero:`+ data['user']['documento'])
+       this.request.get(environment.TERCEROS_SERVICE, `datos_identificacion/?query=TerceroId.Id:9811`)
+        .subscribe((datosInfoTercero: any) => {
+          this.datosIdentificacion = {
+            ...datosInfoTercero[0],
+            ...{ FechaExpedicion: datosInfoTercero[0].FechaExpedicion ? new Date(datosInfoTercero[0].FechaExpedicion) : '' }
+          }          
+          this.tercero = this.datosIdentificacion.TerceroId;      
+          this.edad = this.calcularEdad(this.tercero.FechaNacimiento);          
 
           this.request.get(environment.TERCEROS_SERVICE, `info_complementaria_tercero/?query=TerceroId.Id:` + this.tercero.Id
             + `,InfoComplementariaId.GrupoInfoComplementariaId.Id:6`)
@@ -84,6 +116,11 @@ export class InformacionBasicaComponent implements OnInit {
             //this.request.get(environment.TERCEROS_SERVICE, `vinculacion/?query=TerceroPrincipalId.Id:` + this.tercero.Id)
             .subscribe((datosInfoVinculaciones: any) => {
               this.vinculaciones = datosInfoVinculaciones;
+              
+              this.vinculacionesDocente = [];
+              this.vinculacionesEstudiante = [];
+              this.vinculacionesOtros = [];
+
               for (let i = 0; i < this.vinculaciones.length; i++) {
                 this.vinculaciones[i] = {
                   ...datosInfoVinculaciones[i],
@@ -93,17 +130,19 @@ export class InformacionBasicaComponent implements OnInit {
                 this.request.get(environment.PARAMETROS_SERVICE, `parametro/?query=Id:` + this.vinculaciones[i].TipoVinculacionId)
                   .subscribe((vinculacion: any) => {
                     this.vinculaciones[i].TipoVinculacion = vinculacion['Data'][0];
-                    console.log(this.vinculaciones[i].TipoVinculacionId);
-                    console.log(vinculacion['Data'][0]);
-                  })
-                if (this.vinculaciones[i].DependenciaId) {
-                  this.request.get(environment.OIKOS_SERVICE, `dependencia/` + this.vinculaciones[i].DependenciaId)
-                    .subscribe((dependencia: any) => {
-                      this.vinculaciones[i].Dependencia = dependencia;
-                      Swal.close();
+/*                     console.log(this.vinculaciones[i].TipoVinculacionId);
+                    console.log(vinculacion['Data'][0]); */
+                    if (this.vinculaciones[i].DependenciaId) {
+                      this.request.get(environment.OIKOS_SERVICE, `dependencia/` + this.vinculaciones[i].DependenciaId)
+                        .subscribe((dependencia: any) => {
+                          this.vinculaciones[i].Dependencia = dependencia;
+                          Swal.close();
+                        }
+                        )
                     }
-                    )
-                }
+                    console.log(this.vinculaciones[i])
+                    this.asignarVinculacion(this.vinculaciones[i]);
+                  })                                
               }
             })
         })
