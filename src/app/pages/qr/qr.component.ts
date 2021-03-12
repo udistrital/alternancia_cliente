@@ -11,7 +11,9 @@ export class QrComponent implements OnInit {
   qrValue = "NO PUEDE INGRESAR"
   constructor(private qrService: QrService) {
     this.qrService.qrData$.subscribe((data)=> {
-      this.qrValue = data;
+      if(data !== '') {
+        this.qrValue = data;
+      }
     })
   }
   ngOnInit(): void {

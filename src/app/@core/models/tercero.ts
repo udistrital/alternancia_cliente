@@ -8,7 +8,5 @@ export class Tercero{
   LugarOrigen:  number;
   FechaNacimiento: string;
   Activo: boolean;
-  FechaCreacion: string;
-  FechaModificacion: string;
   UsuarioWSO2: string;
 }

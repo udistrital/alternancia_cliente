@@ -6,12 +6,12 @@
         <mat-card-title>Información básica</mat-card-title>
     </mat-card-header>
     <mat-card-content>
-        <mat-grid-list [appOasGridCols]="{xs: 1, sm: 2, md: 3, lg: 4, xl: 4}" rowHeight="80px" gutterSize="10px">
+        <mat-grid-list [appOasGridCols]="{xs: 1, sm: 2, md: 2, lg: 3, xl: 4}" rowHeight="80px" gutterSize="10px">
 
             <mat-grid-tile>
                 <mat-form-field appearance="fill" [style.width.%]="100">
                     <mat-label>Primer nombre</mat-label>
-                    <input matInput type="text" [value]="tercero.PrimerNombre" disabled>
+                    <input matInput type="text" value="{{tercero.PrimerNombre}}" disabled>
                 </mat-form-field>
             </mat-grid-tile>
             <mat-grid-tile>
@@ -62,19 +62,19 @@
             <mat-grid-tile>
                 <mat-form-field appearance="fill" [style.width.%]="100">
                     <mat-label>Género</mat-label>
-                    <input matInput type="text" value="MASCULINO" disabled>
+                    <input matInput type="text" value="{{datosGenero?datosGenero.InfoComplementariaId?datosGenero.InfoComplementariaId.Nombre:'':''}}" disabled>
                 </mat-form-field>
             </mat-grid-tile>
             <mat-grid-tile>
                 <mat-form-field appearance="fill" [style.width.%]="100">
                     <mat-label>Estado civil</mat-label>
-                    <input matInput type="text" value="SOLTERO" disabled>
+                    <input matInput type="text" value="{{datosEstadoCivil?datosEstadoCivil.InfoComplementariaId?datosEstadoCivil.InfoComplementariaId.Nombre:'':''}}" disabled>
                 </mat-form-field>
             </mat-grid-tile>
             <mat-grid-tile>
                 <mat-form-field appearance="fill" [style.width.%]="100">
                     <mat-label>Edad</mat-label>
-                    <input matInput type="text" [value]="37" disabled>
+                    <input matInput type="number" value="{{edad}}" disabled>
                 </mat-form-field>
             </mat-grid-tile>
         </mat-grid-list>
@@ -93,44 +93,32 @@
         <mat-accordion>
 
 
-            <mat-expansion-panel>
+            <mat-expansion-panel *ngFor="let vinculacion of vinculacionesOtros">
                 <mat-expansion-panel-header>
                     <mat-panel-title>
-                        Contratista
+                        {{vinculacion.TipoVinculacion.Nombre}}
                     </mat-panel-title>
 
                 </mat-expansion-panel-header>
 
-                <mat-grid-list [appOasGridCols]="{xs: 1, sm: 2, md: 3, lg: 4, xl: 5}" rowHeight="80px" gutterSize="10px">
+                <mat-grid-list [appOasGridCols]="{xs: 1, sm: 2, md: 2, lg: 2, xl: 4}" rowHeight="80px" gutterSize="10px">
 
                     <mat-grid-tile>
                         <mat-form-field appearance="fill" [style.width.%]="100">
-                            <mat-label>Número contrato</mat-label>
-                            <input matInput type="text" [value]="1402" disabled>
+                            <mat-label>Fecha de inicio</mat-label>
+                            <input matInput type="text" value="{{vinculacion.FechaInicioVinculacion | date: 'dd/MM/yyyy'}}" disabled>
                         </mat-form-field>
                     </mat-grid-tile>
                     <mat-grid-tile>
                         <mat-form-field appearance="fill" [style.width.%]="100">
-                            <mat-label>Vigencia</mat-label>
-                            <input matInput type="text" value="2020" disabled>
-                        </mat-form-field>
-                    </mat-grid-tile>
-                    <mat-grid-tile>
-                        <mat-form-field appearance="fill" [style.width.%]="100">
-                            <mat-label>RP</mat-label>
-                            <input matInput type="text" value="19967" disabled>
-                        </mat-form-field>
-                    </mat-grid-tile>
-                    <mat-grid-tile>
-                        <mat-form-field appearance="fill" [style.width.%]="100">
-                            <mat-label>CDP</mat-label>
-                            <input matInput type="text" value="2406" disabled>
+                            <mat-label>Fecha de finalización</mat-label>
+                            <input matInput type="text" value="{{vinculacion.FechaFinVinculacion | date: 'dd/MM/yyyy'}}" disabled>
                         </mat-form-field>
                     </mat-grid-tile>
                     <mat-grid-tile>
                         <mat-form-field appearance="fill" [style.width.%]="100">
                             <mat-label>Dependencia</mat-label>
-                            <input matInput type="text" value="OFICINA ASESORA DE SISTEMAS" disabled>
+                            <input matInput type="text" value="{{vinculacion?vinculacion.Dependencia?vinculacion.Dependencia.Nombre:'':''}}" disabled>
                         </mat-form-field>
                     </mat-grid-tile>
                 </mat-grid-list>
@@ -140,10 +128,10 @@
 
 
 
-            <mat-expansion-panel>
+            <mat-expansion-panel *ngFor="let vinculacion of vinculacionesOtros">
                 <mat-expansion-panel-header>
                     <mat-panel-title>
-                        Estudiante
+                        {{vinculacion.TipoVinculacion.Nombre}}
                     </mat-panel-title>
 
                 </mat-expansion-panel-header>
@@ -187,10 +175,6 @@
                     <b><span>Horario de Clases Período 2021-1</span></b>
                     <br>
                     <br>
-
-
-
-
                     <table class="tg" align="center">
                         <thead>
                             <tr>
@@ -253,6 +237,8 @@
                             </tr>
                         </tbody>
                     </table>
+                    <ng2-smart-table  [settings]="settings" [source]="source" >
+                </ng2-smart-table>
                 </div>
             </mat-expansion-panel>
 

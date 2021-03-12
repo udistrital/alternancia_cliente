@@ -29,6 +29,10 @@ import { OasGridColsDirective } from './directives/oas-grid-cols.directive';
 import { QrCodeModule } from 'ng-qrcode';
 import { QrComponent } from './qr/qr.component';
 
+import { Ng2SmartTableModule } from 'ng2-smart-table';
+import { QrscanComponent } from './qrscan/qrscan.component';
+import { NgQrScannerModule } from 'ngx-qr';
+
 
 const pagesComponents = [
   DashboardComponent,
@@ -57,15 +61,17 @@ const materialModules = [
   declarations: [
     ...pagesComponents,
     OasGridColsDirective,
-    QrComponent
-
-    ],
+    QrComponent,
+    QrscanComponent,
+  ],
   imports: [
+    NgQrScannerModule,
     HttpClientModule,
     CommonModule,
     FormsModule,
     PagesRoutingModule,
     QrCodeModule,
+    Ng2SmartTableModule,
     ...materialModules
   ],
   providers: [
