@@ -31,7 +31,7 @@ import { QrComponent } from './qr/qr.component';
 
 import { Ng2SmartTableModule } from 'ng2-smart-table';
 import { QrscanComponent } from './qrscan/qrscan.component';
-import { NgQrScannerModule } from 'ngx-qr';
+import { NgQrScannerModule } from 'angular2-qrscanner';
 
 
 const pagesComponents = [
