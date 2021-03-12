@@ -1,7 +1,43 @@
-<qr-scanner
+<mat-card class="card-oas">
+    <mat-card-header>
+        <mat-card-title>Seleccionar Dispositivo</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+        <div *ngFor="let device of videoDevices">
+            <button mat-button color="primary" (click)="select(device)">{{device.kind}}</button>
+        </div>
+        <div *ngIf="videoDevices.length === 0">
+            <p>No se encontraron dispositivos de lectura</p>
+        </div>
+    </mat-card-content>
+</mat-card>
+<br>
+<mat-card class="card-oas">
+    <mat-card-header>
+        <mat-card-title>Lector QR</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+        <qr-scanner
         [debug]="false"
-        [canvasWidth]="1080"
-        [canvasHeight]="720"
+        [canvasWidth]="400"
+        [canvasHeight]="400"
         [stopAfterScan]="true"
         [updateTime]="500">
-</qr-scanner>
+    </qr-scanner>
+    </mat-card-content>
+    <mat-card-actions>
+        <button mat-button color="primary" (click)="clear()">Nueva Lectura</button>
+    </mat-card-actions>
+</mat-card>
+<br>
+<mat-card class="card-oas">
+    <mat-card-header>
+        <mat-card-title>Contenido</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+        {{lectura}}
+    </mat-card-content>
+    <mat-card-actions>
+        <button mat-button color="primary" (click)="clear()">Nueva Lectura</button>
+    </mat-card-actions>
+</mat-card>

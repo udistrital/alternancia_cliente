@@ -15,39 +15,51 @@ export interface QrScannerTexts {
   styleUrls: ['./qrscan.component.scss']
 })
 export class QrscanComponent implements AfterViewInit {
-
+  lectura: string;
   @ViewChild(QrScannerComponent, {static: false}) qrScannerComponent: QrScannerComponent ;
-
+  videoDevices: MediaDeviceInfo[] = [];
+  dispositivoActual: null;
   constructor() { }
 
   ngAfterViewInit(): void {
-    this.qrScannerComponent.getMediaDevices().then(devices => {
+    this.clear()
+    this.qrScannerComponent.capturedQr.subscribe(result => {
+        this.lectura = result;
+    });
+  }
+
+  selectDevice (device){
+    this.dispositivoActual = device;
+    this.qrScannerComponent.chooseCamera.next(device);
+  }
+
+  clear() {
+    this.qrScannerComponent.getMediaDevices()
+    .then((devices) => {
+       this.videoDevices = [];
       console.log(devices);
-      const videoDevices: MediaDeviceInfo[] = [];
       for (const device of devices) {
           if (device.kind.toString() === 'videoinput') {
-              videoDevices.push(device);
+              this.videoDevices.push(device);
           }
       }
-      if (videoDevices.length > 0){
-          let choosenDev;
-          for (const dev of videoDevices){
-              if (dev.label.includes('front')){
-                  choosenDev = dev;
-                  break;
-              }
-          }
-          if (choosenDev) {
-              this.qrScannerComponent.chooseCamera.next(choosenDev);
-          } else {
-              this.qrScannerComponent.chooseCamera.next(videoDevices[0]);
-          }
-      }
+      // if (this.videoDevices.length > 0){
+      //     let choosenDev;
+      //     for (const dev of this.videoDevices){
+      //         if (dev.label.includes('front')){
+      //             choosenDev = dev;
+      //             break;
+      //         }
+      //     }
+      //     if (choosenDev) {
+      //         this.qrScannerComponent.chooseCamera.next(choosenDev);
+      //     } else {
+      //         this.qrScannerComponent.chooseCamera.next(this.videoDevices[0]);
+      //     }
+      // }
     });
 
-    this.qrScannerComponent.capturedQr.subscribe(result => {
-        console.log(result);
-  });
+
   }
 
 

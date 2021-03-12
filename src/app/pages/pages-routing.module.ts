@@ -4,6 +4,7 @@ import { DashboardComponent } from './dashboard/dashboard.component';
 import { InformacionBasicaComponent } from './informacion-basica/informacion-basica.component';
 import { PagesComponent } from './pages.component';
 import { PreexistenciaComponent } from './preexistencia/preexistencia.component';
+import { QrscanComponent } from './qrscan/qrscan.component';
 const routes: Routes = [{
   path: '',
   component: PagesComponent,
@@ -19,6 +20,10 @@ const routes: Routes = [{
     {
       path: 'comorbilidades',
       component: PreexistenciaComponent,
+    },
+    {
+      path: 'ingreso',
+      component: QrscanComponent,
     },
     {
       path: '', redirectTo: 'dashboard', pathMatch: 'full',
