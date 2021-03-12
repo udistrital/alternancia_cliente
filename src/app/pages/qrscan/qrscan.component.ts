@@ -1,14 +1,6 @@
 import {Component, ViewChild, ViewEncapsulation, OnInit, AfterViewInit} from '@angular/core';
 import {QrScannerComponent} from 'angular2-qrscanner';
 
-export interface QrScannerTexts {
-  NotSupportedHTML: string;
-  DeviceDefaultPrefix: string;
-  StopCameraText: string;
-  OpenButtonText: string;
-}
-
-
 @Component({
   selector: 'app-qrscan',
   templateUrl: './qrscan.component.html',
@@ -17,7 +9,7 @@ export interface QrScannerTexts {
 export class QrscanComponent implements AfterViewInit {
   lectura: string;
   @ViewChild(QrScannerComponent, {static: false}) qrScannerComponent: QrScannerComponent ;
-  videoDevices: MediaDeviceInfo[] = [];
+  videoDevices: any = null;
   dispositivoActual: null;
   constructor() { }
 
@@ -36,13 +28,7 @@ export class QrscanComponent implements AfterViewInit {
   clear() {
     this.qrScannerComponent.getMediaDevices()
     .then((devices) => {
-       this.videoDevices = [];
-      console.log(devices);
-      for (const device of devices) {
-          if (device.kind.toString() === 'videoinput') {
-              this.videoDevices.push(device);
-          }
-      }
+      this.videoDevices = devices;
       // if (this.videoDevices.length > 0){
       //     let choosenDev;
       //     for (const dev of this.videoDevices){
