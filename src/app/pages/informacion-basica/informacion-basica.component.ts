@@ -38,41 +38,23 @@ export class InformacionBasicaComponent implements OnInit {
 
   cargarCampos() {
     this.settings = {
-      // add: {
-      //   addButtonContent: '<span class="material-icons md-30">add_circle</span>',
-      //   createButtonContent: '<i class="nb-checkmark"></i>',
-      //   cancelButtonContent: '<i class="nb-close"></i>',
-      // },
-      // edit: {
-      //   editButtonContent: '<span class="material-icons">edit</span>',
-      //   saveButtonContent: '<i class="nb-checkmark"></i>',
-      //   cancelButtonContent: '<i class="nb-close"></i>',
-      // },
-      // delete: {
-      //   deleteButtonContent: '<span class="material-icons">delete</span>',
-      //   confirmDelete: true,
-      // },
       actions: false,
       mode: 'external',
       columns: {
-        // Id: {
-        //   title: this.translate.instant('GLOBAL.id'),
-        //   // type: 'number;',
-        //   valuePrepareFunction: (value) => {
-        //     return value;
-        //   },
-        // },
-        Nombre: {
-          title: 'Nombre',
-          // type: 'string;',
-          valuePrepareFunction: (value) => `${value.primerNombre} ${value.segundoNombre}`,
+        Asignatura: {
+          title: 'Asignatura',
+          filter: false,
+          valuePrepareFunction: (value) => value,          
         },
-        Aplicacion: {
-          title: 'Aplicación',
-          // type: 'aplicacion;',
-          valuePrepareFunction: (value) => value,
-          // eslint-disable-next-line max-len
-          filterFunction: (cell?: any, search?: string): boolean => (((cell.Nombre).toLowerCase()).indexOf(search.toLowerCase()) !== -1 || search === ''),
+        Horario: {
+          title: 'Horario',
+          filter: false,
+          valuePrepareFunction: (value) => value,          
+        },
+        Proyecto: {
+          title: 'Proyecto',
+          filter: false,
+          valuePrepareFunction: (value) => value,          
         },
       },
     };
@@ -101,13 +83,14 @@ export class InformacionBasicaComponent implements OnInit {
     
     if (idRol == 293 || idRol == 294 || (idRol >= 296 && idRol <= 299)) {
       this.vinculacionesDocente.push(vinculacion);
-       this.request.get(environment.ACADEMICA_JBPM_SERVICE, `carga_academica/2020/3/41782864/3`)
-         .subscribe((carga: any) => {
+      this.request.get(environment.ACADEMICA_JBPM_SERVICE, `carga_academica/2020/3/41782864/3`)
+        .subscribe((carga: any) => {
           this.cargaAcademica = carga['carga_academica']['docente'];
         })
 
-    } else if (idRol >= 9999 && idRol <= 99999) {//VERFIFICAR IDS DE PARAMETRO PARA ESTUDIANTE
-      this.vinculacionesEstudiante.push(vinculacion);
+    } else if (vinculacion.TipoVinculacion.ParametroPadreId) {
+      if (vinculacion.TipoVinculacion.ParametroPadreId.Id == 346) 
+        this.vinculacionesEstudiante.push(vinculacion);      
     } else {
       this.vinculacionesOtros.push(vinculacion);
     }
@@ -115,9 +98,6 @@ export class InformacionBasicaComponent implements OnInit {
 
   ngOnInit(): void {
     this.cargarCampos();
-    this.source.load([
-      {Aplicacion: 'prueba', Nombre: {primerNombre: 'Fabian', segundoNombre: 'Sánchez'} }
-    ])
     Swal.fire({
       title: 'Por favor espere!',
       html: 'Cargando datos de usuario',
@@ -135,7 +115,18 @@ export class InformacionBasicaComponent implements OnInit {
       this.request.get(environment.ACADEMICA_JBPM_SERVICE, `carga_academica/2020/3/41782864/3`)
       .subscribe((carga: any) => {
         this.cargaAcademica = carga['carga_academica']['docente'];
+
+        let datosCarga = this.cargaAcademica.map((carga)=>
+        new Object({
+            Asignatura: `${carga.CODIGO_ASIGNATURA} - ${carga.ASIGNATURA} - GR ${carga.GRUPO} - Num Est: ${carga.NUMERO_ESTUDIANTES}`,
+            Horario:  `${carga.SALON} - ${carga.DIA} - ${carga.HORA}`,
+            Proyecto: `${carga.FACULTAD} - ${carga.PROYECTO}`
+        }))
+
+        this.source.load(datosCarga)
+
         console.log("carga academica: ", this.cargaAcademica)
+        console.log("carga academica: ", this.cargaAcademica[0].ASIGNATURA)
        })
 
 
