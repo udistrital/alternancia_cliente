@@ -21,7 +21,7 @@ export class RequestManager {
     this.accessToken = localStorage.getItem('access_token');
     this.httpOptions =  { headers: new HttpHeaders({
         Accept: 'application/json',
-        'Content-Type': 'application/json',
+        //'Content-Type': 'application/json',//pendiente definir si se queda o se va
         Authorization: `Bearer ${this.accessToken?this.accessToken:localStorage.getItem('access_token')}`,
       })
     }

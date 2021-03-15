@@ -96,7 +96,7 @@
             <mat-expansion-panel *ngFor="let vinculacion of vinculacionesOtros">
                 <mat-expansion-panel-header>
                     <mat-panel-title>
-                        {{vinculacion.TipoVinculacion.Nombre}}
+                        Contratista
                     </mat-panel-title>
 
                 </mat-expansion-panel-header>
@@ -131,7 +131,7 @@
             <mat-expansion-panel *ngFor="let vinculacion of vinculacionesOtros">
                 <mat-expansion-panel-header>
                     <mat-panel-title>
-                        {{vinculacion.TipoVinculacion.Nombre}}
+                        Estudiante
                     </mat-panel-title>
 
                 </mat-expansion-panel-header>
@@ -159,7 +159,7 @@
                     <mat-grid-tile>
                         <mat-form-field appearance="fill" [style.width.%]="100">
                             <mat-label>Plan de Estudios</mat-label>
-                            <!-- <input matInput type="text" value="2 - MAE. EN CIENCIAS DE LA INF. Y LAS COMUNICACIONES ENFASIS EN ING. SOFT" disabled> -->
+
                             <textarea matInput disabled>2 - MAE. EN CIENCIAS DE LA INF. Y LAS COMUNICACIONES ENFASIS EN ING. SOFT</textarea>
 
                         </mat-form-field>
@@ -178,70 +178,80 @@
                     <table class="tg" align="center">
                         <thead>
                             <tr>
-                                <td class="tg-head">Cod.</td>
-                                <td class="tg-head">Nombre Espacio<br>Académico</td>
-                                <td class="tg-head">Grupo</td>
-                                <td class="tg-head">Créditos</td>
-                                <td class="tg-head">Clasificación</td>
-                                <td class="tg-head">Lun</td>
-                                <td class="tg-head">Mar</td>
-                                <td class="tg-head">Mie</td>
-                                <td class="tg-head">Jue</td>
-                                <td class="tg-head">Vie</td>
-                                <td class="tg-head">Sáb</td>
-                                <td class="tg-head">Dom</td>
+                                <th class="tg-head">Cod.</th>
+                                <th class="tg-head">Nombre Espacio<br>Académico</th>
+                                <th class="tg-head">Grupo</th>
+                                <th class="tg-head">Créditos</th>
+                                <th class="tg-head">Sábado</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td class="tg-body">19502005</td>
-                                <td class="tg-body">TESIS I<br><span style="font-weight:bold">Docente por asignar.</span></td>
-                                <td class="tg-body">195-1</td>
-                                <td class="tg-body">4</td>
-                                <td class="tg-body"></td>
-                                <td class="tg-body"></td>
-                                <td class="tg-body"></td>
-                                <td class="tg-body"></td>
-                                <td class="tg-body"></td>
-                                <td class="tg-body"></td>
-                                <td class="tg-body"></td>
-                                <td class="tg-body">6-10<br>Sede:FICC<br>Edificio:ADMINISTRATIVO<br>Salón: MAESTRIA EN CIENCIAS DE LA INFORMACION Y LAS COMUNICACIONES<br></td>
-                            </tr>
+
                             <tr>
                                 <td class="tg-body">49501001</td>
                                 <td class="tg-body">INGENIERÍA DE SOFTWARE I<br><span style="font-weight:bold">Docente: ALEJANDRO PAOLO DAZA CORREDOR.</span><br></td>
                                 <td class="tg-body">495-1</td>
                                 <td class="tg-body">4</td>
-                                <td class="tg-body"></td>
-                                <td class="tg-body"></td>
-                                <td class="tg-body"></td>
-                                <td class="tg-body"></td>
-                                <td class="tg-body"></td>
-                                <td class="tg-body"></td>
                                 <td class="tg-body">10-14<br>Sede:FICC<br>Edificio:SABIO CALDAS<br>Salón: SALA DE INFORMATICA 508<br></td>
-                                <td class="tg-body"></td>
                             </tr>
                             <tr>
                                 <td class="tg-body">49503005</td>
                                 <td class="tg-body">MINERÍA DE DATOS<br><span style="font-weight:bold">Docente: JORGE ENRIQUE RODRIGUEZ RODRIGUEZ.</span></td>
                                 <td class="tg-body">495-1</td>
                                 <td class="tg-body">4</td>
-                                <td class="tg-body"></td>
-                                <td class="tg-body"></td>
-                                <td class="tg-body"></td>
-                                <td class="tg-body"></td>
-                                <td class="tg-body"></td>
-                                <td class="tg-body"></td>
                                 <td class="tg-body">6-10<br>Sede:FICC<br>Edificio:SABIO CALDAS<br>Salón: SALA DE INFORMATICA 508<br></td>
-                                <td class="tg-body"></td>
                             </tr>
                         </tbody>
                     </table>
-                    <ng2-smart-table  [settings]="settings" [source]="source" >
-                </ng2-smart-table>
+
                 </div>
+
             </mat-expansion-panel>
 
+            <mat-expansion-panel *ngFor="let vinculacion of vinculacionesOtros">
+                <mat-expansion-panel-header>
+                    <mat-panel-title>
+                        Docente
+                    </mat-panel-title>
+                </mat-expansion-panel-header>
+
+
+                <mat-grid-list [appOasGridCols]="{xs: 1, sm: 2, md: 3, lg: 3, xl: 3}" rowHeight="80px" gutterSize="10px">
+
+                    <mat-grid-tile>
+                        <mat-form-field appearance="fill" [style.width.%]="100">
+                            <mat-label>Tipo de vinculación</mat-label>
+                            <input matInput type="text" [value]="cargaAcademica?cargaAcademica[0]?cargaAcademica[0].TIPO_VINCULACION:'':''" disabled>
+                        </mat-form-field>
+                    </mat-grid-tile>
+                    <mat-grid-tile>
+                        <mat-form-field appearance="fill" [style.width.%]="100">
+                            <mat-label>Vinculación</mat-label>
+                            <input matInput type="text" [value]="cargaAcademica?cargaAcademica[0]?cargaAcademica[0].VINCULACION:'':''" disabled>
+                        </mat-form-field>
+                    </mat-grid-tile>
+                    <mat-grid-tile>
+                        <mat-form-field appearance="fill" [style.width.%]="100">
+                            <mat-label>Dedicación</mat-label>
+                            <input matInput type="text" [value]="cargaAcademica?cargaAcademica[0]?cargaAcademica[0].DEDICACION:'':''" disabled>
+                        </mat-form-field>
+                    </mat-grid-tile>
+
+                </mat-grid-list>
+                <div class="div-table" style="text-align:center">
+
+                    <b><span>Carga academica Período 2021-1</span></b>
+                    <br>
+                    <br>
+
+                    <ng2-smart-table [settings]="settings" [source]="source">
+
+
+                    </ng2-smart-table>
+                </div>
+
+
+            </mat-expansion-panel>
 
 
         </mat-accordion>
