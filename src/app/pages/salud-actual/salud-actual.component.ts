@@ -21,11 +21,13 @@ export class SaludActualComponent implements OnInit {
   }
 
   task: Task[] = [
-      {name: 'congestion_nasal', isSelected: false, label: 'Congestión Nasal'},
-      {name: 'dificultad_respiratoria', isSelected: false, label: 'Dificultad respiratoria'},
-      {name: 'gotamiento', isSelected: false, label: 'Agotamiento'},
-      {name: 'malestar_general', isSelected: false, label: 'Malestar general'},
-      {name: 'estado_embarazo', isSelected: false, label: 'Estado de embarazo'},
+    { name: 'fiebre', isSelected: false, label: 'Registra una temperatura superior a 37 °C'},
+      { name: 'congestion_nasal', isSelected: false, label: 'Congestión Nasal'},
+      { name: 'dificultad_respiratoria', isSelected: false, label: 'Dificultad respiratoria'},
+      { name: 'gotamiento', isSelected: false, label: 'Agotamiento'},
+      { name: 'malestar_general', isSelected: false, label: 'Malestar general'},
+      { name: 'estado_embarazo', isSelected: false, label: 'Estado de embarazo'},
+      { name: 'contacto_covid', isSelected: false, label: 'Ha estado en contacto con personas positivo para Covid 19'},
     ]
 
   ngOnInit(): void {

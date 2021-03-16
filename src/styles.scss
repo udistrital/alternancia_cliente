@@ -88,3 +88,23 @@ margin: 0 12px;
 ul {
 list-style-type: none;
 }
+
+.title-term-conditional {
+    text-align: center;
+    font-size: 1.5rem;
+    color: var(--primary);
+    font-family: 'Open Sans';
+}
+
+.text-term-condional {
+    text-align: justify;
+    font-family: 'Open Sans';
+    font-size: 1rem;
+}
+@media screen and (max-width: 425px) {
+    
+    table tbody tr td {
+        font-size: 0.675em !important;
+    }
+    
+}
