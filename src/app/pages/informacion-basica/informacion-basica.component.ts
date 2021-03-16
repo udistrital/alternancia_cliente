@@ -178,8 +178,11 @@ export class InformacionBasicaComponent implements OnInit {
                         .subscribe((dependencia: any) => {
                           this.vinculaciones[i].Dependencia = dependencia;
                           Swal.close();
-                        }
-                        )
+                        }, (error)=> {
+                          console.log(error);
+                          Swal.close();
+                        })
+                
                     }
                     console.log(this.vinculaciones[i])
                     this.asignarVinculacion(this.vinculaciones[i]);
