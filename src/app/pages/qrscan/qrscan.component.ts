@@ -23,14 +23,12 @@ export class QrscanComponent implements AfterViewInit {
       this.lectura = JSON.parse(atob(result));
       if (this.lectura) {
         const { value: accept } = await Swal.fire({
-          input: 'checkbox',
-          inputValue: 1,
           html: `
             <h3 class="title-term-conditional">Información de ingreso</h3>
             <p class="text-term-condional">
-                <b>Usuario</b>${this.lectura.user}
-                <b>Identificación</b>${this.lectura.cc}
-                <b>Ingreso</b> AUTORIZADO
+                <b>Usuario:</b> ${this.lectura.user}<br>
+                <b>Identificación</b> ${this.lectura.cc}<br>
+                <b>Ingreso:</b> AUTORIZADO<br>
             </p>`,
           confirmButtonText:'Aceptar',
         })
