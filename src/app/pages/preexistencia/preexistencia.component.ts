@@ -17,10 +17,13 @@ export interface Opcion {
 })
 export class PreexistenciaComponent implements OnInit {
 
+  decision_presencialidad: boolean = false;
   isAgree = false;
   constructor(private utilService: UtilService,
     private qrService: QrService) {
   }
+
+
 
   comorbilidades: Opcion[] = [
     { name: "asma", isSelected: false, label: "Asma" },
@@ -41,6 +44,7 @@ export class PreexistenciaComponent implements OnInit {
     { name: "obesidad_grave", isSelected: false, label: "Obesidad grave" },
     { name: "enfermedad_celulas_falciformes", isSelected: false, label: "Enfermedad de células falciformes" },
     { name: "ha_tenido_transplantes", isSelected: false, label: "¿Ha tenido trasplantes?" },
+    { name: "decision_presencialidad", isSelected: false, label: "¿Estaría dispuesto a realizar alguna de las siguientes actividades de forma presencial? (Contratista, Docente, Estudiante)" },
   ]
   otros: Opcion[] = [
     { label: "Convive con mayores de 70 años.", isSelected: false, name: "convive_mayores_70" },
@@ -49,6 +53,13 @@ export class PreexistenciaComponent implements OnInit {
     { label: "Reside fuera de Bogotá D.C.", isSelected: false, name: "reside_fuera_bogota" },
     { label: "Tiene dificultades económicas para transporte y sustento.", isSelected: false, name: "dificultades_economicas_transporte_sustento" },
   ]
+
+  validarDesicionPresencialidad( nombreCheck: string, isChecked: boolean) {
+    if (nombreCheck == "decision_presencialidad") {
+      this.decision_presencialidad = isChecked;
+      this.otros = this.otros.map((option) => ({ ...option, ...{ isSelected: false } }))
+    }          
+  }
 
   async ngOnInit() {
     const comorbilidad = localStorage.getItem('comorbilidad');
