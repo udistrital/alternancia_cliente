@@ -21,7 +21,7 @@ export class SaludActualComponent implements OnInit {
   }
 
   task: Task[] = [
-    { name: 'fiebre', isSelected: false, label: 'Registra una temperatura superior a 37 °C'},
+    { name: 'fiebre', isSelected: false, label: 'Registra una temperatura superior a 37°C'},
       { name: 'congestion_nasal', isSelected: false, label: 'Congestión Nasal'},
       { name: 'dificultad_respiratoria', isSelected: false, label: 'Dificultad respiratoria'},
       { name: 'gotamiento', isSelected: false, label: 'Agotamiento'},
