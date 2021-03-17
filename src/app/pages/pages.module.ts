@@ -32,6 +32,8 @@ import { QrComponent } from './qr/qr.component';
 import { Ng2SmartTableModule } from 'ng2-smart-table';
 import { QrscanComponent } from './qrscan/qrscan.component';
 import { NgQrScannerModule } from 'angular2-qrscanner';
+import { UtilService } from './services/utilService';
+import { UserService } from './services/userService';
 
 
 const pagesComponents = [
@@ -75,7 +77,6 @@ const materialModules = [
     ...materialModules
   ],
   providers: [
-    RequestManager,
-  ]
+    RequestManager  ]
 })
 export class PagesModule { }

@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import {ThemePalette} from '@angular/material/core';
-import { QrService } from '../services/qrService';
+import { environment } from 'src/environments/environment';
+import { RequestManager } from '../services/requestManager';
+import { UserService } from '../services/userService';
 import { UtilService } from '../services/utilService';
+import Swal from 'sweetalert2';
 
 export interface Task {
   name: string;
@@ -15,22 +17,47 @@ export interface Task {
   styleUrls: ['./salud-actual.component.scss']
 })
 export class SaludActualComponent implements OnInit {
-
-  constructor(private utilService: UtilService,
-    private qrService: QrService) {
-  }
-
+  tercero = null;
   task: Task[] = [
     { name: 'fiebre', isSelected: false, label: 'Registra una temperatura superior a 37°C'},
-      { name: 'congestion_nasal', isSelected: false, label: 'Congestión Nasal'},
-      { name: 'dificultad_respiratoria', isSelected: false, label: 'Dificultad respiratoria'},
-      { name: 'gotamiento', isSelected: false, label: 'Agotamiento'},
-      { name: 'malestar_general', isSelected: false, label: 'Malestar general'},
-      { name: 'estado_embarazo', isSelected: false, label: 'Estado de embarazo'},
-      { name: 'contacto_covid', isSelected: false, label: 'Ha estado en contacto con personas positivo para Covid 19'},
-    ]
+    { name: 'congestion_nasal', isSelected: false, label: 'Congestión Nasal'},
+    { name: 'dificultad_respiratoria', isSelected: false, label: 'Dificultad respiratoria'},
+    { name: 'agotamiento', isSelected: false, label: 'Agotamiento'},
+    { name: 'malestar_general', isSelected: false, label: 'Malestar general'},
+    { name: 'estado_embarazo', isSelected: false, label: 'Estado de embarazo'},
+    { name: 'contacto_covid', isSelected: false, label: 'Ha estado en contacto con personas positivo para Covid 19'},
+  ]
+  constructor(private utilService: UtilService,
+              private user:UserService,
+              private request: RequestManager) {
+      user.tercero$.subscribe((tercero: any) => {
+        if(typeof tercero.Id !== 'undefined') {
+          this.tercero = tercero;
+          return this.request.get(environment.SINTOMAS_SERVICE, 
+            'sintomas?limit=1&order=desc&sortBy=fecha_creacion&query=terceroId:'+ this.tercero.Id)
+          .subscribe(
+            (data: any) => {
+              const actualStatus = data.Data[0].info_salud;
+              console.log(actualStatus);
+              this.task = this.task.map((c: Task) => {
+                return {
+                  ...c,
+                  isSelected: actualStatus.hasOwnProperty(c.name) ? actualStatus[c.name] : false
+                }
+              })
+            },
+            (error: any) => {
+              console.log(error)
+            }
+          )
+        }
+      })
+  }
 
-  ngOnInit(): void {
+
+
+  ngOnInit() {
+
   }
 
   clear(): void {
@@ -39,37 +66,67 @@ export class SaludActualComponent implements OnInit {
 
 
   save(): void {
-    let saveData = {
-      info: {},
-      date: new Date()
-    };
-
+    let saveData = {};
     this.task.map((data)=> {
-      saveData.info[data.name] = data.isSelected;
+      saveData[data.name] = data.isSelected;
     })
+    const newHealthState = {
+      terceroId: this.tercero.Id,
+      info_salud: saveData,
+      activo: true,
+    }
+      Swal.fire({
+            title: 'Estado de salud actual',
+            text: `Se almacenará el estado de salud actual`,
+            icon: 'warning',
+            showCancelButton: true,
+            cancelButtonText: 'Cancelar',
+            confirmButtonText: `guardar`
+        })
+        .then((result) => {
+            if (result.value) {
+              if(this.tercero) {
+                Swal.fire({
+                  title: 'Por favor espere!',
+                  html: `guardando estado de salud`,
+                  allowOutsideClick: false,
+                  showConfirmButton: false,
+                  onBeforeOpen: () => {
+                      Swal.showLoading()
+                    },
+                });
+                return this.request.post(environment.SINTOMAS_SERVICE, 'sintomas',newHealthState)
+                .subscribe(
+                  (data: any)=> {
+                    if(data.Status) {
+                      console.log(data);
+                      Swal.fire({
+                        title: 'Estado de salud actual',
+                        text: `Se almacenó exitosamente`,
+                        icon: 'success',
+                        showCancelButton: true,
+                    })
+                    }else  {
+
+                    }
+                  }),
+                  (error) => {
+                    Swal.fire({
+                      title: 'error',
+                      text: `${JSON.stringify(error)}`,
+                      icon: 'error',
+                      showCancelButton: true,
+                      cancelButtonText: 'Cancelar',
+                      confirmButtonText: `guardar`
+                  })
+                  }
+              }
 
 
-
-    this.utilService.submitAlert({ 
-      option:'update', 
-      type:'Estado de salud', 
-      fn: this.sendData , 
-      data: saveData, 
-      info: 'Estado de salud', 
-      fnReturn: this.functionReturn
-    }) 
-    
-    this.qrService.updateData(saveData);
-
-    
+              }
+            })
   }
 
-  sendData(data){
-    return new Promise((resolve, reject)=> {
-      const dataSave = localStorage.setItem('health_state',JSON.stringify(data))
-      resolve('dato');
-    })
-  }
 
   functionReturn(){
   }
