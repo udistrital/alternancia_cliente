@@ -8,11 +8,11 @@ import { QrService } from '../services/qrService';
 })
 export class QrComponent implements OnInit {
 
-  qrValue = "NO PUEDE INGRESAR"
+  qrValue = btoa(JSON.stringify({user:'fdsanchezl', cc:'123456789'}));
   constructor(private qrService: QrService) {
+    console.log(this.qrValue);
     this.qrService.qrData$.subscribe((data)=> {
       if(data !== '') {
-        this.qrValue = data;
       }
     })
   }

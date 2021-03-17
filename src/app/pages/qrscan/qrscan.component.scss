@@ -5,6 +5,10 @@
         animation-direction: alternate;
 }
 
+.hidden {
+    display:none
+}
+
 @keyframes slidein {
     from {
         color: var(--primary);
