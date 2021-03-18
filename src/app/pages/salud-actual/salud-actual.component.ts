@@ -30,34 +30,36 @@ export class SaludActualComponent implements OnInit {
   constructor(private utilService: UtilService,
               private user:UserService,
               private request: RequestManager) {
-      user.tercero$.subscribe((tercero: any) => {
-        if(typeof tercero.Id !== 'undefined') {
-          this.tercero = tercero;
-          return this.request.get(environment.SINTOMAS_SERVICE, 
-            'sintomas?limit=1&order=desc&sortBy=fecha_creacion&query=terceroId:'+ this.tercero.Id)
-          .subscribe(
-            (data: any) => {
-              const actualStatus = data.Data[0].info_salud;
-              console.log(actualStatus);
-              this.task = this.task.map((c: Task) => {
-                return {
-                  ...c,
-                  isSelected: actualStatus.hasOwnProperty(c.name) ? actualStatus[c.name] : false
-                }
-              })
-            },
-            (error: any) => {
-              console.log(error)
-            }
-          )
-        }
-      })
+      
   }
 
 
 
   ngOnInit() {
-
+    this.user.tercero$.subscribe((tercero: any) => {
+      if(typeof tercero.Id !== 'undefined') {
+        this.tercero = tercero;
+        return this.request.get(environment.SINTOMAS_SERVICE, 
+          'sintomas?limit=1&order=desc&sortby=fecha_creacion&query=terceroId:'+ this.tercero.Id)
+        .subscribe(
+          (data: any) => {
+            if(data.Data.length > 0){
+            const actualStatus = data.Data[0].info_salud;
+            console.log(actualStatus);
+            this.task = this.task.map((c: Task) => {
+              return {
+                ...c,
+                isSelected: actualStatus.hasOwnProperty(c.name) ? actualStatus[c.name] : false
+              }
+            })
+          }
+          },
+          (error: any) => {
+            console.log(error)
+          }
+        )
+      }
+    })
   }
 
   clear(): void {
@@ -67,9 +69,10 @@ export class SaludActualComponent implements OnInit {
 
   save(): void {
     let saveData = {};
-    this.task.map((data)=> {
+    this.task.map((data) => {
       saveData[data.name] = data.isSelected;
     })
+    if (this.tercero){
     const newHealthState = {
       terceroId: this.tercero.Id,
       info_salud: saveData,
@@ -124,7 +127,8 @@ export class SaludActualComponent implements OnInit {
 
 
               }
-            })
+        })
+      }
   }
 
 
