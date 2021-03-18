@@ -23,107 +23,157 @@ export interface Opcion {
   styleUrls: ['./preexistencia.component.scss'],
 })
 export class PreexistenciaComponent implements OnInit {
-  isEdit = false;
+  isPost = true;
   decision_presencialidad: boolean = false;
   isAgree = false;
-  comorbilidadesArray: InfoComplementaria[];
+  comorbilidadesArray: any = [];
+  otrosArray: any = [];
   tercero: Tercero;
   constructor(
     private utilService: UtilService,
     private qrService: QrService,
     private request: RequestManager,
     private userService: UserService
-  ) {}
+  ) { }
 
-  comorbilidades: Opcion[] = [
-    /*     { name: "asma", isSelected: false, label: "Asma" },
-    { name: "enfermedad_cerebrobascular", isSelected: false, label: "Enfermedad Cerebrovascular" },
-    { name: "fibrosis_quistica", isSelected: false, label: "Fibrosis quística" },
-    { name: "hipertension", isSelected: false, label: "Hipertensión o presión arterial alta" },
-    { name: "inmunodeprimidas", isSelected: false, label: "Personas inmunodeprimidas afecciones" },
-    { name: "neurologicas_enfermedades_hepaticas", isSelected: false, label: "neurológicas enfermedad hepática" },
-    { name: "sobrepeso", isSelected: false, label: "Sobrepeso" },
-    { name: "fibrosis_pulmonar", isSelected: false, label: "Fibrosis pulmonar" },
-    { name: "talasea", isSelected: false, label: "Talasemia (tipo de trastorno en la sangre)" },
-    { name: "diabetes_tipo1", isSelected: false, label: "Diabetes Mellitus TIPO 1" },
-    { name: "cancer", isSelected: false, label: "Cáncer" },
-    { name: "enfermedad_renal_cronica", isSelected: false, label: "Enfermedad renal crónica" },
-    { name: "epoc", isSelected: false, label: "EPOC (Enfermedad Pulmonar Obstructiva Crónica)" },
-    { name: "afecciones_cardiacas", isSelected: false, label: "Afecciones cardiacas" },
-    { name: "obesidad", isSelected: false, label: "Obesidad" },
-    { name: "obesidad_grave", isSelected: false, label: "Obesidad grave" },
-    { name: "enfermedad_celulas_falciformes", isSelected: false, label: "Enfermedad de células falciformes" },
-    { name: "ha_tenido_transplantes", isSelected: false, label: "¿Ha tenido trasplantes?" },
-    { name: "decision_presencialidad", isSelected: false, label: "¿Estaría dispuesto a realizar alguna de las siguientes actividades de forma presencial? (Contratista, Docente, Estudiante)" },
- */
-  ];
+  comorbilidades: Opcion[] = [];
   otros: Opcion[] = [
-    { label: 'Convive con mayores de 70 años.', isSelected: false, name: 'convive_mayores_70' },
-    { label: 'Convive con personas con comorbilidades.', isSelected: false, name: 'convive_comorbilidades' },
-    {
-      label: 'Convivie con personal que trabaje en el sector de la salud activos o en primera línea de atención.',
-      isSelected: false,
-      name: 'convive_trabajador_salud_covid',
-    },
-    { label: 'Reside fuera de Bogotá D.C.', isSelected: false, name: 'reside_fuera_bogota' },
-    {
-      label: 'Tiene dificultades económicas para transporte y sustento.',
-      isSelected: false,
-      name: 'dificultades_economicas_transporte_sustento',
-    },
+    /*     { label: 'Convive con mayores de 70 años.', isSelected: false, name: 'convive_mayores_70' },
+        { label: 'Convive con personas con comorbilidades.', isSelected: false, name: 'convive_comorbilidades' },
+        {
+          label: 'Convivie con personal que trabaje en el sector de la salud activos o en primera línea de atención.',
+          isSelected: false,
+          name: 'convive_trabajador_salud_covid',
+        },
+        { label: 'Reside fuera de Bogotá D.C.', isSelected: false, name: 'reside_fuera_bogota' },
+        {
+          label: 'Tiene dificultades económicas para transporte y sustento.',
+          isSelected: false,
+          name: 'dificultades_economicas_transporte_sustento',
+        }, */
   ];
 
-  cargarComorbilidades() {
+  cargarCaracterizacion() {
     if (this.comorbilidadesArray) {
-      this.comorbilidades = this.comorbilidadesArray.map(comorbilidad => ({
+      this.comorbilidades = this.comorbilidadesArray.map((comorbilidad) => ({
         ...comorbilidad,
         label: comorbilidad['Nombre'],
         isSelected: false,
-        name: comorbilidad['Nombre'],
-      }));
-      // console.log(this.comorbilidades);
+        name: comorbilidad['Nombre']
+      }))
+
+      // console.log(this.comorbilidades);      
     }
+
+    if (this.otrosArray) {
+      this.otros = this.otrosArray.map((otro) => ({
+        ...otro,
+        label: otro['Nombre'],
+        isSelected: false,
+        name: otro['Nombre']
+      }))
+    }
+
+
+
+
     this.userService.tercero$.subscribe((tercero: any) => {
       if (typeof tercero.Id !== 'undefined') {
         this.tercero = tercero;
-        return this.request
-          .get(
-            environment.TERCEROS_SERVICE,
-            '/info_complementaria_tercero?limit=0&fields=Dato&query=InfoComplementariaId.GrupoInfoComplementariaId.Id:47,TerceroId.Id:' +
-              this.tercero.Id
-          )
+        this.request.get(environment.TERCEROS_SERVICE,
+          '/info_complementaria_tercero?limit=0&fields=Id,Dato&order=asc&sortby=Id&query=InfoComplementariaId.GrupoInfoComplementariaId.Id:47,TerceroId.Id:'
+          + this.tercero.Id)
           .subscribe(
-            (data: any) => {
-              if (typeof data[0].Dato !== 'undefined') {
-                let datosComorbilidades = data;
-                for (let i = 0; i < this.comorbilidades.length; i++) {
-                  console.log(datosComorbilidades[i]);
-                  let isSelected = JSON.parse(datosComorbilidades[i].Dato);
-                  this.comorbilidades[i] = {
-                    ...this.comorbilidades[i],
+            (datosComorbilidades: any) => {
+              if (typeof datosComorbilidades[0].Dato !== 'undefined') {
+
+
+                for (let i = 0; i < this.comorbilidadesArray.length; i++) {
+                  console.log(datosComorbilidades[i])
+                  let isSelected = JSON.parse(datosComorbilidades[i].Dato)
+                  this.comorbilidadesArray[i] = {
+                    ... this.comorbilidadesArray[i],
                     isSelected: isSelected.dato,
-                  };
+                    IdTerceroCaracterizacion: datosComorbilidades[i].Id
+                  }
                 }
-                console.log(this.comorbilidades);
+                console.log('datos comorbilidades array', this.comorbilidadesArray);
+                console.log('datos comorbilidades', datosComorbilidades);
+
+                this.request.get(environment.TERCEROS_SERVICE,
+                  '/info_complementaria_tercero?limit=0&fields=Id,Dato&order=asc&sortby=Id&query=InfoComplementariaId.GrupoInfoComplementariaId.Id:48,TerceroId.Id:'
+                  + this.tercero.Id)
+                  .subscribe(
+                    (datosOtros: any) => {
+                      if (typeof datosOtros[0].Dato !== 'undefined') {
+                        for (let i = 0; i < this.otrosArray.length; i++) {
+                          console.log(datosOtros[i])
+                          let isSelected = JSON.parse(datosOtros[i].Dato)
+                          this.otrosArray[i] = {
+                            ... this.otrosArray[i],
+                            isSelected: isSelected.dato,
+                            IdTerceroCaracterizacion: datosOtros[i].Id
+                          }
+                        }
+                        console.log('otros: ', this.otrosArray);
+                        console.log('datos otros: ', datosOtros);
+
+                        this.isPost = false;
+                        if (this.comorbilidadesArray) {
+                          this.comorbilidades = this.comorbilidadesArray.map((comorbilidad) => ({
+                            ...comorbilidad,
+                            label: comorbilidad['Nombre'],
+                            isSelected: comorbilidad.isSelected,
+                            name: comorbilidad['Nombre']
+                          }))
+
+                          // console.log(this.comorbilidades);      
+                        }
+
+                        if (this.otrosArray) {
+                          this.otros = this.otrosArray.map((otro) => ({
+                            ...otro,
+                            label: otro['Nombre'],
+                            isSelected: otro.isSelected,
+                            name: otro['Nombre']
+                          }))
+                        }
+                      }
+
+                    },
+                    (error: any) => {
+                      console.log(error)
+                    }
+                  )
+
+
               }
             },
             (error: any) => {
-              console.log(error);
+              console.log(error)
             }
-          );
+          )
       }
-    });
+    })
   }
 
-  consultarComorbilidades() {
-    this.request
-      .get(environment.TERCEROS_SERVICE, `/info_complementaria?query=GrupoInfoComplementariaId.Id:47&limit=0&fields=Id,Nombre`)
+
+  consultarCaracterizacion() {
+    this.request.get(environment.TERCEROS_SERVICE, `/info_complementaria?query=GrupoInfoComplementariaId.Id:47&limit=0&order=asc&sortby=Id&fields=Id,Nombre`)
       .subscribe((consultaComorbilidades: any) => {
         this.comorbilidadesArray = consultaComorbilidades;
         //console.log(this.comorbilidadesArray);
-        this.cargarComorbilidades();
-      });
+        this.request.get(environment.TERCEROS_SERVICE, `/info_complementaria?query=GrupoInfoComplementariaId.Id:48&order=asc&sortby=Id&limit=0&fields=Id,Nombre`)
+          .subscribe((consultaOtros: any) => {
+            this.otrosArray = consultaOtros;
+            //console.log(this.comorbilidadesArray);
+            this.cargarCaracterizacion()
+          })
+      })
+
+
   }
+
 
   validarDesicionPresencialidad(nombreCheck: string, isChecked: boolean) {
     if (nombreCheck == 'decision_presencialidad') {
@@ -133,7 +183,7 @@ export class PreexistenciaComponent implements OnInit {
   }
 
   async ngOnInit() {
-    this.consultarComorbilidades();
+    this.consultarCaracterizacion();
     //this.cargarComorbilidades()
     const comorbilidad = localStorage.getItem('comorbilidad');
     if (comorbilidad) {
@@ -158,16 +208,59 @@ export class PreexistenciaComponent implements OnInit {
   clear(): void {
     this.comorbilidades = this.comorbilidades.map(option => ({ ...option, ...{ isSelected: false } }));
     this.otros = this.otros.map(option => ({ ...option, ...{ isSelected: false } }));
+
+
+    this.request.get(environment.TERCEROS_SERVICE,
+      '/info_complementaria_tercero?limit=0&order=desc&sortby=Id&query=InfoComplementariaId.GrupoInfoComplementariaId.Id:47&fields=Id')
+      .subscribe(
+        (caracterizaciones: any) => {
+          caracterizaciones.forEach(caracterizacion => {
+            this.request.delete(environment.TERCEROS_SERVICE, '/info_complementaria_tercero/', caracterizacion.Id)
+              .subscribe((data: any) => {
+                console.log('borrando...', caracterizacion.Id)
+                console.log('borrando...', data)
+              })
+
+          });
+
+        },
+        (error: any) => {
+          console.log(error)
+        }
+      )
+
+    this.request.get(environment.TERCEROS_SERVICE,
+      '/info_complementaria_tercero?limit=0&order=desc&sortby=Id&query=InfoComplementariaId.GrupoInfoComplementariaId.Id:48&fields=Id')
+      .subscribe(
+        (caracterizaciones: any) => {
+          caracterizaciones.forEach(caracterizacion => {
+            this.request.delete(environment.TERCEROS_SERVICE, '/info_complementaria_tercero/', caracterizacion.Id)
+              .subscribe((data: any) => {
+                console.log('borrando...', caracterizacion.Id)
+                console.log('borrando...', data)
+              })
+
+          });
+
+        },
+        (error: any) => {
+          console.log(error)
+        }
+      )
+
+
+
   }
 
-  functionReturn() {}
+  functionReturn() { }
 
-  async save() {
+  updateStorage() {
     let saveData = {
       comorbilidades: this.comorbilidades,
       info: {},
       date: new Date(),
     };
+
     this.comorbilidades.map(data => {
       saveData.info[data.name] = data.isSelected;
     });
@@ -175,21 +268,37 @@ export class PreexistenciaComponent implements OnInit {
     this.otros.map(data => {
       saveData.info[data.name] = data.isSelected;
     });
-    const isValidTerm = await this.utilService.termsAndConditional();
+    localStorage.setItem('comorbilidad', JSON.stringify(saveData));
+  }
 
+
+  async save() {
+
+
+    const isValidTerm = await this.utilService.termsAndConditional();
+    let caracterizaciones = this.comorbilidades.concat(this.otros);
+    let caracterizacionesArray: any[] = this.comorbilidadesArray.concat(this.otrosArray);
+
+    for (let i = 0; i < caracterizaciones.length; i++) {
+      caracterizacionesArray[i] = {
+        ...caracterizacionesArray[i],
+        isSelected: caracterizaciones[i].isSelected
+      }
+    }
+    console.log("caracterizacionesArray:", caracterizacionesArray)
     if (isValidTerm) {
       Swal.fire({
-        title: 'Comorbilidades',
-        text: `Se almacenarán las comorbilidades`,
+        title: 'Información de caracterización',
+        text: `Se ${this.isPost ? 'almacenará' : 'actualizará'} la información correspondiente a la caracterización`,
         icon: 'warning',
         showCancelButton: true,
         cancelButtonText: 'Cancelar',
-        confirmButtonText: `Guardar`,
+        confirmButtonText: this.isPost ? 'Guardar' : 'Actualizar',
       }).then(result => {
         if (result.value) {
           Swal.fire({
-            title: 'Por favor espere!',
-            html: `Guardando Comorbilidades`,
+            title: '¡Por favor espere!',
+            html: this.isPost ? 'Guardando' : 'Actualizando' + ' caracterización',
             allowOutsideClick: false,
             showConfirmButton: false,
             onBeforeOpen: () => {
@@ -199,34 +308,35 @@ export class PreexistenciaComponent implements OnInit {
 
           if (this.tercero) {
             Swal.fire({
-              title: 'Guardando Comorbilidades',
-              html: `<b></b> de ${saveData.comorbilidades.length} registros actualizados`,
+              title: this.isPost ? 'Guardando' : 'Actualizando' + ' caracterización',
+              html: `<b></b> de ${caracterizaciones.length} registros ${this.isPost ? 'almacenados' : 'actualizados'}` ,
               timerProgressBar: true,
               onBeforeOpen: () => {
                 Swal.showLoading();
               },
             });
             let updated = 0;
-            const listComorbilidad = from(saveData.comorbilidades);
-            listComorbilidad.subscribe((comorbilidad: any) => {
-              let comorbilidadTercero = {
+            const listComorbilidad = from(caracterizacionesArray);
+            listComorbilidad.subscribe((caracterizacion: any) => {
+              console.log("caracterizacion2: ", caracterizacion)
+              let caracterizacionTercero = {
                 TerceroId: { Id: this.tercero.Id },
                 InfoComplementariaId: {
-                  Id: comorbilidad.Id,
+                  Id: caracterizacion.Id,
                 },
                 Dato: JSON.stringify(
                   new Object({
-                    dato: comorbilidad.isSelected,
+                    dato: caracterizacion.isSelected,
                   })
                 ),
                 Activo: true,
               };
-              console.log(comorbilidadTercero);
-              localStorage.setItem('comorbilidad', JSON.stringify(saveData));
+              console.log(caracterizacionTercero);
+              this.updateStorage()
 
-              if (this.isEdit) {
+              if (this.isPost) {
                 this.request
-                  .post(environment.TERCEROS_SERVICE, 'info_complementaria_tercero/', comorbilidadTercero)
+                  .post(environment.TERCEROS_SERVICE, 'info_complementaria_tercero/', caracterizacionTercero)
                   .subscribe((data: any) => {
                     const content = Swal.getContent();
                     if (content) {
@@ -236,13 +346,15 @@ export class PreexistenciaComponent implements OnInit {
                       }
                     }
                     updated += 1;
-                    if (updated === saveData.comorbilidades.length) {
+                    if (updated === caracterizaciones.length) {
                       Swal.close();
                       Swal.fire({
-                        title: `Actualización correcta`,
-                        text: `Se actualizaron correctamente ${saveData.comorbilidades.length} comorbilidades`,
+                        title: `Registro correcto`,
+                        text: `Se ingresaron correctamente ${caracterizaciones.length} registros`,
                         icon: 'success',
                       });
+                      this.isPost = false;
+                      window.location.reload();
                     }
                   }),
                   error => {
@@ -256,8 +368,9 @@ export class PreexistenciaComponent implements OnInit {
                     });
                   };
               } else {
+                console.log(caracterizacionTercero)
                 this.request
-                  .post(environment.TERCEROS_SERVICE, 'info_complementaria_tercero/', comorbilidadTercero)
+                  .put(environment.TERCEROS_SERVICE, 'info_complementaria_tercero', caracterizacionTercero, caracterizacion.IdTerceroCaracterizacion)
                   .subscribe((data: any) => {
                     const content = Swal.getContent();
                     if (content) {
@@ -267,11 +380,11 @@ export class PreexistenciaComponent implements OnInit {
                       }
                     }
                     updated += 1;
-                    if (updated === saveData.comorbilidades.length) {
+                    if (updated === caracterizaciones.length) {
                       Swal.close();
                       Swal.fire({
                         title: `Actualización correcta`,
-                        text: `Se actualizaron correctamente ${saveData.comorbilidades.length} comorbilidades`,
+                        text: `Se actualizaron correctamente ${caracterizaciones.length} registros`,
                         icon: 'success',
                       });
                     }
@@ -294,10 +407,4 @@ export class PreexistenciaComponent implements OnInit {
     }
   }
 
-  sendData(data) {
-    return new Promise((resolve, reject) => {
-      const dataSave = localStorage.setItem('comorbilidad', JSON.stringify(data));
-      resolve('');
-    });
-  }
 }
