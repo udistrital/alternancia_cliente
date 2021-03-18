@@ -9,6 +9,7 @@ import { DatosIdentificacion } from '../@core/models/datos_identificacion';
 @Component({
   selector: 'app-pages',
   template: `<div *ngIf="loaded" class="main-container">
+              <div class="username-info">Bienvenido <br>{{tercero.NombreCompleto}}</div>
               <router-outlet></router-outlet>
             </div>`,
 })
@@ -17,6 +18,7 @@ export class PagesComponent implements OnInit {
   userData: any;
   environment: any;
   loadingRouter: boolean;
+  tercero = {}
 
 
   constructor(    private router: Router, private userService:UserService,
@@ -55,6 +57,7 @@ export class PagesComponent implements OnInit {
         .subscribe((datosIdentificacion: DatosIdentificacion)=> {
           let tercero = datosIdentificacion[2].TerceroId;
           this.userService.updateTercero(tercero);
+          this.tercero = tercero;
           console.log(tercero);
         })
       }

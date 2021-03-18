@@ -48,7 +48,9 @@ $mat-mytheme-accent: mat-palette($mat-green, A200, A100, A400);
 $mat-mytheme: mat-light-theme($mat-mytheme-primary, $mat-mytheme-accent);
 @include angular-material-theme($mat-mytheme);
 
-
+b {
+    color: var(--primary)
+}
 .card-oas {
     width:calc(100vw - 60px)
 }
@@ -101,10 +103,63 @@ list-style-type: none;
     font-family: 'Open Sans';
     font-size: 1rem;
 }
+.main-container {
+    flex-direction: column;
+}
+
+.username-info {
+    position: relative;
+    
+    background-color: white;
+    color: var(--primary);
+    justify-content: center;
+    text-align: center;
+    display: flex;
+    padding: 12px 0px;
+    top: -14px;
+    left: -16px;
+    flex-wrap: wrap-reverse;
+    width: 100vw;
+    font-size: 0.8rem;
+}
+
+.text-justify {
+    text-align: justify;
+    margin-left: 1rem;
+    max-width: 70%;
+
+}
+
+
+.text-note {
+    text-align: justify;
+    margin-left: 1rem;
+    max-width: 70%;
+}
+
+a {
+    color: var(--primary)
+}
+
+.item-default {
+    display: flex;
+    flex-wrap: nowrap;
+    margin-bottom: 1rem;
+    margin-left: 1rem;
+
+}
+
 @media screen and (max-width: 425px) {
     
     table tbody tr td {
         font-size: 0.675em !important;
+    }
+    
+}
+@media screen and (min-width: 1024px) {
+    
+    .username-info{
+        display: none;
     }
     
 }
