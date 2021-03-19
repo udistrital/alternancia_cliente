@@ -1,11 +1,260 @@
-<mat-card>
+<mat-card class="card-oas" *ngIf="tercero && datosIdentificacion">
     <mat-card-header>
-        <mat-card-title>Terceros</mat-card-title>
+        <!-- <mat-card-title>Terceros</mat-card-title>
         <mat-card-subtitle>Ambiente de pruebas</mat-card-subtitle>
+        -->
+        <mat-card-title>Información básica</mat-card-title>
     </mat-card-header>
     <mat-card-content>
-        <p>
-            {{terceros | json}}
-        </p>
+        <mat-grid-list [appOasGridCols]="{xs: 1, sm: 2, md: 2, lg: 3, xl: 4}" rowHeight="80px" gutterSize="10px">
+
+            <mat-grid-tile>
+                <mat-form-field appearance="fill" [style.width.%]="100">
+                    <mat-label>Primer nombre</mat-label>
+                    <input matInput type="text" value="{{tercero.PrimerNombre}}" disabled>
+                </mat-form-field>
+            </mat-grid-tile>
+            <mat-grid-tile>
+                <mat-form-field appearance="fill" [style.width.%]="100">
+                    <mat-label>Segundo nombre</mat-label>
+                    <input matInput type="text" value="{{tercero.SegundoNombre}}" disabled>
+                </mat-form-field>
+            </mat-grid-tile>
+            <mat-grid-tile>
+                <mat-form-field appearance="fill" [style.width.%]="100">
+                    <mat-label>Primer apellido</mat-label>
+                    <input matInput type="text" value="{{tercero.PrimerApellido}}" disabled>
+                </mat-form-field>
+            </mat-grid-tile>
+            <mat-grid-tile>
+                <mat-form-field appearance="fill" [style.width.%]="100">
+                    <mat-label>Segundo apellido</mat-label>
+                    <input matInput type="text" value="{{tercero.SegundoApellido}}" disabled>
+                </mat-form-field>
+            </mat-grid-tile>
+
+        </mat-grid-list>
+
+        <mat-grid-list [appOasGridCols]="{xs: 1, sm: 2, md: 3, lg: 4, xl: 4}" rowHeight="80px" gutterSize="10px">
+
+            <mat-grid-tile>
+                <mat-form-field appearance="fill" [style.width.%]="100">
+                    <mat-label>Tipo de documento</mat-label>
+                    <input matInput type="text" value="{{datosIdentificacion.TipoDocumentoId.Nombre}}" disabled>
+                </mat-form-field>
+            </mat-grid-tile>
+            <mat-grid-tile>
+                <mat-form-field appearance="fill" [style.width.%]="100">
+                    <mat-label>Número de documento</mat-label>
+                    <input matInput type="number" value="{{datosIdentificacion.Numero}}" disabled>
+                </mat-form-field>
+            </mat-grid-tile>
+            <mat-grid-tile>
+                <mat-form-field appearance="fill" [style.width.%]="100">
+                    <mat-label>Fecha de expedicion del documento</mat-label>
+                    <input matInput type="text" [value]="datosIdentificacion.FechaExpedicion | date: 'dd/MM/yyyy'" disabled>
+                </mat-form-field>
+            </mat-grid-tile>
+        </mat-grid-list>
+
+
+        <mat-grid-list [appOasGridCols]="{xs: 1, sm: 2, md: 3, lg: 4, xl: 4}" rowHeight="80px" gutterSize="10px">
+            <mat-grid-tile>
+                <mat-form-field appearance="fill" [style.width.%]="100">
+                    <mat-label>Género</mat-label>
+                    <input matInput type="text" value="{{datosGenero?datosGenero.InfoComplementariaId?datosGenero.InfoComplementariaId.Nombre:'':''}}" disabled>
+                </mat-form-field>
+            </mat-grid-tile>
+            <mat-grid-tile>
+                <mat-form-field appearance="fill" [style.width.%]="100">
+                    <mat-label>Estado civil</mat-label>
+                    <input matInput type="text" value="{{datosEstadoCivil?datosEstadoCivil.InfoComplementariaId?datosEstadoCivil.InfoComplementariaId.Nombre:'':''}}" disabled>
+                </mat-form-field>
+            </mat-grid-tile>
+            <mat-grid-tile>
+                <mat-form-field appearance="fill" [style.width.%]="100">
+                    <mat-label>Edad</mat-label>
+                    <input matInput type="number" value="{{edad}}" disabled>
+                </mat-form-field>
+            </mat-grid-tile>
+        </mat-grid-list>
+
+
     </mat-card-content>
 </mat-card>
+<br />
+<mat-card class="card-oas" *ngIf="tercero && datosIdentificacion">
+
+    <mat-card-header>
+
+        <mat-card-title>Información vinculación</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+        <mat-accordion>
+
+
+            <mat-expansion-panel *ngFor="let vinculacion of vinculacionesOtros">
+                <mat-expansion-panel-header>
+                    <mat-panel-title>
+                        Contratista
+                    </mat-panel-title>
+
+                </mat-expansion-panel-header>
+
+                <mat-grid-list [appOasGridCols]="{xs: 1, sm: 2, md: 2, lg: 2, xl: 4}" rowHeight="80px" gutterSize="10px">
+
+                    <mat-grid-tile>
+                        <mat-form-field appearance="fill" [style.width.%]="100">
+                            <mat-label>Fecha de inicio</mat-label>
+                            <input matInput type="text" value="{{vinculacion.FechaInicioVinculacion | date: 'dd/MM/yyyy'}}" disabled>
+                        </mat-form-field>
+                    </mat-grid-tile>
+                    <mat-grid-tile>
+                        <mat-form-field appearance="fill" [style.width.%]="100">
+                            <mat-label>Fecha de finalización</mat-label>
+                            <input matInput type="text" value="{{vinculacion.FechaFinVinculacion | date: 'dd/MM/yyyy'}}" disabled>
+                        </mat-form-field>
+                    </mat-grid-tile>
+                    <mat-grid-tile>
+                        <mat-form-field appearance="fill" [style.width.%]="100">
+                            <mat-label>Dependencia</mat-label>
+                            <input matInput type="text" value="{{vinculacion?vinculacion.Dependencia?vinculacion.Dependencia.Nombre:'':''}}" disabled>
+                        </mat-form-field>
+                    </mat-grid-tile>
+                </mat-grid-list>
+
+            </mat-expansion-panel>
+
+
+
+
+            <mat-expansion-panel *ngFor="let vinculacion of vinculacionesOtros">
+                <mat-expansion-panel-header>
+                    <mat-panel-title>
+                        Estudiante
+                    </mat-panel-title>
+
+                </mat-expansion-panel-header>
+
+                <mat-grid-list [appOasGridCols]="{xs: 1, sm: 2, md: 3, lg: 4, xl: 5}" rowHeight="80px" gutterSize="10px">
+
+                    <mat-grid-tile>
+                        <mat-form-field appearance="fill" [style.width.%]="100">
+                            <mat-label>Código</mat-label>
+                            <input matInput type="text" [value]="20202495005" disabled>
+                        </mat-form-field>
+                    </mat-grid-tile>
+                    <mat-grid-tile>
+                        <mat-form-field appearance="fill" [style.width.%]="100">
+                            <mat-label>Facultad</mat-label>
+                            <input matInput type="text" value="Ingeniería" disabled>
+                        </mat-form-field>
+                    </mat-grid-tile>
+                    <mat-grid-tile>
+                        <mat-form-field appearance="fill" [style.width.%]="100">
+                            <mat-label>Proyecto Curricular</mat-label>
+                            <input matInput type="text" value="495" disabled>
+                        </mat-form-field>
+                    </mat-grid-tile>
+                    <mat-grid-tile>
+                        <mat-form-field appearance="fill" [style.width.%]="100">
+                            <mat-label>Plan de Estudios</mat-label>
+
+                            <textarea matInput disabled>2 - MAE. EN CIENCIAS DE LA INF. Y LAS COMUNICACIONES ENFASIS EN ING. SOFT</textarea>
+
+                        </mat-form-field>
+                    </mat-grid-tile>
+                    <mat-grid-tile>
+                        <mat-form-field appearance="fill" [style.width.%]="100">
+                            <mat-label>Estado</mat-label>
+                            <input matInput type="text" value="Activo" disabled>
+                        </mat-form-field>
+                    </mat-grid-tile>
+                </mat-grid-list>
+                <div class="div-table" style="text-align:center">
+                    <b><span>Horario de Clases Período 2021-1</span></b>
+                    <br>
+                    <br>
+                    <table class="tg" align="center">
+                        <thead>
+                            <tr>
+                                <th class="tg-head">Código/<br>Grupo</th>
+                                <th class="tg-head">Nombre Espacio<br>Académico</th>
+                                <th class="tg-head">Créditos</th>
+                                <th class="tg-head">Martes</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+
+                            <tr>
+                                <td class="tg-body">49501001/ <br> 495-1</td>
+                                <td class="tg-body">INGENIERÍA DE SOFTWARE I<br><span style="font-weight:bold">Docente: ALEJANDRO PAOLO DAZA CORREDOR.</span><br></td>
+                                <td class="tg-body">4</td>
+                                <td class="tg-body">10-14<br>Sede:FICC<br>Edificio:SABIO CALDAS<br>Salón: SALA DE INFORMATICA 508<br></td>
+                            </tr>
+                            <tr>
+                                <td class="tg-body">49503005/ <br>495-1 </td>
+                                <td class="tg-body">MINERÍA DE DATOS<br><span style="font-weight:bold">Docente: JORGE ENRIQUE RODRIGUEZ RODRIGUEZ.</span></td>
+                                <td class="tg-body">4</td>
+                                <td class="tg-body">6-10<br>Sede:FICC<br>Edificio:SABIO CALDAS<br>Salón: SALA DE INFORMATICA 508<br></td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                </div>
+
+            </mat-expansion-panel>
+
+            <mat-expansion-panel *ngFor="let vinculacion of vinculacionesOtros">
+                <mat-expansion-panel-header>
+                    <mat-panel-title>
+                        Docente
+                    </mat-panel-title>
+                </mat-expansion-panel-header>
+
+
+                <mat-grid-list [appOasGridCols]="{xs: 1, sm: 2, md: 3, lg: 3, xl: 3}" rowHeight="80px" gutterSize="10px">
+
+                    <mat-grid-tile>
+                        <mat-form-field appearance="fill" [style.width.%]="100">
+                            <mat-label>Tipo de vinculación</mat-label>
+                            <input matInput type="text" [value]="cargaAcademica?cargaAcademica[0]?cargaAcademica[0].TIPO_VINCULACION:'':''" disabled>
+                        </mat-form-field>
+                    </mat-grid-tile>
+                    <mat-grid-tile>
+                        <mat-form-field appearance="fill" [style.width.%]="100">
+                            <mat-label>Vinculación</mat-label>
+                            <input matInput type="text" [value]="cargaAcademica?cargaAcademica[0]?cargaAcademica[0].VINCULACION:'':''" disabled>
+                        </mat-form-field>
+                    </mat-grid-tile>
+                    <mat-grid-tile>
+                        <mat-form-field appearance="fill" [style.width.%]="100">
+                            <mat-label>Dedicación</mat-label>
+                            <input matInput type="text" [value]="cargaAcademica?cargaAcademica[0]?cargaAcademica[0].DEDICACION:'':''" disabled>
+                        </mat-form-field>
+                    </mat-grid-tile>
+
+                </mat-grid-list>
+                <div class="div-table" style="text-align:center">
+
+                    <b><span>Carga academica Período 2021-1</span></b>
+                    <br>
+                    <br>
+
+                    <ng2-smart-table [settings]="settings" [source]="source">
+
+
+                    </ng2-smart-table>
+                </div>
+
+
+            </mat-expansion-panel>
+
+
+        </mat-accordion>
+
+    </mat-card-content>
+
+</mat-card>
+
+<br><br><br>

@@ -1,7 +1,7 @@
 {
   "name": "alternancia-cliente",
-  "short_name": "alternancia-cliente",
-  "theme_color": "#1976d2",
+  "short_name": "Alternancia",
+  "theme_color": "#397A18",
   "background_color": "#fafafa",
   "display": "standalone",
   "scope": "./",

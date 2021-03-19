@@ -3,6 +3,9 @@ import { RouterModule, Routes } from '@angular/router';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { InformacionBasicaComponent } from './informacion-basica/informacion-basica.component';
 import { PagesComponent } from './pages.component';
+import { PreexistenciaComponent } from './preexistencia/preexistencia.component';
+import { QrComponent } from './qr/qr.component';
+import { QrscanComponent } from './qrscan/qrscan.component';
 const routes: Routes = [{
   path: '',
   component: PagesComponent,
@@ -14,6 +17,18 @@ const routes: Routes = [{
     {
       path: 'informacion_basica',
       component: InformacionBasicaComponent,
+    },
+    {
+      path: 'comorbilidades',
+      component: PreexistenciaComponent,
+    },
+    {
+      path: 'ingreso',
+      component: QrscanComponent,
+    },
+    {
+      path: 'qrcode',
+      component: QrComponent,
     },
     {
       path: '', redirectTo: 'dashboard', pathMatch: 'full',

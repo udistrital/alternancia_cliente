@@ -7,27 +7,76 @@ import { PagesComponent } from './pages.component';
 import { InformacionBasicaComponent } from './informacion-basica/informacion-basica.component';
 import { HttpClientModule } from '@angular/common/http';
 import { RequestManager } from './services/requestManager';
-import {MatCardModule} from '@angular/material/card';
+
+import { MatCardModule } from '@angular/material/card';
+import { MatIconModule } from '@angular/material/icon';
+import { MatListModule } from '@angular/material/list';
+import { MatInputModule } from '@angular/material/input';
+import { MatButtonModule } from '@angular/material/button';
+import { MatSelectModule } from '@angular/material/select';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatStepperModule } from '@angular/material/stepper';
+//import { MAT_MOMENT_DATE_FORMATS, MomentDateAdapter, MAT_MOMENT_DATE_ADAPTER_OPTIONS,} from '@angular/material-moment-adapter';
+import { MatNativeDateModule, DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material/core';
+import { MatGridListModule } from '@angular/material/grid-list';
+import { SaludActualComponent } from './salud-actual/salud-actual.component';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatExpansionModule } from '@angular/material/expansion';
+import { PreexistenciaComponent } from './preexistencia/preexistencia.component';
+import { FormsModule } from '@angular/forms';
+import { OasGridColsDirective } from './directives/oas-grid-cols.directive';
+import { QrCodeModule } from 'ng-qrcode';
+import { QrComponent } from './qr/qr.component';
+
+import { Ng2SmartTableModule } from 'ng2-smart-table';
+import { QrscanComponent } from './qrscan/qrscan.component';
+import { NgQrScannerModule } from 'angular2-qrscanner';
+import { UtilService } from './services/utilService';
+import { UserService } from './services/userService';
 
 
 const pagesComponents = [
   DashboardComponent,
   PagesComponent,
-  InformacionBasicaComponent
-]
+  InformacionBasicaComponent,
+  SaludActualComponent,
+  PreexistenciaComponent,
+];
 
+const materialModules = [
+  MatCardModule,
+  MatListModule,
+  MatIconModule,
+  MatInputModule,
+  MatSelectModule,
+  MatCheckboxModule,
+  MatDatepickerModule,
+  MatNativeDateModule,
+  MatFormFieldModule,
+  MatGridListModule,
+  MatExpansionModule,
+  MatButtonModule,
+  MatStepperModule
+];
 @NgModule({
   declarations: [
-    ...pagesComponents
-     ],
+    ...pagesComponents,
+    OasGridColsDirective,
+    QrComponent,
+    QrscanComponent,
+  ],
   imports: [
+    NgQrScannerModule,
     HttpClientModule,
     CommonModule,
+    FormsModule,
     PagesRoutingModule,
-    MatCardModule
+    QrCodeModule,
+    Ng2SmartTableModule,
+    ...materialModules
   ],
   providers: [
-    RequestManager,
-  ]
+    RequestManager  ]
 })
 export class PagesModule { }
