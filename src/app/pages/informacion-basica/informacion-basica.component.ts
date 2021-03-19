@@ -133,31 +133,30 @@ export class InformacionBasicaComponent implements OnInit {
       
       //this.request.get(environment.TERCEROS_SERVICE, `datos_identificacion/?query=Numero:`+ data['user']['documento'])
        this.request.get(environment.TERCEROS_SERVICE, `datos_identificacion/?query=TerceroId.Id:9811`)
-        .subscribe((datosInfoTercero: any) => {
-          this.datosIdentificacion = {
-            ...datosInfoTercero[0],
-            ...{ FechaExpedicion: datosInfoTercero[0].FechaExpedicion ? new Date(datosInfoTercero[0].FechaExpedicion) : '' }
-          }          
-          this.tercero = this.datosIdentificacion.TerceroId;      
-          this.edad = this.calcularEdad(this.tercero.FechaNacimiento);          
+         .subscribe((datosInfoTercero: any) => {
+           this.datosIdentificacion = {
+             ...datosInfoTercero[0],
+             ...{ FechaExpedicion: datosInfoTercero[0].FechaExpedicion ? new Date(datosInfoTercero[0].FechaExpedicion) : '' }
+           }
+           this.tercero = this.datosIdentificacion.TerceroId;
+           this.edad = this.calcularEdad(this.tercero.FechaNacimiento);
 
-          this.request.get(environment.TERCEROS_SERVICE, `info_complementaria_tercero/?query=TerceroId.Id:` + this.tercero.Id
-            + `,InfoComplementariaId.GrupoInfoComplementariaId.Id:6`)
-            .subscribe((datosInfoGenero: any) => {
-              this.datosGenero = datosInfoGenero[0];
-            })
+           this.request.get(environment.TERCEROS_SERVICE, `info_complementaria_tercero/?query=TerceroId.Id:` + this.tercero.Id
+             + `,InfoComplementariaId.GrupoInfoComplementariaId.Id:6`)
+             .subscribe((datosInfoGenero: any) => {
+               this.datosGenero = datosInfoGenero[0];
+             })
 
-          this.request.get(environment.TERCEROS_SERVICE, `info_complementaria_tercero/?query=TerceroId.Id:` + this.tercero.Id
-            + `,InfoComplementariaId.GrupoInfoComplementariaId.Id:2`)
-            .subscribe((datosInfoEstadoCivil: any) => {
-              this.datosEstadoCivil = datosInfoEstadoCivil[0];
-            })
+           this.request.get(environment.TERCEROS_SERVICE, `info_complementaria_tercero/?query=TerceroId.Id:` + this.tercero.Id
+             + `,InfoComplementariaId.GrupoInfoComplementariaId.Id:2`)
+             .subscribe((datosInfoEstadoCivil: any) => {
+               this.datosEstadoCivil = datosInfoEstadoCivil[0];
+             })
 
-          this.request.get(environment.TERCEROS_SERVICE, `vinculacion/?query=TerceroPrincipalId.Id:9759`)
-            //this.request.get(environment.TERCEROS_SERVICE, `vinculacion/?query=TerceroPrincipalId.Id:` + this.tercero.Id)
-            .subscribe((datosInfoVinculaciones: any) => {
-              this.vinculaciones = datosInfoVinculaciones;
-              
+           this.request.get(environment.TERCEROS_SERVICE, `vinculacion/?query=TerceroPrincipalId.Id:9759`)
+           //this.request.get(environment.TERCEROS_SERVICE, `vinculacion/?query=Activo:true,TerceroPrincipalId.Id:` + this.tercero.Id)
+             .subscribe((datosInfoVinculaciones: any) => {              
+              this.vinculaciones = datosInfoVinculaciones;              
               this.vinculacionesDocente = [];
               this.vinculacionesEstudiante = [];
               this.vinculacionesOtros = [];
