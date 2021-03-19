@@ -25,8 +25,10 @@ export interface Opcion {
 export class PreexistenciaComponent implements OnInit {
   isPost = true;
   decision_presencialidad: boolean = false;
+  
   isAgree = false;
   comorbilidadesArray: any = [];
+  vinculacionesArray: any = [];
   otrosArray: any = [];
   tercero: Tercero;
   constructor(
@@ -36,6 +38,7 @@ export class PreexistenciaComponent implements OnInit {
     private userService: UserService
   ) { }
 
+  vinculaciones: Opcion[] = [];
   comorbilidades: Opcion[] = [];
   otros: Opcion[] = [
     /*     { label: 'Convive con mayores de 70 años.', isSelected: false, name: 'convive_mayores_70' },
@@ -74,7 +77,17 @@ export class PreexistenciaComponent implements OnInit {
       }))
     }
 
-
+    if (this.vinculacionesArray) {
+      console.log('vinculaciones array:', this.vinculacionesArray)
+      console.log('vinculaciones array0:', this.vinculacionesArray[0])      
+      this.vinculaciones = this.vinculacionesArray.map((vinculacion) => ({
+        ...vinculacion,
+        label: vinculacion.nombreVinculacion,
+        isSelected: vinculacion.Alternancia,
+        name: vinculacion.nombreVinculacion
+      }))
+      console.log('vinculaciones a secas:', this.vinculaciones)
+    }
 
 
     this.userService.tercero$.subscribe((tercero: any) => {
@@ -166,8 +179,29 @@ export class PreexistenciaComponent implements OnInit {
         this.request.get(environment.TERCEROS_SERVICE, `/info_complementaria?query=GrupoInfoComplementariaId.Id:48&order=asc&sortby=Id&limit=0&fields=Id,Nombre`)
           .subscribe((consultaOtros: any) => {
             this.otrosArray = consultaOtros;
-            //console.log(this.comorbilidadesArray);
-            this.cargarCaracterizacion()
+            //console.log(this.comorbilidadesArray);                        
+            this.request.get(environment.TERCEROS_SERVICE, `vinculacion/?query=TerceroPrincipalId.Id:9759`)
+           this.request.get(environment.TERCEROS_SERVICE, `vinculacion/?order=asc&sortby=Id&query=Activo:true,TerceroPrincipalId.Id:` + this.tercero.Id)
+              .subscribe((datosInfoVinculaciones: any) => {
+                this.vinculacionesArray = datosInfoVinculaciones;
+                for (let i = 0; i < this.vinculacionesArray.length; i++){
+                  console.log('vinculacion id', this.vinculacionesArray[i].TipoVinculacionId);
+                  this.request.get(environment.PARAMETROS_SERVICE, `parametro/`+ this.vinculacionesArray[i].TipoVinculacionId)
+                    .subscribe((vinculacionP: any) => {
+                      vinculacionP = vinculacionP['Data'];
+                      console.log('vinculacionp', vinculacionP);
+                      this.vinculacionesArray[i] = {
+                        ...this.vinculacionesArray[i],
+                        nombreVinculacion: vinculacionP.Nombre
+                      };
+                      if (i + 1 == this.vinculacionesArray.length) {
+                        this.cargarCaracterizacion();
+                      }
+                    })                  
+                }
+                
+              })            
+            
           })
       })
 
@@ -315,7 +349,36 @@ export class PreexistenciaComponent implements OnInit {
                 Swal.showLoading();
               },
             });
-            let updated = 0;
+            
+            let vinculacionesC = [];
+            this.vinculaciones.forEach((vinculacion: any ) => {
+              vinculacion.Alternancia = vinculacion.isSelected;
+              delete vinculacion.label;
+              delete vinculacion.isSelected;
+              delete vinculacion.name;
+              delete vinculacion.nombreVinculacion;
+              vinculacionesC.push(vinculacion);
+            });
+            from(vinculacionesC)
+              .subscribe((vinculacionC: any) => {
+                console.log('vinculacionC',vinculacionC)
+                this.request.put(environment.TERCEROS_SERVICE, 'vinculacion', vinculacionC,vinculacionC.Id )
+                  .subscribe((data) => {
+                  
+                }),
+                error => {
+                Swal.fire({
+                  title: 'error',
+                  text: `${JSON.stringify(error)}`,
+                  icon: 'error',
+                  showCancelButton: true,
+                  cancelButtonText: 'Cancelar',
+                  confirmButtonText: `Aceptar`,
+                });
+              };               
+            })
+
+            let updated = this.vinculaciones.length;
             const listComorbilidad = from(caracterizacionesArray);
             listComorbilidad.subscribe((caracterizacion: any) => {
               console.log("caracterizacion2: ", caracterizacion)
@@ -346,11 +409,11 @@ export class PreexistenciaComponent implements OnInit {
                       }
                     }
                     updated += 1;
-                    if (updated === caracterizaciones.length) {
+                    if (updated === (caracterizaciones.length + this.vinculaciones.length)) {
                       Swal.close();
                       Swal.fire({
                         title: `Registro correcto`,
-                        text: `Se ingresaron correctamente ${caracterizaciones.length} registros`,
+                        text: `Se ingresaron correctamente ${caracterizaciones.length + this.vinculaciones.length} registros`,
                         icon: 'success',
                       });
                       this.isPost = false;
@@ -380,13 +443,14 @@ export class PreexistenciaComponent implements OnInit {
                       }
                     }
                     updated += 1;
-                    if (updated === caracterizaciones.length) {
+                    if (updated === (caracterizaciones.length + this.vinculaciones.length)) {
                       Swal.close();
                       Swal.fire({
                         title: `Actualización correcta`,
-                        text: `Se actualizaron correctamente ${caracterizaciones.length} registros`,
+                        text: `Se actualizaron correctamente ${caracterizaciones.length + this.vinculaciones.length} registros`,
                         icon: 'success',
                       });
+                      window.location.reload();
                     }
                   }),
                   error => {
@@ -397,7 +461,7 @@ export class PreexistenciaComponent implements OnInit {
                       showCancelButton: true,
                       cancelButtonText: 'Cancelar',
                       confirmButtonText: `Aceptar`,
-                    });
+                    });                    
                   };
               }
             });
