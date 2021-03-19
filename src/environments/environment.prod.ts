@@ -1,11 +1,11 @@
 export const environment = {
   production: true,
-  entorno: 'prod',
+  entorno: 'test',
   autenticacion: true,
   notificaciones: false,
   menuApps: true,
-  appname: 'core',
-  appMenu: 'CONFIGURACION',
+  appname: 'alternancia',
+  appMenu: 'alternancia',
   NUXEO: {
     PATH: 'https://documental.udistrital.edu.co/nuxeo/',
   },
