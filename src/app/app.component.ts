@@ -36,5 +36,11 @@ export class AppComponent implements OnInit {
       }
     });
 
+    oas.addEventListener('logout', (event: any) => {
+      if (event.detail) {
+        console.log(event.detail);
+      }
+    });
+
   }
 }

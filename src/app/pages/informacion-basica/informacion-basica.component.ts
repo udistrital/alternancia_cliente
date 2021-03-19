@@ -98,6 +98,7 @@ export class InformacionBasicaComponent implements OnInit {
 
   ngOnInit(): void {
     this.cargarCampos();
+
     Swal.fire({
       title: 'Por favor espere!',
       html: 'Cargando datos de usuario',
@@ -106,8 +107,6 @@ export class InformacionBasicaComponent implements OnInit {
         Swal.showLoading()
       },
     });
-
-
 
     this.userService.user$.subscribe((data) => {
       console.log("tercero", data)
@@ -133,31 +132,30 @@ export class InformacionBasicaComponent implements OnInit {
       
       //this.request.get(environment.TERCEROS_SERVICE, `datos_identificacion/?query=Numero:`+ data['user']['documento'])
        this.request.get(environment.TERCEROS_SERVICE, `datos_identificacion/?query=TerceroId.Id:9811`)
-        .subscribe((datosInfoTercero: any) => {
-          this.datosIdentificacion = {
-            ...datosInfoTercero[0],
-            ...{ FechaExpedicion: datosInfoTercero[0].FechaExpedicion ? new Date(datosInfoTercero[0].FechaExpedicion) : '' }
-          }          
-          this.tercero = this.datosIdentificacion.TerceroId;      
-          this.edad = this.calcularEdad(this.tercero.FechaNacimiento);          
+         .subscribe((datosInfoTercero: any) => {
+           this.datosIdentificacion = {
+             ...datosInfoTercero[0],
+             ...{ FechaExpedicion: datosInfoTercero[0].FechaExpedicion ? new Date(datosInfoTercero[0].FechaExpedicion) : '' }
+           }
+           this.tercero = this.datosIdentificacion.TerceroId;
+           this.edad = this.calcularEdad(this.tercero.FechaNacimiento);
 
-          this.request.get(environment.TERCEROS_SERVICE, `info_complementaria_tercero/?query=TerceroId.Id:` + this.tercero.Id
-            + `,InfoComplementariaId.GrupoInfoComplementariaId.Id:6`)
-            .subscribe((datosInfoGenero: any) => {
-              this.datosGenero = datosInfoGenero[0];
-            })
+           this.request.get(environment.TERCEROS_SERVICE, `info_complementaria_tercero/?query=TerceroId.Id:` + this.tercero.Id
+             + `,InfoComplementariaId.GrupoInfoComplementariaId.Id:6`)
+             .subscribe((datosInfoGenero: any) => {
+               this.datosGenero = datosInfoGenero[0];
+             })
 
-          this.request.get(environment.TERCEROS_SERVICE, `info_complementaria_tercero/?query=TerceroId.Id:` + this.tercero.Id
-            + `,InfoComplementariaId.GrupoInfoComplementariaId.Id:2`)
-            .subscribe((datosInfoEstadoCivil: any) => {
-              this.datosEstadoCivil = datosInfoEstadoCivil[0];
-            })
+           this.request.get(environment.TERCEROS_SERVICE, `info_complementaria_tercero/?query=TerceroId.Id:` + this.tercero.Id
+             + `,InfoComplementariaId.GrupoInfoComplementariaId.Id:2`)
+             .subscribe((datosInfoEstadoCivil: any) => {
+               this.datosEstadoCivil = datosInfoEstadoCivil[0];
+             })
 
-          this.request.get(environment.TERCEROS_SERVICE, `vinculacion/?query=TerceroPrincipalId.Id:9759`)
-            //this.request.get(environment.TERCEROS_SERVICE, `vinculacion/?query=TerceroPrincipalId.Id:` + this.tercero.Id)
-            .subscribe((datosInfoVinculaciones: any) => {
-              this.vinculaciones = datosInfoVinculaciones;
-              
+           this.request.get(environment.TERCEROS_SERVICE, `vinculacion/?query=TerceroPrincipalId.Id:9759`)
+           //this.request.get(environment.TERCEROS_SERVICE, `vinculacion/?query=Activo:true,TerceroPrincipalId.Id:` + this.tercero.Id)
+             .subscribe((datosInfoVinculaciones: any) => {              
+              this.vinculaciones = datosInfoVinculaciones;              
               this.vinculacionesDocente = [];
               this.vinculacionesEstudiante = [];
               this.vinculacionesOtros = [];
@@ -178,6 +176,22 @@ export class InformacionBasicaComponent implements OnInit {
                         .subscribe((dependencia: any) => {
                           this.vinculaciones[i].Dependencia = dependencia;
                           Swal.close();
+
+                          Swal.fire({
+                            inputValue: 1,
+                            html:`
+                            <h3 class="title-term-conditional">Importante !</h3>
+                            <p class="text-term-condional">Actualmente esta aplicación se encuentra en construcción</p>
+                            <h4 class="subtitle-term-conditional">Fases: </h4>
+                            <ul class="important-list">
+                              <li><div class="item-list-important"> <span class="material-icons md-30 success">assignment_turned_in</span> Caracterización. </div> </li>
+                              <li><div class="item-list-important"> <span class="material-icons md-30 pending">pending_actions</span> Análisis. </div> </li>
+                              <li><div class="item-list-important"> <span class="material-icons md-30 pending">pending_actions</span> Control de acceso. </div> </li>
+                              <li><div class="item-list-important"> <span class="material-icons md-30 pending">pending_actions</span> Registro de síntomas. </div> </li>
+                            </ul>
+                            `,
+
+                        })
                         }, (error)=> {
                           console.log(error);
                           Swal.close();
