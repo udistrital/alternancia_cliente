@@ -140,8 +140,7 @@ export class InformacionBasicaComponent implements OnInit {
     });
 
     this.userService.user$.subscribe((data) => {
-
-      this.request.get(environment.TERCEROS_SERVICE, `datos_identificacion/?query=Numero:` + data['user']['documento'])        
+      this.request.get(environment.TERCEROS_SERVICE, `datos_identificacion/?query=Numero:` + data['userService']['documento'])        
         .subscribe((datosInfoTercero: any) => {
           this.datosIdentificacion = {
             ...datosInfoTercero[0],
