@@ -3,7 +3,7 @@ export const environment = {
   entorno: 'test',
   autenticacion: true,
   notificaciones: false,
-  menuApps: true,
+  menuApps: false,
   appname: 'alternancia',
   appMenu: 'alternancia',
   NUXEO: {
