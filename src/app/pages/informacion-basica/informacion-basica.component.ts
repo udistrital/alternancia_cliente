@@ -74,16 +74,19 @@ export class InformacionBasicaComponent implements OnInit {
 
 
   public calcularEdad(fechaNacimientoStr: string): number {
-    const actual = new Date();
-    const fechaNacimiento = this.corregirFecha(fechaNacimientoStr);
-    let edad = actual.getFullYear() - fechaNacimiento.getFullYear();
-    const mes = actual.getMonth() - fechaNacimiento.getMonth();
-
-    if (mes < 0 || (mes === 0 && actual.getDate() < fechaNacimiento.getDate())) {
-      edad--;
+    if(fechaNacimientoStr) {
+      const actual = new Date();
+      const fechaNacimiento = this.corregirFecha(fechaNacimientoStr);
+      let edad = actual.getFullYear() - fechaNacimiento.getFullYear();
+      const mes = actual.getMonth() - fechaNacimiento.getMonth();
+  
+      if (mes < 0 || (mes === 0 && actual.getDate() < fechaNacimiento.getDate())) {
+        edad--;
+      }
+      return edad;
+    }else {
+      return null
     }
-
-    return edad;
   }
 
   public asignarVinculacion(vinculacion: Vinculacion) {
@@ -112,6 +115,9 @@ export class InformacionBasicaComponent implements OnInit {
             this.source.load(datosCarga)
 
           }
+        }, (error) => {
+          console.log(error);
+          Swal.close();
         })
 
     } else if (vinculacion.TipoVinculacion.ParametroPadreId) {
@@ -147,21 +153,27 @@ export class InformacionBasicaComponent implements OnInit {
             ...{ FechaExpedicion: datosInfoTercero[0].FechaExpedicion ? this.corregirFecha(datosInfoTercero[0].FechaExpedicion) : '' }            
           }
           this.tercero = this.datosIdentificacion.TerceroId;
-          this.edad = this.calcularEdad(this.tercero.FechaNacimiento);
-
-          this.request.get(environment.TERCEROS_SERVICE, `info_complementaria_tercero/?query=TerceroId.Id:` + this.tercero.Id
+          this.edad = this.calcularEdad(this.tercero?this.tercero.FechaNacimiento?this.tercero.FechaNacimiento: null: null);
+          debugger;
+          this.request.get(environment.TERCEROS_SERVICE, `info_complementaria_tercero/?query=TerceroId.Id:` + !!this.tercero?this.tercero.Id?this.tercero.Id:'':''
             + `,InfoComplementariaId.GrupoInfoComplementariaId.Id:6`)
             .subscribe((datosInfoGenero: any) => {
               this.datosGenero = datosInfoGenero[0];
+            } , (error) => {
+              console.log(error);
+              Swal.close();
             })
 
-          this.request.get(environment.TERCEROS_SERVICE, `info_complementaria_tercero/?query=TerceroId.Id:` + this.tercero.Id
+          this.request.get(environment.TERCEROS_SERVICE, `info_complementaria_tercero/?query=TerceroId.Id:` + !!this.tercero?this.tercero.Id?this.tercero.Id:'':''
             + `,InfoComplementariaId.GrupoInfoComplementariaId.Id:2`)
             .subscribe((datosInfoEstadoCivil: any) => {
               this.datosEstadoCivil = datosInfoEstadoCivil[0];
+            }, (error) => {
+              console.log(error);
+              Swal.close();
             })
 
-          this.request.get(environment.TERCEROS_SERVICE, `vinculacion/?query=Activo:true,TerceroPrincipalId.Id:` + this.tercero.Id)
+          this.request.get(environment.TERCEROS_SERVICE, `vinculacion/?query=Activo:true,TerceroPrincipalId.Id:` + !!this.tercero?this.tercero.Id?this.tercero.Id:'':'')
             .subscribe((datosInfoVinculaciones: any) => {
               this.vinculaciones = datosInfoVinculaciones;
               this.vinculacionesDocente = [];
@@ -208,6 +220,9 @@ export class InformacionBasicaComponent implements OnInit {
                   })
               }
             })
+        }, (error) => {
+          console.log(error);
+          Swal.close();
         })
     })
 
