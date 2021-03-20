@@ -8,6 +8,7 @@ import { InfoComplementaria } from '../../@core/models/info_complementaria';
 import { Tercero } from '../../@core/models/tercero';
 import { ignoreElements, map } from 'rxjs/operators';
 import { InfoComplementariaTercero } from '../../@core/models/info_complementaria_tercero';
+import { Router } from '@angular/router';
 import { UserService } from '../services/userService';
 import { from } from 'rxjs';
 
@@ -25,7 +26,7 @@ export interface Opcion {
 export class PreexistenciaComponent implements OnInit {
   isPost = true;
   decision_presencialidad: boolean = false;
-  
+
   isAgree = false;
   comorbilidadesArray: any = [];
   vinculacionesArray: any = [];
@@ -35,7 +36,8 @@ export class PreexistenciaComponent implements OnInit {
     private utilService: UtilService,
     private qrService: QrService,
     private request: RequestManager,
-    private userService: UserService
+    private userService: UserService,
+    private router: Router
   ) { }
 
   vinculaciones: Opcion[] = [];
@@ -65,7 +67,6 @@ export class PreexistenciaComponent implements OnInit {
         name: comorbilidad['Nombre']
       }))
 
-      // console.log(this.comorbilidades);      
     }
 
     if (this.otrosArray) {
@@ -78,15 +79,12 @@ export class PreexistenciaComponent implements OnInit {
     }
 
     if (this.vinculacionesArray) {
-      console.log('vinculaciones array:', this.vinculacionesArray)
-      console.log('vinculaciones array0:', this.vinculacionesArray[0])      
       this.vinculaciones = this.vinculacionesArray.map((vinculacion) => ({
         ...vinculacion,
         label: vinculacion.nombreVinculacion,
         isSelected: vinculacion.Alternancia,
         name: vinculacion.nombreVinculacion
       }))
-      console.log('vinculaciones a secas:', this.vinculaciones)
     }
 
 
@@ -102,7 +100,6 @@ export class PreexistenciaComponent implements OnInit {
 
 
                 for (let i = 0; i < this.comorbilidadesArray.length; i++) {
-                  console.log(datosComorbilidades[i])
                   let isSelected = JSON.parse(datosComorbilidades[i].Dato)
                   this.comorbilidadesArray[i] = {
                     ... this.comorbilidadesArray[i],
@@ -110,9 +107,6 @@ export class PreexistenciaComponent implements OnInit {
                     IdTerceroCaracterizacion: datosComorbilidades[i].Id
                   }
                 }
-                console.log('datos comorbilidades array', this.comorbilidadesArray);
-                console.log('datos comorbilidades', datosComorbilidades);
-
                 this.request.get(environment.TERCEROS_SERVICE,
                   '/info_complementaria_tercero?limit=0&fields=Id,Dato&order=asc&sortby=Id&query=InfoComplementariaId.GrupoInfoComplementariaId.Id:48,TerceroId.Id:'
                   + this.tercero.Id)
@@ -120,7 +114,6 @@ export class PreexistenciaComponent implements OnInit {
                     (datosOtros: any) => {
                       if (typeof datosOtros[0].Dato !== 'undefined') {
                         for (let i = 0; i < this.otrosArray.length; i++) {
-                          console.log(datosOtros[i])
                           let isSelected = JSON.parse(datosOtros[i].Dato)
                           this.otrosArray[i] = {
                             ... this.otrosArray[i],
@@ -128,8 +121,6 @@ export class PreexistenciaComponent implements OnInit {
                             IdTerceroCaracterizacion: datosOtros[i].Id
                           }
                         }
-                        console.log('otros: ', this.otrosArray);
-                        console.log('datos otros: ', datosOtros);
 
                         this.isPost = false;
                         if (this.comorbilidadesArray) {
@@ -139,8 +130,6 @@ export class PreexistenciaComponent implements OnInit {
                             isSelected: comorbilidad.isSelected,
                             name: comorbilidad['Nombre']
                           }))
-
-                          // console.log(this.comorbilidades);      
                         }
 
                         if (this.otrosArray) {
@@ -175,33 +164,33 @@ export class PreexistenciaComponent implements OnInit {
     this.request.get(environment.TERCEROS_SERVICE, `/info_complementaria?query=GrupoInfoComplementariaId.Id:47&limit=0&order=asc&sortby=Id&fields=Id,Nombre`)
       .subscribe((consultaComorbilidades: any) => {
         this.comorbilidadesArray = consultaComorbilidades;
-        //console.log(this.comorbilidadesArray);
         this.request.get(environment.TERCEROS_SERVICE, `/info_complementaria?query=GrupoInfoComplementariaId.Id:48&order=asc&sortby=Id&limit=0&fields=Id,Nombre`)
           .subscribe((consultaOtros: any) => {
             this.otrosArray = consultaOtros;
-            //console.log(this.comorbilidadesArray);                        
-            this.request.get(environment.TERCEROS_SERVICE, `vinculacion/?query=TerceroPrincipalId.Id:9759`)
-           this.request.get(environment.TERCEROS_SERVICE, `vinculacion/?order=asc&sortby=Id&query=Activo:true,TerceroPrincipalId.Id:` + this.tercero.Id)
-              .subscribe((datosInfoVinculaciones: any) => {
-                this.vinculacionesArray = datosInfoVinculaciones;
-                for (let i = 0; i < this.vinculacionesArray.length; i++){
-                  console.log('vinculacion id', this.vinculacionesArray[i].TipoVinculacionId);
-                  this.request.get(environment.PARAMETROS_SERVICE, `parametro/`+ this.vinculacionesArray[i].TipoVinculacionId)
-                    .subscribe((vinculacionP: any) => {
-                      vinculacionP = vinculacionP['Data'];
-                      console.log('vinculacionp', vinculacionP);
-                      this.vinculacionesArray[i] = {
-                        ...this.vinculacionesArray[i],
-                        nombreVinculacion: vinculacionP.Nombre
-                      };
-                      if (i + 1 == this.vinculacionesArray.length) {
-                        this.cargarCaracterizacion();
-                      }
-                    })                  
-                }
-                
-              })            
-            
+            this.userService.tercero$.subscribe((tercero: any) => {
+              if (typeof tercero.Id !== 'undefined') {
+                this.tercero = tercero;
+
+                this.request.get(environment.TERCEROS_SERVICE, `vinculacion/?order=asc&sortby=Id&query=Activo:true,TerceroPrincipalId.Id:` + this.tercero.Id)
+                  .subscribe((datosInfoVinculaciones: any) => {
+                    this.vinculacionesArray = datosInfoVinculaciones;
+                    for (let i = 0; i < this.vinculacionesArray.length; i++) {
+                      this.request.get(environment.PARAMETROS_SERVICE, `parametro/` + this.vinculacionesArray[i].TipoVinculacionId)
+                        .subscribe((vinculacionP: any) => {
+                          vinculacionP = vinculacionP['Data'];
+                          this.vinculacionesArray[i] = {
+                            ...this.vinculacionesArray[i],
+                            nombreVinculacion: vinculacionP.Nombre
+                          };
+                          if (i + 1 == this.vinculacionesArray.length) {
+                            this.cargarCaracterizacion();
+                          }
+                        })
+                    }
+
+                  })
+              }
+            })
           })
       })
 
@@ -222,7 +211,6 @@ export class PreexistenciaComponent implements OnInit {
     const comorbilidad = localStorage.getItem('comorbilidad');
     if (comorbilidad) {
       const objComorbilidades = JSON.parse(comorbilidad);
-      console.log(objComorbilidades);
       this.qrService.updateData(objComorbilidades);
       this.comorbilidades = this.comorbilidades.map((c: Opcion) => {
         return {
@@ -244,43 +232,43 @@ export class PreexistenciaComponent implements OnInit {
     this.otros = this.otros.map(option => ({ ...option, ...{ isSelected: false } }));
 
 
-    this.request.get(environment.TERCEROS_SERVICE,
-      '/info_complementaria_tercero?limit=0&order=desc&sortby=Id&query=InfoComplementariaId.GrupoInfoComplementariaId.Id:47&fields=Id')
-      .subscribe(
-        (caracterizaciones: any) => {
-          caracterizaciones.forEach(caracterizacion => {
-            this.request.delete(environment.TERCEROS_SERVICE, '/info_complementaria_tercero/', caracterizacion.Id)
-              .subscribe((data: any) => {
-                console.log('borrando...', caracterizacion.Id)
-                console.log('borrando...', data)
-              })
-
-          });
-
-        },
-        (error: any) => {
-          console.log(error)
-        }
-      )
-
-    this.request.get(environment.TERCEROS_SERVICE,
-      '/info_complementaria_tercero?limit=0&order=desc&sortby=Id&query=InfoComplementariaId.GrupoInfoComplementariaId.Id:48&fields=Id')
-      .subscribe(
-        (caracterizaciones: any) => {
-          caracterizaciones.forEach(caracterizacion => {
-            this.request.delete(environment.TERCEROS_SERVICE, '/info_complementaria_tercero/', caracterizacion.Id)
-              .subscribe((data: any) => {
-                console.log('borrando...', caracterizacion.Id)
-                console.log('borrando...', data)
-              })
-
-          });
-
-        },
-        (error: any) => {
-          console.log(error)
-        }
-      )
+    /*     this.request.get(environment.TERCEROS_SERVICE,
+          '/info_complementaria_tercero?limit=0&order=desc&sortby=Id&query=InfoComplementariaId.GrupoInfoComplementariaId.Id:47&fields=Id')
+          .subscribe(
+            (caracterizaciones: any) => {
+              caracterizaciones.forEach(caracterizacion => {
+                this.request.delete(environment.TERCEROS_SERVICE, '/info_complementaria_tercero/', caracterizacion.Id)
+                  .subscribe((data: any) => {
+                    console.log('borrando...', caracterizacion.Id)
+                    console.log('borrando...', data)
+                  })
+    
+              });
+    
+            },
+            (error: any) => {
+              console.log(error)
+            }
+          )
+    
+        this.request.get(environment.TERCEROS_SERVICE,
+          '/info_complementaria_tercero?limit=0&order=desc&sortby=Id&query=InfoComplementariaId.GrupoInfoComplementariaId.Id:48&fields=Id')
+          .subscribe(
+            (caracterizaciones: any) => {
+              caracterizaciones.forEach(caracterizacion => {
+                this.request.delete(environment.TERCEROS_SERVICE, '/info_complementaria_tercero/', caracterizacion.Id)
+                  .subscribe((data: any) => {
+                    console.log('borrando...', caracterizacion.Id)
+                    console.log('borrando...', data)
+                  })
+    
+              });
+    
+            },
+            (error: any) => {
+              console.log(error)
+            }
+          ) */
 
 
 
@@ -319,7 +307,6 @@ export class PreexistenciaComponent implements OnInit {
         isSelected: caracterizaciones[i].isSelected
       }
     }
-    console.log("caracterizacionesArray:", caracterizacionesArray)
     if (isValidTerm) {
       Swal.fire({
         title: 'Información de caracterización',
@@ -343,15 +330,15 @@ export class PreexistenciaComponent implements OnInit {
           if (this.tercero) {
             Swal.fire({
               title: this.isPost ? 'Guardando' : 'Actualizando' + ' caracterización',
-              html: `<b></b> de ${caracterizaciones.length} registros ${this.isPost ? 'almacenados' : 'actualizados'}` ,
+              html: `<b></b> de ${caracterizaciones.length} registros ${this.isPost ? 'almacenados' : 'actualizados'}`,
               timerProgressBar: true,
               onBeforeOpen: () => {
                 Swal.showLoading();
               },
             });
-            
+
             let vinculacionesC = [];
-            this.vinculaciones.forEach((vinculacion: any ) => {
+            this.vinculaciones.forEach((vinculacion: any) => {
               vinculacion.Alternancia = vinculacion.isSelected;
               delete vinculacion.label;
               delete vinculacion.isSelected;
@@ -361,27 +348,25 @@ export class PreexistenciaComponent implements OnInit {
             });
             from(vinculacionesC)
               .subscribe((vinculacionC: any) => {
-                console.log('vinculacionC',vinculacionC)
-                this.request.put(environment.TERCEROS_SERVICE, 'vinculacion', vinculacionC,vinculacionC.Id )
+                this.request.put(environment.TERCEROS_SERVICE, 'vinculacion', vinculacionC, vinculacionC.Id)
                   .subscribe((data) => {
-                  
-                }),
-                error => {
-                Swal.fire({
-                  title: 'error',
-                  text: `${JSON.stringify(error)}`,
-                  icon: 'error',
-                  showCancelButton: true,
-                  cancelButtonText: 'Cancelar',
-                  confirmButtonText: `Aceptar`,
-                });
-              };               
-            })
+
+                  }),
+                  error => {
+                    Swal.fire({
+                      title: 'error',
+                      text: `${JSON.stringify(error)}`,
+                      icon: 'error',
+                      showCancelButton: true,
+                      cancelButtonText: 'Cancelar',
+                      confirmButtonText: `Aceptar`,
+                    });
+                  };
+              })
 
             let updated = this.vinculaciones.length;
             const listComorbilidad = from(caracterizacionesArray);
             listComorbilidad.subscribe((caracterizacion: any) => {
-              console.log("caracterizacion2: ", caracterizacion)
               let caracterizacionTercero = {
                 TerceroId: { Id: this.tercero.Id },
                 InfoComplementariaId: {
@@ -394,7 +379,6 @@ export class PreexistenciaComponent implements OnInit {
                 ),
                 Activo: true,
               };
-              console.log(caracterizacionTercero);
               this.updateStorage()
 
               if (this.isPost) {
@@ -415,9 +399,12 @@ export class PreexistenciaComponent implements OnInit {
                         title: `Registro correcto`,
                         text: `Se ingresaron correctamente ${caracterizaciones.length + this.vinculaciones.length} registros`,
                         icon: 'success',
-                      });
+                      }).then((result) => {
+                        if (result.value) {
+                          this.router.navigate(['/pages']);
+                        }
+                      })
                       this.isPost = false;
-                      window.location.reload();
                     }
                   }),
                   error => {
@@ -431,7 +418,6 @@ export class PreexistenciaComponent implements OnInit {
                     });
                   };
               } else {
-                console.log(caracterizacionTercero)
                 this.request
                   .put(environment.TERCEROS_SERVICE, 'info_complementaria_tercero', caracterizacionTercero, caracterizacion.IdTerceroCaracterizacion)
                   .subscribe((data: any) => {
@@ -449,8 +435,11 @@ export class PreexistenciaComponent implements OnInit {
                         title: `Actualización correcta`,
                         text: `Se actualizaron correctamente ${caracterizaciones.length + this.vinculaciones.length} registros`,
                         icon: 'success',
-                      });
-                      window.location.reload();
+                      }).then((result) => {
+                        if (result.value) {
+                          this.router.navigate(['/pages']);
+                        }
+                      })
                     }
                   }),
                   error => {
@@ -461,7 +450,7 @@ export class PreexistenciaComponent implements OnInit {
                       showCancelButton: true,
                       cancelButtonText: 'Cancelar',
                       confirmButtonText: `Aceptar`,
-                    });                    
+                    });
                   };
               }
             });
