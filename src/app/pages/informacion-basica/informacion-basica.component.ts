@@ -161,8 +161,7 @@ export class InformacionBasicaComponent implements OnInit {
               this.datosEstadoCivil = datosInfoEstadoCivil[0];
             })
 
-          this.request.get(environment.TERCEROS_SERVICE, `vinculacion/?query=TerceroPrincipalId.Id:9825`)
-            //this.request.get(environment.TERCEROS_SERVICE, `vinculacion/?query=Activo:true,TerceroPrincipalId.Id:` + this.tercero.Id)
+          this.request.get(environment.TERCEROS_SERVICE, `vinculacion/?query=Activo:true,TerceroPrincipalId.Id:` + this.tercero.Id)
             .subscribe((datosInfoVinculaciones: any) => {
               this.vinculaciones = datosInfoVinculaciones;
               this.vinculacionesDocente = [];
