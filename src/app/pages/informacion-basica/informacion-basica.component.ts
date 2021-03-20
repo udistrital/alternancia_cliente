@@ -155,7 +155,7 @@ export class InformacionBasicaComponent implements OnInit {
           this.tercero = this.datosIdentificacion.TerceroId;
           this.edad = this.calcularEdad(this.tercero?this.tercero.FechaNacimiento?this.tercero.FechaNacimiento: null: null);
           debugger;
-          this.request.get(environment.TERCEROS_SERVICE, `info_complementaria_tercero/?query=TerceroId.Id:` + !!this.tercero?this.tercero.Id?this.tercero.Id:'':''
+          this.request.get(environment.TERCEROS_SERVICE, `info_complementaria_tercero/?query=TerceroId.Id:${!!this.tercero?this.tercero.Id?this.tercero.Id:'':''}`
             + `,InfoComplementariaId.GrupoInfoComplementariaId.Id:6`)
             .subscribe((datosInfoGenero: any) => {
               this.datosGenero = datosInfoGenero[0];
@@ -164,7 +164,7 @@ export class InformacionBasicaComponent implements OnInit {
               Swal.close();
             })
 
-          this.request.get(environment.TERCEROS_SERVICE, `info_complementaria_tercero/?query=TerceroId.Id:` + !!this.tercero?this.tercero.Id?this.tercero.Id:'':''
+          this.request.get(environment.TERCEROS_SERVICE, `info_complementaria_tercero/?query=TerceroId.Id:${!!this.tercero?this.tercero.Id?this.tercero.Id:'':''}`
             + `,InfoComplementariaId.GrupoInfoComplementariaId.Id:2`)
             .subscribe((datosInfoEstadoCivil: any) => {
               this.datosEstadoCivil = datosInfoEstadoCivil[0];
@@ -173,7 +173,7 @@ export class InformacionBasicaComponent implements OnInit {
               Swal.close();
             })
 
-          this.request.get(environment.TERCEROS_SERVICE, `vinculacion/?query=Activo:true,TerceroPrincipalId.Id:` + !!this.tercero?this.tercero.Id?this.tercero.Id:'':'')
+          this.request.get(environment.TERCEROS_SERVICE, `vinculacion/?query=Activo:true,TerceroPrincipalId.Id:${!!this.tercero?this.tercero.Id?this.tercero.Id:'':''}`)
             .subscribe((datosInfoVinculaciones: any) => {
               this.vinculaciones = datosInfoVinculaciones;
               this.vinculacionesDocente = [];
