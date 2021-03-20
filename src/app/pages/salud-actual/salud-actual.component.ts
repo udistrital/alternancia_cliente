@@ -45,7 +45,6 @@ export class SaludActualComponent implements OnInit {
           (data: any) => {
             if(data.Data.length > 0){
             const actualStatus = data.Data[0].info_salud;
-            console.log(actualStatus);
             this.task = this.task.map((c: Task) => {
               return {
                 ...c,
@@ -102,7 +101,6 @@ export class SaludActualComponent implements OnInit {
                 .subscribe(
                   (data: any)=> {
                     if(data.Status) {
-                      console.log(data);
                       Swal.fire({
                         title: 'Estado de salud actual',
                         text: `Se almacenó exitosamente`,
