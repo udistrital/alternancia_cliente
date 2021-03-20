@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { catchError, map } from 'rxjs/operators';
+import { catchError, map, mergeMap } from 'rxjs/operators';
 import { HttpErrorManager } from './errorManager';
+import { BehaviorSubject } from 'rxjs';
 
 /**
  * This class manage the http connections with internal REST services. Use the response format {
@@ -14,15 +15,21 @@ import { HttpErrorManager } from './errorManager';
   providedIn: 'root',
 })
 export class RequestManager {
-  httpOptions: any;
-  accessToken: string;
+  private headerSubject = new BehaviorSubject({});
+  public header$ = this.headerSubject.asObservable();
 
   constructor(private http: HttpClient, private errManager: HttpErrorManager) {
-    this.accessToken = localStorage.getItem('access_token');
-    this.httpOptions =  { headers: new HttpHeaders({
-        Accept: 'application/json',
-        //'Content-Type': 'application/json',//pendiente definir si se queda o se va
-        Authorization: `Bearer ${this.accessToken?this.accessToken:localStorage.getItem('access_token')}`,
+    this.updateHeaderToken();
+  }
+
+  updateHeaderToken() {
+    const access_token = localStorage.getItem('access_token');
+    if (access_token) {
+      this.headerSubject.next({
+        headers: new HttpHeaders({
+          Accept: 'application/json',
+          Authorization: `Bearer ${access_token}`,
+        })
       })
     }
   }
@@ -38,19 +45,22 @@ export class RequestManager {
    * @returns Observable<any>
    */
   get(path, endpoint) {
-
-    return this.http.get<any>(`${path}${endpoint}`, this.httpOptions).pipe(
-      map(
-        (res: any) => {
-          if (res.hasOwnProperty('Body')) {
-            return res.Body;
-          } else {
-            return res;
-          }
-        },
-      ),
-      catchError(this.errManager.handleError.bind(this)),
-    );
+    return this.header$.pipe(
+      mergeMap(header => {
+        return this.http.get<any>(`${path}${endpoint}`, header).pipe(
+          map(
+            (res: any) => {
+              if (res.hasOwnProperty('Body')) {
+                return res.Body;
+              } else {
+                return res;
+              }
+            },
+          ),
+          catchError(this.errManager.handleError.bind(this)),
+        );
+      })
+    )
   }
 
   /**
@@ -62,9 +72,13 @@ export class RequestManager {
    * @returns Observable<any>
    */
   post(path, endpoint, element) {
-    return this.http.post<any>(`${path}${endpoint}`, element, this.httpOptions).pipe(
-      catchError(this.errManager.handleError),
-    );
+    return this.header$.pipe(
+      mergeMap(header => {
+        return this.http.post<any>(`${path}${endpoint}`, element, header).pipe(
+          catchError(this.errManager.handleError)
+        )
+      })
+    )
   }
 
   /**
@@ -76,9 +90,13 @@ export class RequestManager {
    * @returns Observable<any>
    */
   put(path, endpoint, element, id) {
-    return this.http.put<any>(`${path}${endpoint}/${id}`, element,  this.httpOptions).pipe(
-      catchError(this.errManager.handleError),
-    );
+    return this.header$.pipe(
+      mergeMap(header => {
+        return this.http.put<any>(`${path}${endpoint}/${id}`, element, header).pipe(
+          catchError(this.errManager.handleError),
+        );
+      })
+    )
   }
 
   /**
@@ -90,8 +108,12 @@ export class RequestManager {
    * @returns Observable<any>
    */
   delete(path, endpoint, id) {
-    return this.http.delete<any>(`${path}${endpoint}/${id}`, this.httpOptions).pipe(
-      catchError(this.errManager.handleError),
-    );
+    return this.header$.pipe(
+      mergeMap(header => {
+        return this.http.delete<any>(`${path}${endpoint}/${id}`, header).pipe(
+          catchError(this.errManager.handleError),
+        );
+      })
+    )
   }
 };
