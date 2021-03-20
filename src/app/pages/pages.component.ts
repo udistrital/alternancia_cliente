@@ -18,7 +18,7 @@ export class PagesComponent implements OnInit {
   userData: any;
   environment: any;
   loadingRouter: boolean;
-  tercero = {}
+  tercero: any = {}
 
 
   constructor(    private router: Router, private userService:UserService,
@@ -49,16 +49,11 @@ export class PagesComponent implements OnInit {
 
     this.userService.user$.subscribe((data: any)=> {
       if(data?data.user?data.user.documento?true:false:false:false && localStorage.getItem('access_token') != null) {
-        // this.request.get(environment.TERCEROS_SERVICE, `datos_identificacion/?query=Numero:`+ data.user.documento)
-        // .subscribe((tercero)=> {
-        //   console.log(this.terceroData);
-        // })
-        this.request.get(environment.TERCEROS_SERVICE, `datos_identificacion?query=Numero:`+ '80761795')
+        this.request.get(environment.TERCEROS_SERVICE, `datos_identificacion?query=Numero:`+ data.user.documento)
         .subscribe((datosIdentificacion: DatosIdentificacion)=> {
-          let tercero = datosIdentificacion[2].TerceroId;
+          let tercero = datosIdentificacion[0].TerceroId;
           this.userService.updateTercero(tercero);
           this.tercero = tercero;
-          console.log(tercero);
         })
       }
     })
