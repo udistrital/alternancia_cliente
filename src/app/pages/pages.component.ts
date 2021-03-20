@@ -19,7 +19,7 @@ export class PagesComponent implements OnInit {
   environment: any;
   loadingRouter: boolean;
   tercero: any = {}
-
+ 
 
   constructor(    private router: Router, private userService:UserService,
     private request: RequestManager ) {
