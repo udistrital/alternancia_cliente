@@ -32,9 +32,6 @@ export class SaludActualComponent implements OnInit {
               private request: RequestManager) {
       
   }
-
-
-
   ngOnInit() {
     this.user.tercero$.subscribe((tercero: any) => {
       if(typeof tercero.Id !== 'undefined') {
