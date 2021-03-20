@@ -63,7 +63,6 @@ export class UtilService {
             confirmButtonText:
                 'Continue&nbsp;<i class="fa fa-arrow-right"></i>',
             inputValidator: (result) => {
-                console.log(result);
                 return !result && `Necesita aceptar términos y condiciones para continuar`
             }
         })
