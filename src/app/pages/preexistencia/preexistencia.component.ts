@@ -45,6 +45,15 @@ export class PreexistenciaComponent implements OnInit {
   otros: Opcion[] = [];
 
   consultarCaracterizacion() {
+    Swal.fire({
+      title: 'Por favor espere!',
+      html: `cargando información de formulario`,
+      allowOutsideClick: false,
+      showConfirmButton: false,
+      willOpen: () => {
+          Swal.showLoading()
+        },
+    });
     this.userService.tercero$
       .subscribe((tercero: any) => {
         this.tercero = tercero;
@@ -81,9 +90,10 @@ export class PreexistenciaComponent implements OnInit {
                       isSelected: false,
                       name: comorbilidad['Nombre']
                     }))
+                    Swal.close();
                   }
                 }
-                if (consultaOtros) {
+                if (consultaOtros ) {
                   if (datosOtros && JSON.stringify(datosOtros) !== '[{}]') {
                     this.isPost = false;
                     this.otros = consultaOtros.map((otro, index) => ({
@@ -100,6 +110,7 @@ export class PreexistenciaComponent implements OnInit {
                       isSelected: false,
                       name: otro['Nombre']
                     }))
+                    Swal.close();
                   }
                 }
                 if (datosInfoVinculaciones) {
@@ -109,19 +120,36 @@ export class PreexistenciaComponent implements OnInit {
                       .subscribe((dataRequestInfoVinculacion) => {
                         const vinculacionP = dataRequestInfoVinculacion['Data'];
                         this.vinculaciones.push({
-                  
                           ...datosInfoVinculacion,
                           label: vinculacionP.Nombre,
                           isSelected: datosInfoVinculacion.Alternancia?datosInfoVinculacion.Alternancia:false,
                           name: vinculacionP.Nombre
                         });
-                      })
+                        if( (this.vinculacionesArray.length) === this.vinculaciones.length){
+                          Swal.close();
+                        }
+                      },
+                      (error) => {
+                        Swal.close();
+                        console.log(error);
+                      });
                   })
+                }else  {
+                  Swal.close();
                 }
-
+              },
+              (error) => {
+                Swal.close();
+                console.log(error);
               });
+        }else {
+         Swal.close();
         }
-      })
+      },
+      (error) => {
+        Swal.close();
+        console.log(error);
+      });
 
   }
 
@@ -158,48 +186,7 @@ export class PreexistenciaComponent implements OnInit {
   clear(): void {
     this.comorbilidades = this.comorbilidades.map(option => ({ ...option, ...{ isSelected: false } }));
     this.otros = this.otros.map(option => ({ ...option, ...{ isSelected: false } }));
-
-
-    /*     this.request.get(environment.TERCEROS_SERVICE,
-          '/info_complementaria_tercero?limit=0&order=desc&sortby=Id&query=InfoComplementariaId.GrupoInfoComplementariaId.Id:47&fields=Id')
-          .subscribe(
-            (caracterizaciones: any) => {
-              caracterizaciones.forEach(caracterizacion => {
-                this.request.delete(environment.TERCEROS_SERVICE, '/info_complementaria_tercero/', caracterizacion.Id)
-                  .subscribe((data: any) => {
-                    console.log('borrando...', caracterizacion.Id)
-                    console.log('borrando...', data)
-                  })
-    
-              });
-    
-            },
-            (error: any) => {
-              console.log(error)
-            }
-          )
-    
-        this.request.get(environment.TERCEROS_SERVICE,
-          '/info_complementaria_tercero?limit=0&order=desc&sortby=Id&query=InfoComplementariaId.GrupoInfoComplementariaId.Id:48&fields=Id')
-          .subscribe(
-            (caracterizaciones: any) => {
-              caracterizaciones.forEach(caracterizacion => {
-                this.request.delete(environment.TERCEROS_SERVICE, '/info_complementaria_tercero/', caracterizacion.Id)
-                  .subscribe((data: any) => {
-                    console.log('borrando...', caracterizacion.Id)
-                    console.log('borrando...', data)
-                  })
-    
-              });
-    
-            },
-            (error: any) => {
-              console.log(error)
-            }
-          ) */
-
-
-
+    this.vinculaciones = this.vinculaciones.map(option => ({ ...option, ...{ isSelected: false } }));
   }
 
   functionReturn() { }
@@ -243,7 +230,7 @@ export class PreexistenciaComponent implements OnInit {
             html: this.isPost ? 'Guardando' : 'Actualizando' + ' caracterización',
             allowOutsideClick: false,
             showConfirmButton: false,
-            onBeforeOpen: () => {
+            willOpen: () => {
               Swal.showLoading();
             },
           });
@@ -253,7 +240,7 @@ export class PreexistenciaComponent implements OnInit {
               title: this.isPost ? 'Guardando' : 'Actualizando' + ' caracterización',
               html: `<b></b> de ${caracterizaciones.length + this.vinculaciones.length} registros ${this.isPost ? 'almacenados' : 'actualizados'}`,
               timerProgressBar: true,
-              onBeforeOpen: () => {
+              willOpen: () => {
                 Swal.showLoading();
               },
             });

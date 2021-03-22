@@ -90,7 +90,7 @@ export class SaludActualComponent implements OnInit {
                   html: `guardando estado de salud`,
                   allowOutsideClick: false,
                   showConfirmButton: false,
-                  onBeforeOpen: () => {
+                  willOpen: () => {
                       Swal.showLoading()
                     },
                 });
