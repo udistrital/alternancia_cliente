@@ -24,7 +24,7 @@ export class UtilService {
                         title: 'Por favor espere!',
                         html: `${option === 'update' ? 'Actualizando' : 'Creando'} ${type}`,
                         allowOutsideClick: false,
-                        onBeforeOpen: () => {
+                        willOpen: () => {
                             Swal.showLoading()
                         },
                     });
