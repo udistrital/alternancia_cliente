@@ -6,11 +6,11 @@ import { QrService } from '../services/qrService';
 import { UtilService } from '../services/utilService';
 import { InfoComplementaria } from '../../@core/models/info_complementaria';
 import { Tercero } from '../../@core/models/tercero';
-import { ignoreElements, map } from 'rxjs/operators';
 import { InfoComplementariaTercero } from '../../@core/models/info_complementaria_tercero';
 import { Router } from '@angular/router';
 import { UserService } from '../services/userService';
-import { from } from 'rxjs';
+import { combineLatest, from } from 'rxjs';
+import { map, mergeMap, subscribeOn, } from 'rxjs/operators';
 
 export interface Opcion {
   name: string;
@@ -42,158 +42,86 @@ export class PreexistenciaComponent implements OnInit {
 
   vinculaciones: Opcion[] = [];
   comorbilidades: Opcion[] = [];
-  otros: Opcion[] = [
-    /*     { label: 'Convive con mayores de 70 años.', isSelected: false, name: 'convive_mayores_70' },
-        { label: 'Convive con personas con comorbilidades.', isSelected: false, name: 'convive_comorbilidades' },
-        {
-          label: 'Convivie con personal que trabaje en el sector de la salud activos o en primera línea de atención.',
-          isSelected: false,
-          name: 'convive_trabajador_salud_covid',
-        },
-        { label: 'Reside fuera de Bogotá D.C.', isSelected: false, name: 'reside_fuera_bogota' },
-        {
-          label: 'Tiene dificultades económicas para transporte y sustento.',
-          isSelected: false,
-          name: 'dificultades_economicas_transporte_sustento',
-        }, */
-  ];
-
-  cargarCaracterizacion() {
-    if (this.comorbilidadesArray) {
-      this.comorbilidades = this.comorbilidadesArray.map((comorbilidad) => ({
-        ...comorbilidad,
-        label: comorbilidad['Nombre'],
-        isSelected: false,
-        name: comorbilidad['Nombre']
-      }))
-
-    }
-
-    if (this.otrosArray) {
-      this.otros = this.otrosArray.map((otro) => ({
-        ...otro,
-        label: otro['Nombre'],
-        isSelected: false,
-        name: otro['Nombre']
-      }))
-    }
-
-    if (this.vinculacionesArray) {
-      this.vinculaciones = this.vinculacionesArray.map((vinculacion) => ({
-        ...vinculacion,
-        label: vinculacion.nombreVinculacion,
-        isSelected: vinculacion.Alternancia,
-        name: vinculacion.nombreVinculacion
-      }))
-    }
-
-
-    this.userService.tercero$.subscribe((tercero: any) => {
-      if (typeof tercero.Id !== 'undefined') {
-        this.tercero = tercero;
-        this.request.get(environment.TERCEROS_SERVICE,
-          '/info_complementaria_tercero?limit=0&fields=Id,Dato&order=asc&sortby=Id&query=InfoComplementariaId.GrupoInfoComplementariaId.Id:47,TerceroId.Id:'
-          + this.tercero.Id)
-          .subscribe(
-            (datosComorbilidades: any) => {
-              if (typeof datosComorbilidades[0].Dato !== 'undefined') {
-
-
-                for (let i = 0; i < this.comorbilidadesArray.length; i++) {
-                  let isSelected = JSON.parse(datosComorbilidades[i].Dato)
-                  this.comorbilidadesArray[i] = {
-                    ... this.comorbilidadesArray[i],
-                    isSelected: isSelected.dato,
-                    IdTerceroCaracterizacion: datosComorbilidades[i].Id
-                  }
-                }
-                this.request.get(environment.TERCEROS_SERVICE,
-                  '/info_complementaria_tercero?limit=0&fields=Id,Dato&order=asc&sortby=Id&query=InfoComplementariaId.GrupoInfoComplementariaId.Id:48,TerceroId.Id:'
-                  + this.tercero.Id)
-                  .subscribe(
-                    (datosOtros: any) => {
-                      if (typeof datosOtros[0].Dato !== 'undefined') {
-                        for (let i = 0; i < this.otrosArray.length; i++) {
-                          let isSelected = JSON.parse(datosOtros[i].Dato)
-                          this.otrosArray[i] = {
-                            ... this.otrosArray[i],
-                            isSelected: isSelected.dato,
-                            IdTerceroCaracterizacion: datosOtros[i].Id
-                          }
-                        }
-
-                        this.isPost = false;
-                        if (this.comorbilidadesArray) {
-                          this.comorbilidades = this.comorbilidadesArray.map((comorbilidad) => ({
-                            ...comorbilidad,
-                            label: comorbilidad['Nombre'],
-                            isSelected: comorbilidad.isSelected,
-                            name: comorbilidad['Nombre']
-                          }))
-                        }
-
-                        if (this.otrosArray) {
-                          this.otros = this.otrosArray.map((otro) => ({
-                            ...otro,
-                            label: otro['Nombre'],
-                            isSelected: otro.isSelected,
-                            name: otro['Nombre']
-                          }))
-                        }
-                      }
-
-                    },
-                    (error: any) => {
-                      console.log(error)
-                    }
-                  )
-
-
-              }
-            },
-            (error: any) => {
-              console.log(error)
-            }
-          )
-      }
-    })
-  }
-
+  otros: Opcion[] = [];
 
   consultarCaracterizacion() {
-    this.request.get(environment.TERCEROS_SERVICE, `/info_complementaria?query=GrupoInfoComplementariaId.Id:47&limit=0&order=asc&sortby=Id&fields=Id,Nombre`)
-      .subscribe((consultaComorbilidades: any) => {
-        this.comorbilidadesArray = consultaComorbilidades;
-        this.request.get(environment.TERCEROS_SERVICE, `/info_complementaria?query=GrupoInfoComplementariaId.Id:48&order=asc&sortby=Id&limit=0&fields=Id,Nombre`)
-          .subscribe((consultaOtros: any) => {
-            this.otrosArray = consultaOtros;
-            this.userService.tercero$.subscribe((tercero: any) => {
-              if (typeof tercero.Id !== 'undefined') {
-                this.tercero = tercero;
+    this.userService.tercero$
+      .subscribe((tercero: any) => {
+        this.tercero = tercero;
+        if (typeof tercero.Id !== 'undefined') {
+          combineLatest(
+            this.request.get(environment.TERCEROS_SERVICE, `/info_complementaria?query=GrupoInfoComplementariaId.Id:47&limit=0&order=asc&sortby=Id&fields=Id,Nombre`),
+            this.request.get(environment.TERCEROS_SERVICE, `/info_complementaria?query=GrupoInfoComplementariaId.Id:48&order=asc&sortby=Id&limit=0&fields=Id,Nombre`),
+            this.request.get(environment.TERCEROS_SERVICE, `vinculacion/?order=asc&sortby=Id&query=Activo:true,TerceroPrincipalId.Id:${tercero.Id}`),
+            //------------------------------------------------------- formData -----------------------------------------------
+            this.request.get(environment.TERCEROS_SERVICE,
+              '/info_complementaria_tercero?limit=0&order=asc&sortby=Id&query=InfoComplementariaId.GrupoInfoComplementariaId.Id:47,TerceroId.Id:'
+              + this.tercero.Id),
+            this.request.get(environment.TERCEROS_SERVICE,
+              '/info_complementaria_tercero?limit=0&order=asc&sortby=Id&query=InfoComplementariaId.GrupoInfoComplementariaId.Id:48,TerceroId.Id:'
+              + this.tercero.Id)
 
-                this.request.get(environment.TERCEROS_SERVICE, `vinculacion/?order=asc&sortby=Id&query=Activo:true,TerceroPrincipalId.Id:` + this.tercero.Id)
-                  .subscribe((datosInfoVinculaciones: any) => {
-                    this.vinculacionesArray = datosInfoVinculaciones;
-                    for (let i = 0; i < this.vinculacionesArray.length; i++) {
-                      this.request.get(environment.PARAMETROS_SERVICE, `parametro/` + this.vinculacionesArray[i].TipoVinculacionId)
-                        .subscribe((vinculacionP: any) => {
-                          vinculacionP = vinculacionP['Data'];
-                          this.vinculacionesArray[i] = {
-                            ...this.vinculacionesArray[i],
-                            nombreVinculacion: vinculacionP.Nombre
-                          };
-                          if (i + 1 == this.vinculacionesArray.length) {
-                            this.cargarCaracterizacion();
-                          }
-                        })
-                    }
-
+          )
+            .subscribe(
+              ([consultaComorbilidades, consultaOtros, datosInfoVinculaciones, datosComorbilidades, datosOtros]: any) => {
+                if (consultaComorbilidades) {
+                  if (datosComorbilidades && JSON.stringify(datosComorbilidades) !== '[{}]') {
+                    this.isPost = false;
+                    this.comorbilidades = consultaComorbilidades.map((comorbilidad, index) => ({
+                      ...comorbilidad,
+                      ...{ form: datosComorbilidades[index] },
+                      label: comorbilidad['Nombre'],
+                      isSelected: (JSON.parse(datosComorbilidades[index].Dato)).dato,
+                      name: comorbilidad['Nombre']
+                    }))
+                  } else {
+                    this.comorbilidades = consultaComorbilidades.map((comorbilidad, index) => ({
+                      ...comorbilidad,
+                      label: comorbilidad['Nombre'],
+                      isSelected: false,
+                      name: comorbilidad['Nombre']
+                    }))
+                  }
+                }
+                if (consultaOtros) {
+                  if (datosOtros && JSON.stringify(datosOtros) !== '[{}]') {
+                    this.isPost = false;
+                    this.otros = consultaOtros.map((otro, index) => ({
+                      ...otro,
+                      ...{ form: datosOtros[index] },
+                      label: otro['Nombre'],
+                      isSelected: (JSON.parse(datosComorbilidades[index].Dato)).dato,
+                      name: otro['Nombre']
+                    }))
+                  } else {
+                    this.otros = consultaOtros.map((otro, index) => ({
+                      ...otro,
+                      label: otro['Nombre'],
+                      isSelected: false,
+                      name: otro['Nombre']
+                    }))
+                  }
+                }
+                if (datosInfoVinculaciones) {
+                  this.vinculacionesArray = [];
+                  datosInfoVinculaciones.map((datosInfoVinculacion, index) => {
+                    this.request.get(environment.PARAMETROS_SERVICE, `parametro/` + datosInfoVinculacion.TipoVinculacionId)
+                      .subscribe((dataRequestInfoVinculacion) => {
+                        const vinculacionP = dataRequestInfoVinculacion['Data'];
+                        this.vinculaciones.push({
+                  
+                          ...datosInfoVinculacion,
+                          label: vinculacionP.Nombre,
+                          isSelected: datosInfoVinculacion.Alternancia?datosInfoVinculacion.Alternancia:false,
+                          name: vinculacionP.Nombre
+                        });
+                      })
                   })
-              }
-            })
-          })
-      })
+                }
 
+              });
+        }
+      })
 
   }
 
@@ -298,15 +226,8 @@ export class PreexistenciaComponent implements OnInit {
 
 
     const isValidTerm = await this.utilService.termsAndConditional();
-    let caracterizaciones = this.comorbilidades.concat(this.otros);
-    let caracterizacionesArray: any[] = this.comorbilidadesArray.concat(this.otrosArray);
+    let caracterizaciones = [...this.comorbilidades, ...this.otros];
 
-    for (let i = 0; i < caracterizaciones.length; i++) {
-      caracterizacionesArray[i] = {
-        ...caracterizacionesArray[i],
-        isSelected: caracterizaciones[i].isSelected
-      }
-    }
     if (isValidTerm) {
       Swal.fire({
         title: 'Información de caracterización',
@@ -330,22 +251,22 @@ export class PreexistenciaComponent implements OnInit {
           if (this.tercero) {
             Swal.fire({
               title: this.isPost ? 'Guardando' : 'Actualizando' + ' caracterización',
-              html: `<b></b> de ${caracterizaciones.length} registros ${this.isPost ? 'almacenados' : 'actualizados'}`,
+              html: `<b></b> de ${caracterizaciones.length + this.vinculaciones.length} registros ${this.isPost ? 'almacenados' : 'actualizados'}`,
               timerProgressBar: true,
               onBeforeOpen: () => {
                 Swal.showLoading();
               },
             });
 
-            let vinculacionesC = [];
-            this.vinculaciones.forEach((vinculacion: any) => {
-              vinculacion.Alternancia = vinculacion.isSelected;
-              delete vinculacion.label;
-              delete vinculacion.isSelected;
-              delete vinculacion.name;
-              delete vinculacion.nombreVinculacion;
-              vinculacionesC.push(vinculacion);
-            });
+            let vinculacionesC = this.vinculaciones.map((vinculacion: any) => {
+              const newVinculacion = {...vinculacion};
+              newVinculacion.Alternancia = newVinculacion.isSelected;
+              delete newVinculacion.label;
+              delete newVinculacion.isSelected;
+              delete newVinculacion.name;
+              delete newVinculacion.nombreVinculacion;
+              return newVinculacion
+            })
             from(vinculacionesC)
               .subscribe((vinculacionC: any) => {
                 this.request.put(environment.TERCEROS_SERVICE, 'vinculacion', vinculacionC, vinculacionC.Id)
@@ -365,95 +286,91 @@ export class PreexistenciaComponent implements OnInit {
               })
 
             let updated = this.vinculaciones.length;
-            const listComorbilidad = from(caracterizacionesArray);
-            listComorbilidad.subscribe((caracterizacion: any) => {
-              let caracterizacionTercero = {
-                TerceroId: { Id: this.tercero.Id },
-                InfoComplementariaId: {
-                  Id: caracterizacion.Id,
-                },
-                Dato: JSON.stringify(
-                  new Object({
-                    dato: caracterizacion.isSelected,
-                  })
-                ),
-                Activo: true,
-              };
-              this.updateStorage()
+            from(caracterizaciones)
+              .subscribe((caracterizacion: any) => {
+                let caracterizacionTercero = {
+                  TerceroId: { Id: this.tercero.Id },
+                  InfoComplementariaId: {
+                    Id: caracterizacion.form.InfoComplementariaId.Id,
+                  },
+                  Dato: JSON.stringify({ dato: caracterizacion.isSelected }),
+                  Activo: true,
+                };
+                this.updateStorage()
 
-              if (this.isPost) {
-                this.request
-                  .post(environment.TERCEROS_SERVICE, 'info_complementaria_tercero/', caracterizacionTercero)
-                  .subscribe((data: any) => {
-                    const content = Swal.getContent();
-                    if (content) {
-                      const b = content.querySelector('b');
-                      if (b) {
-                        b.textContent = `${updated}`;
-                      }
-                    }
-                    updated += 1;
-                    if (updated === (caracterizaciones.length + this.vinculaciones.length)) {
-                      Swal.close();
-                      Swal.fire({
-                        title: `Registro correcto`,
-                        text: `Se ingresaron correctamente ${caracterizaciones.length + this.vinculaciones.length} registros`,
-                        icon: 'success',
-                      }).then((result) => {
-                        if (result.value) {
-                          this.router.navigate(['/pages']);
+                if (this.isPost) {
+                  this.request
+                    .post(environment.TERCEROS_SERVICE, 'info_complementaria_tercero/', caracterizacionTercero)
+                    .subscribe((data: any) => {
+                      const content = Swal.getContent();
+                      if (content) {
+                        const b = content.querySelector('b');
+                        if (b) {
+                          b.textContent = `${updated}`;
                         }
-                      })
-                      this.isPost = false;
-                    }
-                  }),
-                  error => {
-                    Swal.fire({
-                      title: 'error',
-                      text: `${JSON.stringify(error)}`,
-                      icon: 'error',
-                      showCancelButton: true,
-                      cancelButtonText: 'Cancelar',
-                      confirmButtonText: `Aceptar`,
-                    });
-                  };
-              } else {
-                this.request
-                  .put(environment.TERCEROS_SERVICE, 'info_complementaria_tercero', caracterizacionTercero, caracterizacion.IdTerceroCaracterizacion)
-                  .subscribe((data: any) => {
-                    const content = Swal.getContent();
-                    if (content) {
-                      const b = content.querySelector('b');
-                      if (b) {
-                        b.textContent = `${updated}`;
                       }
-                    }
-                    updated += 1;
-                    if (updated === (caracterizaciones.length + this.vinculaciones.length)) {
-                      Swal.close();
+                      updated += 1;
+                      if (updated === (caracterizaciones.length + this.vinculaciones.length)) {
+                        Swal.close();
+                        Swal.fire({
+                          title: `Registro correcto`,
+                          text: `Se ingresaron correctamente ${caracterizaciones.length + this.vinculaciones.length} registros`,
+                          icon: 'success',
+                        }).then((result) => {
+                          if (result.value) {
+                            this.router.navigate(['/pages']);
+                          }
+                        })
+                        this.isPost = false;
+                      }
+                    }),
+                    error => {
                       Swal.fire({
-                        title: `Actualización correcta`,
-                        text: `Se actualizaron correctamente ${caracterizaciones.length + this.vinculaciones.length} registros`,
-                        icon: 'success',
-                      }).then((result) => {
-                        if (result.value) {
-                          this.router.navigate(['/pages']);
+                        title: 'error',
+                        text: `${JSON.stringify(error)}`,
+                        icon: 'error',
+                        showCancelButton: true,
+                        cancelButtonText: 'Cancelar',
+                        confirmButtonText: `Aceptar`,
+                      });
+                    };
+                } else {
+                  this.request
+                    .put(environment.TERCEROS_SERVICE, 'info_complementaria_tercero', caracterizacionTercero, caracterizacion.form.Id)
+                    .subscribe((data: any) => {
+                      const content = Swal.getContent();
+                      if (content) {
+                        const b = content.querySelector('b');
+                        if (b) {
+                          b.textContent = `${updated}`;
                         }
-                      })
-                    }
-                  }),
-                  error => {
-                    Swal.fire({
-                      title: 'error',
-                      text: `${JSON.stringify(error)}`,
-                      icon: 'error',
-                      showCancelButton: true,
-                      cancelButtonText: 'Cancelar',
-                      confirmButtonText: `Aceptar`,
-                    });
-                  };
-              }
-            });
+                      }
+                      updated += 1;
+                      if (updated === (caracterizaciones.length + this.vinculaciones.length)) {
+                        Swal.close();
+                        Swal.fire({
+                          title: `Actualización correcta`,
+                          text: `Se actualizaron correctamente ${caracterizaciones.length + this.vinculaciones.length} registros`,
+                          icon: 'success',
+                        }).then((result) => {
+                          if (result.value) {
+                            this.router.navigate(['/pages']);
+                          }
+                        })
+                      }
+                    }),
+                    error => {
+                      Swal.fire({
+                        title: 'error',
+                        text: `${JSON.stringify(error)}`,
+                        icon: 'error',
+                        showCancelButton: true,
+                        cancelButtonText: 'Cancelar',
+                        confirmButtonText: `Aceptar`,
+                      });
+                    };
+                }
+              });
           }
         }
       });
