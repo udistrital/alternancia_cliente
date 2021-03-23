@@ -71,7 +71,8 @@ export class PreexistenciaComponent implements OnInit {
             .subscribe(
               ([consultaComorbilidades, consultaOtros, datosInfoVinculaciones, datosComorbilidades, datosOtros]: any) => {
                 if (consultaComorbilidades) {
-                  if (datosComorbilidades && JSON.stringify(datosComorbilidades) !== '[{}]') {
+                  if (datosComorbilidades && JSON.stringify(datosComorbilidades) !== '[{}]') {                    
+                    datosComorbilidades.sort((a, b) => (a.InfoComplementariaId.Id < b.InfoComplementariaId.Id ? -1 : 1));                    
                     this.isPost = false;
                     this.comorbilidades = consultaComorbilidades.map((comorbilidad, index) => ({
                       ...comorbilidad,
@@ -92,6 +93,7 @@ export class PreexistenciaComponent implements OnInit {
                 }
                 if (consultaOtros ) {
                   if (datosOtros && JSON.stringify(datosOtros) !== '[{}]') {
+                    datosOtros.sort((a, b) => (a.InfoComplementariaId.Id < b.InfoComplementariaId.Id ? -1 : 1));
                     this.isPost = false;
                     this.otros = consultaOtros.map((otro, index) => ({
                       ...otro,
@@ -183,6 +185,7 @@ export class PreexistenciaComponent implements OnInit {
     this.comorbilidades = this.comorbilidades.map(option => ({ ...option, ...{ isSelected: false } }));
     this.otros = this.otros.map(option => ({ ...option, ...{ isSelected: false } }));
     this.vinculaciones = this.vinculaciones.map(option => ({ ...option, ...{ isSelected: false } }));
+
   }
 
   functionReturn() { }
