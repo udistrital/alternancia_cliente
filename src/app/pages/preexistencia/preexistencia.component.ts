@@ -28,9 +28,6 @@ export class PreexistenciaComponent implements OnInit {
   decision_presencialidad: boolean = false;
 
   isAgree = false;
-  comorbilidadesArray: any = [];
-  vinculacionesArray: any = [];
-  otrosArray: any = [];
   tercero: Tercero;
   constructor(
     private utilService: UtilService,
@@ -114,7 +111,6 @@ export class PreexistenciaComponent implements OnInit {
                   }
                 }
                 if (datosInfoVinculaciones) {
-                  this.vinculacionesArray = [];
                   datosInfoVinculaciones.map((datosInfoVinculacion, index) => {
                     this.request.get(environment.PARAMETROS_SERVICE, `parametro/` + datosInfoVinculacion.TipoVinculacionId)
                       .subscribe((dataRequestInfoVinculacion) => {
@@ -125,7 +121,7 @@ export class PreexistenciaComponent implements OnInit {
                           isSelected: datosInfoVinculacion.Alternancia?datosInfoVinculacion.Alternancia:false,
                           name: vinculacionP.Nombre
                         });
-                        if( (this.vinculacionesArray.length) === this.vinculaciones.length){
+                        if( datosInfoVinculaciones.length === this.vinculaciones.length){
                           Swal.close();
                         }
                       },
