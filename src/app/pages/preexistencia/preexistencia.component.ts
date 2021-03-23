@@ -99,7 +99,7 @@ export class PreexistenciaComponent implements OnInit {
                       ...otro,
                       ...{ form: datosOtros[index] },
                       label: otro['Nombre'],
-                      isSelected: (JSON.parse(datosComorbilidades[index].Dato)).dato,
+                      isSelected: (JSON.parse(datosOtros[index].Dato)).dato,
                       name: otro['Nombre']
                     }))
                   } else {
