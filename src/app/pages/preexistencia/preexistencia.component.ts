@@ -278,7 +278,7 @@ export class PreexistenciaComponent implements OnInit {
                 let caracterizacionTercero = {
                   TerceroId: { Id: this.tercero.Id },
                   InfoComplementariaId: {
-                    Id: caracterizacion.form.InfoComplementariaId.Id,
+                    Id: caracterizacion.Id,
                   },
                   Dato: JSON.stringify({ dato: caracterizacion.isSelected }),
                   Activo: true,
