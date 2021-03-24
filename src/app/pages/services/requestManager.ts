@@ -3,6 +3,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { catchError, map, mergeMap } from 'rxjs/operators';
 import { HttpErrorManager } from './errorManager';
 import { BehaviorSubject } from 'rxjs';
+import { retry } from 'rxjs/operators';
 
 /**
  * This class manage the http connections with internal REST services. Use the response format {
@@ -57,6 +58,7 @@ export class RequestManager {
               }
             },
           ),
+          retry(2),
           catchError(this.errManager.handleError.bind(this)),
         );
       })
