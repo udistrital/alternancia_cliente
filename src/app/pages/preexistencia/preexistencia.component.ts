@@ -29,6 +29,9 @@ export class PreexistenciaComponent implements OnInit {
 
   isAgree = false;
   tercero: Tercero;
+  allNullComorbilidades = false;
+  allNullOtros = false;
+  cantidad: number = 0;
   constructor(
     private utilService: UtilService,
     private qrService: QrService,
@@ -81,6 +84,7 @@ export class PreexistenciaComponent implements OnInit {
                       isSelected: (JSON.parse(datosComorbilidades[index].Dato)).dato,
                       name: comorbilidad['Nombre']
                     }))
+
                   } else {
                     this.comorbilidades = consultaComorbilidades.map((comorbilidad, index) => ({
                       ...comorbilidad,
@@ -89,6 +93,12 @@ export class PreexistenciaComponent implements OnInit {
                       name: comorbilidad['Nombre']
                     }))
                     Swal.close();
+                  }                  
+                  this.cantidad = this.comorbilidades.filter(t => t.isSelected).length;
+                  if (this.cantidad > 0) {
+                    this.allNullComorbilidades = false;
+                  } else {
+                    this.allNullComorbilidades = true;
                   }
                 }
                 if (consultaOtros ) {
@@ -110,6 +120,13 @@ export class PreexistenciaComponent implements OnInit {
                       name: otro['Nombre']
                     }))
                     Swal.close();
+                  }
+                  
+                  this.cantidad = this.otros.filter(t => t.isSelected).length;
+                  if (this.cantidad > 0) {
+                    this.allNullOtros = false;
+                  } else {
+                    this.allNullOtros = true;
                   }
                 }
                 if (datosInfoVinculaciones) {
@@ -179,16 +196,50 @@ export class PreexistenciaComponent implements OnInit {
         };
       });
     }
+    
   }
 
-  clear(): void {
+  clear(): void {    
     this.comorbilidades = this.comorbilidades.map(option => ({ ...option, ...{ isSelected: false } }));
     this.otros = this.otros.map(option => ({ ...option, ...{ isSelected: false } }));
     this.vinculaciones = this.vinculaciones.map(option => ({ ...option, ...{ isSelected: false } }));
+    this.allNullComorbilidades = true;
+    this.allNullOtros = true;
+    //console.log(this.comorbilidades.filter(t => t.isSelected).length)    
 
+    
   }
 
-  functionReturn() { }
+  validarChecksCO() {    
+    this.cantidad = this.comorbilidades.filter(t => t.isSelected).length;          
+     if (this.cantidad  > 0) {
+       this.allNullComorbilidades = false;       
+    } else {
+      this.allNullComorbilidades = true;
+    } 
+  }
+
+  vaciarChecksCO() {
+    if (this.allNullComorbilidades) {
+      this.comorbilidades = this.comorbilidades.map(option => ({ ...option, ...{ isSelected: false } }));      
+    }
+  }
+
+  validarChecksOtros() {    
+    this.cantidad = this.otros.filter(t => t.isSelected).length;          
+     if (this.cantidad  > 0) {
+       this.allNullOtros = false;       
+    } else {
+      this.allNullOtros = true;
+    } 
+  }
+
+  vaciarChecksOtros() {
+    if (this.allNullOtros) {
+      this.otros = this.otros.map(option => ({ ...option, ...{ isSelected: false } }));      
+    }      
+  }
+  
 
   updateStorage() {
     let saveData = {
@@ -207,6 +258,7 @@ export class PreexistenciaComponent implements OnInit {
     localStorage.setItem('comorbilidad', JSON.stringify(saveData));
   }
 
+  
 
   async save() {
 

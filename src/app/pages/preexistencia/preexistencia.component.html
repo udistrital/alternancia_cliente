@@ -1,7 +1,7 @@
 <mat-card class="card-oas">
     <mat-card-header>
         <mat-card-title>Información asistencia</mat-card-title>
-        <mat-card-subtitle>¿Estaría dispuesto a desempeñar alguna de las siguientes actividades de forma presencial?</mat-card-subtitle>
+        <mat-card-subtitle>Marque el tipo de vinculación en la que estaría dispuesto a desempeñar las siguientes actividades de forma presencial</mat-card-subtitle>
     </mat-card-header>
     <mat-card-content>
         <div class="item-default" *ngFor="let item of vinculaciones">
@@ -19,10 +19,17 @@
     </mat-card-header>
     <mat-card-content>
         <div class="item-default" *ngFor="let item of comorbilidades">
-            <mat-checkbox [(ngModel)]="item.isSelected" [color]="'primary'">
+            <mat-checkbox [(ngModel)]="item.isSelected" [color]="'primary'" (change)="validarChecksCO()">
             </mat-checkbox>
             <div class="text-justify">{{item.label}}</div>
         </div>
+        <div class="item-default">
+            <mat-checkbox [color]="'primary'" [(ngModel)]="allNullComorbilidades" (change)="vaciarChecksCO()"></mat-checkbox>
+            <div class="text-justify">Ninguna</div>
+        </div>
+
+
+
     </mat-card-content>
 </mat-card>
 <br>
@@ -34,9 +41,13 @@
     </mat-card-header>
     <mat-card-content>
         <div class="item-default" *ngFor="let otro of otros">
-            <mat-checkbox [(ngModel)]="otro.isSelected" [color]="'primary'">
+            <mat-checkbox [(ngModel)]="otro.isSelected" [color]="'primary'" (change)="validarChecksOtros()">
             </mat-checkbox>
             <div class="text-justify">{{otro.label}}</div>
+        </div>
+        <div class="item-default">
+            <mat-checkbox [color]="'primary'" [(ngModel)]="allNullOtros" (change)="vaciarChecksOtros()"></mat-checkbox>
+            <div class="text-justify">Ninguna</div>
         </div>
     </mat-card-content>
 
