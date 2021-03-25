@@ -20,6 +20,7 @@ export class InformacionBasicaComponent implements OnInit {
   tercero: Tercero;
   datosIdentificacion: DatosIdentificacion;
   datosGenero: InfoComplementariaTercero;
+  datosLocalidad: InfoComplementariaTercero;
   vinculacionesDocente: Vinculacion[];
   vinculacionesEstudiante: Vinculacion[];
   cargaAcademica: CargaAcademica[];
@@ -160,6 +161,16 @@ export class InformacionBasicaComponent implements OnInit {
               console.log(error);
             })
 
+            this.request.get(environment.TERCEROS_SERVICE, `info_complementaria_tercero/?query=TerceroId.Id:${!!this.tercero ? this.tercero.Id ? this.tercero.Id : '' : ''}`
+            + `,InfoComplementariaId.GrupoInfoComplementariaId.CodigoAbreviacion:LOCBOG`)
+            .subscribe((datosInfoLocalidad: any) => {
+              this.datosLocalidad = datosInfoLocalidad[0];
+            }, (error) => {
+              console.log(error);
+            })
+          
+          
+          
           this.request.get(environment.TERCEROS_SERVICE, `vinculacion/?query=Activo:true,TerceroPrincipalId.Id:${!!this.tercero ? this.tercero.Id ? this.tercero.Id : '' : ''}`)
             .subscribe((datosInfoVinculaciones: any) => {
               this.vinculaciones = datosInfoVinculaciones;

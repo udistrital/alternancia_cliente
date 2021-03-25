@@ -126,7 +126,4 @@ export class SaludActualComponent implements OnInit {
       }
   }
 
-
-  functionReturn(){
-  }
 }
