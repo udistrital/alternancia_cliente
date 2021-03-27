@@ -77,7 +77,7 @@ export class InformacionBasicaComponent implements OnInit {
   public calcularEdad(fechaNacimientoStr: string): number {
     if (fechaNacimientoStr) {
       const actual = new Date();
-      const fechaNacimiento = this.corregirFecha(fechaNacimientoStr);
+      const fechaNacimiento = new Date(fechaNacimientoStr);
       let edad = actual.getFullYear() - fechaNacimiento.getFullYear();
       const mes = actual.getMonth() - fechaNacimiento.getMonth();
 
@@ -144,6 +144,7 @@ export class InformacionBasicaComponent implements OnInit {
             ...{ FechaExpedicion: datosInfoTercero[0].FechaExpedicion ? this.corregirFecha(datosInfoTercero[0].FechaExpedicion) : '' }
           }
           this.tercero = this.datosIdentificacion.TerceroId;
+          this.tercero.FechaNacimiento = this.corregirFecha(this.tercero.FechaNacimiento);
           this.edad = this.calcularEdad(this.tercero ? this.tercero.FechaNacimiento ? this.tercero.FechaNacimiento : null : null);
           this.request.get(environment.TERCEROS_SERVICE, `info_complementaria_tercero/?query=TerceroId.Id:${!!this.tercero ? this.tercero.Id ? this.tercero.Id : '' : ''}`
             + `,InfoComplementariaId.GrupoInfoComplementariaId.Id:6`)

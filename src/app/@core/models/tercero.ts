@@ -6,7 +6,7 @@ export class Tercero{
   PrimerApellido: string;
   SegundoApellido: string;
   LugarOrigen:  number;
-  FechaNacimiento: string;
+  FechaNacimiento: any;
   Activo: boolean;
   UsuarioWSO2: string;
 }
