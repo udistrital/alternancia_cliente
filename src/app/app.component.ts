@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { environment } from 'src/environments/environment';
-import { Router } from '@angular/router';
+import { Router, NavigationEnd } from '@angular/router';
 import { UserService } from './pages/services/userService';
 
 
@@ -18,7 +18,18 @@ export class AppComponent implements OnInit {
     private router: Router,
     private userService: UserService 
   ) {
-  }
+      this.router.events.subscribe(event => {
+         if(event instanceof NavigationEnd){
+           gtag('config', 'G-RBY2GQV40M', 
+                   {
+                     'page_path': event.urlAfterRedirects
+                   }
+                  );
+          }
+       }
+    )}
+
+  
   ngOnInit(): void {
     const oas = document.querySelector('ng-uui-oas');
 
