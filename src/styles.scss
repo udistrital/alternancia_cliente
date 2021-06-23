@@ -51,6 +51,34 @@ $mat-mytheme: mat-light-theme($mat-mytheme-primary, $mat-mytheme-accent);
 b {
     color: var(--primary)
 }
+
+.example-month-picker.mat-calendar {
+    height: 250px !important;
+    .mat-calendar-table {
+        border-collapse: unset;
+    }
+    .mat-calendar-table-header th{
+      padding: 0px 0;
+    }
+  }
+
+
+table thead tr th:nth-child(n + 2) {
+    border-left: none;
+}
+
+table tbody tr td {
+    padding: 10px !important;
+}
+
+table tbody tr td:nth-child(n + 2) {
+    border-left: none;
+}
+
+.mat-form-field-appearance-fill .mat-form-field-infix {
+    padding: 0.25em 0 0em 0 !important;;
+}
+
 .card-oas {
     width:calc(100vw - 60px)
 }

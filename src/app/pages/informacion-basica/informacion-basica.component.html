@@ -6,8 +6,7 @@
         <mat-card-title>Información básica</mat-card-title>
     </mat-card-header>
     <mat-card-content>
-        <mat-grid-list [appOasGridCols]="{xs: 1, sm: 2, md: 2, lg: 3, xl: 4}" rowHeight="80px" gutterSize="10px">
-
+        <mat-grid-list [appOasGridCols]="{xs: 1, sm: 2, md: 2, lg: 3, xl: 4}" rowHeight="40px" gutterSize="10px">
             <mat-grid-tile>
                 <mat-form-field appearance="fill" [style.width.%]="100">
                     <mat-label>Primer nombre</mat-label>
@@ -34,8 +33,8 @@
             </mat-grid-tile>
 
         </mat-grid-list>
-
-        <mat-grid-list [appOasGridCols]="{xs: 1, sm: 2, md: 2, lg: 3, xl: 4}" rowHeight="80px" gutterSize="10px">
+        <br>
+        <mat-grid-list [appOasGridCols]="{xs: 1, sm: 2, md: 2, lg: 3, xl: 4}" rowHeight="40px" gutterSize="10px">
 
             <mat-grid-tile>
                 <mat-form-field appearance="fill" [style.width.%]="100">
@@ -63,8 +62,8 @@
             </mat-grid-tile>
         </mat-grid-list>
 
-
-        <mat-grid-list [appOasGridCols]="{xs: 1, sm: 2, md: 2, lg: 3, xl: 4}" rowHeight="80px" gutterSize="10px">
+        <br>
+        <mat-grid-list [appOasGridCols]="{xs: 1, sm: 2, md: 2, lg: 3, xl: 4}" rowHeight="40px" gutterSize="10px">
             <mat-grid-tile>
                 <mat-form-field appearance="fill" [style.width.%]="100">
                     <mat-label>Género</mat-label>
@@ -95,6 +94,55 @@
     </mat-card-content>
 </mat-card>
 <br />
+
+<mat-card class="card-oas" *ngIf="tercero && datosIdentificacion">
+
+    <mat-card-header>
+
+        <mat-card-title>Información de vacunación</mat-card-title>
+        
+        
+    </mat-card-header>
+        <mat-card-content>
+        <div class="vacunacion-content">
+            <ng-container *ngIf="infoVacunacion">
+                <br>
+                <label id="vacunacion-radio-group-label">{{infoVacunacion?infoVacunacion[0].name:""}}</label>
+                
+                <!-- <label id="vacunacion-radio-group-label">¿Completó su esquema de vacunación (ambas dosis)?</label> -->
+                <mat-radio-group [(ngModel)]="infoVacunacion[0].dato" 
+                class="example-radio-group"
+                aria-labelledby="example-radio-group-label" required [checked] = "infoVacunacion[0].dato" (ngModelChange)="radioVacunacionActualizado()">
+                    <mat-radio-button class="example-radio-button" value="true">Si</mat-radio-button>
+                    <mat-radio-button class="example-radio-button" value="false">No</mat-radio-button>
+                </mat-radio-group>
+            </ng-container>
+            <ng-container *ngIf="infoVacunacion[0].dato === 'true'">
+                <br>
+                <label>{{infoVacunacion?infoVacunacion[1].name:""}}</label>
+                <!-- <label>Por favor ingrese la fecha de aplicación de la segunda dosis</label> -->
+                <br><br>
+                <mat-form-field  style="width: auto" appearance="fill">
+                        <mat-label>Fecha segunda dosis</mat-label>
+                        <input matInput [matDatepicker]="picker" 
+                        [min]="minDate"
+                        [max]="maxDate"
+                        required [(ngModel)]="infoVacunacion[1].dato">
+                        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                        <mat-datepicker #picker panelClass="example-month-picker"></mat-datepicker>
+            
+                </mat-form-field>
+            </ng-container>
+        </div>
+    </mat-card-content>
+    <mat-card-actions>
+        <button *ngIf="infoVacunacion[0].dato == 'false' || (infoVacunacion[1].dato!='' && infoVacunacion[0].dato === 'true')" mat-raised-button color="primary" (click)="save()">Guardar</button>
+    </mat-card-actions>
+
+</mat-card>
+
+<br>
+
 <mat-card class="card-oas" *ngIf="tercero && datosIdentificacion">
 
     <mat-card-header>

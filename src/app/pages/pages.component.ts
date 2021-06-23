@@ -52,8 +52,8 @@ export class PagesComponent implements OnInit {
       <h4 class="subtitle-term-conditional">Fases: </h4>
       <ul class="important-list">
         <li><div class="item-list-important"> <span class="material-icons md-30 success">assignment_turned_in</span> Caracterización. </div> </li>
-        <li><div class="item-list-important"> <span class="material-icons md-30 pending">pending_actions</span> Análisis. </div> </li>
-        <li><div class="item-list-important"> <span class="material-icons md-30 pending">pending_actions</span> Control de acceso. </div> </li>
+        <li><div class="item-list-important"> <span class="material-icons md-30 success">assignment_turned_in</span> Análisis. </div> </li>
+        <li><div class="item-list-important"> <span class="material-icons md-30 success">assignment_turned_in</span> Control de acceso. </div> </li>
         <li><div class="item-list-important"> <span class="material-icons md-30 pending">pending_actions</span> Registro de síntomas. </div> </li>
       </ul>
       `,

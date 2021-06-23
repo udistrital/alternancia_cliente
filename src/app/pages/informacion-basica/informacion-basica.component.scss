@@ -36,9 +36,32 @@
 
 .tg .tg-body {
     text-align: center;
-    vertical-align: middle
+    vertical-align: middle;
 }
 
 .div-table {
-    overflow: auto;
+    overflow: auto;    
 }
+
+
+
+.example-radio-group {
+    display: flex;
+    flex-direction: column;
+    margin: 15px 0;
+  }
+  
+.example-radio-button {
+    margin: 5px;
+}
+
+.vacunacion-content{
+    margin-left: 1rem;
+}
+
+.date_container {        
+    float: left;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
