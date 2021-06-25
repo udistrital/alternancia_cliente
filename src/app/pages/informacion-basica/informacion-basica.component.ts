@@ -1,15 +1,18 @@
 import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup,FormControl,Validators, AbstractControl } from '@angular/forms';
 import { RequestManager } from '../services/requestManager';
 import Swal from 'sweetalert2';
 import { UserService } from '../services/userService';
+import { UtilService } from '../services/utilService';
 import { DatosIdentificacion } from '../../@core/models/datos_identificacion';
 import { environment } from './../../../environments/environment'
 import { InfoComplementariaTercero } from '../../@core/models/info_complementaria_tercero';
 import { Tercero } from '../../@core/models/tercero';
 import { Vinculacion } from '../../@core/models/vinculacion';
-import { Parametro } from '../../@core/models/parametro';
 import { CargaAcademica } from '../../@core/models/carga_academica';
 import { LocalDataSource } from 'ng2-smart-table';
+import { combineLatest, from } from 'rxjs';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-informacion-basica',
@@ -17,10 +20,15 @@ import { LocalDataSource } from 'ng2-smart-table';
   styleUrls: ['./informacion-basica.component.scss']
 })
 export class InformacionBasicaComponent implements OnInit {
+  isPost: boolean = true;
+  infoVacunacion: any[] = [{ dato: '' }, { dato: '' }];
+  maxDate: Date = new Date();
+  minDate: Date = new Date(2021, 0, 1);
   tercero: Tercero;
   datosIdentificacion: DatosIdentificacion;
   datosGenero: InfoComplementariaTercero;
   datosLocalidad: InfoComplementariaTercero;
+  isVacunacion: number;
   vinculacionesDocente: Vinculacion[];
   vinculacionesEstudiante: Vinculacion[];
   cargaAcademica: CargaAcademica[];
@@ -31,10 +39,34 @@ export class InformacionBasicaComponent implements OnInit {
   source: LocalDataSource = new LocalDataSource();
   settings: any;
 
+  formVacunacion: FormGroup;
+
   constructor(
     private request: RequestManager,
-    private userService: UserService
+    private userService: UserService,
+    private utilService: UtilService,
+    private router: Router,
+    private formBuilder: FormBuilder
   ) {
+  }
+
+  
+  conditionallyRequiredValidator(formControl: AbstractControl) {
+    if (!formControl.parent) {
+      return null;
+    }
+    if (formControl.parent.get('radioVacunacion').value === 'true') {
+      return Validators.required(formControl); 
+    }
+    return null;
+  }
+
+  getErrorMessage(campo: FormControl) {
+    if (campo.hasError('required', )) {
+      return 'Campo requerido';
+    } else {
+      return 'Introduzca un valor válido';
+    }
   }
 
   cargarCampos() {
@@ -134,7 +166,188 @@ export class InformacionBasicaComponent implements OnInit {
     }
   }
 
+  consultarInfoVacunacion() {
+    combineLatest(
+      this.request.get(environment.TERCEROS_SERVICE, `/info_complementaria?query=GrupoInfoComplementariaId.Id:50&limit=0&order=asc&sortby=Id&fields=Id,Nombre`),
+      //------------------------------------------------------- formData -----------------------------------------------
+      this.request.get(environment.TERCEROS_SERVICE,
+        '/info_complementaria_tercero?limit=0&order=asc&sortby=Id&query=InfoComplementariaId.GrupoInfoComplementariaId.Id:50,TerceroId.Id:'
+        + this.tercero.Id)
+    )
+      .subscribe(
+        ([consultaInfoVacunacion, datosInfoVacunacion, datosOtros]: any) => {
+          if (consultaInfoVacunacion) {
+            if (datosInfoVacunacion && JSON.stringify(datosInfoVacunacion) !== '[{}]') {
+              datosInfoVacunacion.sort((a, b) => (a.InfoComplementariaId.Id < b.InfoComplementariaId.Id ? -1 : 1));
+              this.isPost = false;
+              this.infoVacunacion = consultaInfoVacunacion.map((itemVacunacion, index) => ({
+                ...itemVacunacion,
+                ...{ form: datosInfoVacunacion[index] },
+                label: itemVacunacion['Nombre'],
+                dato: index == 1 ? this.corregirFecha((JSON.parse(datosInfoVacunacion[index].Dato)).dato) : JSON.parse(datosInfoVacunacion[index].Dato).dato,
+                name: itemVacunacion['Nombre']
+              }))
+              this.formVacunacion.get('radioVacunacion').setValue(this.infoVacunacion[0].dato);
+              this.formVacunacion.get('fechaVacunacion').setValue(this.infoVacunacion[1].dato);
+            } else {
+              this.isPost = true;
+              this.infoVacunacion = consultaInfoVacunacion.map((itemVacunacion, index) => ({
+                ...itemVacunacion,
+                label: itemVacunacion['Nombre'],
+                dato: "",
+                name: itemVacunacion['Nombre']
+              }))
+              Swal.close();
+            }
+          }
+        });
+  }
+
+  radioVacunacionActualizado() {
+    this.formVacunacion.get('fechaVacunacion').setValue("");
+  }
+
+  async save() {
+    this.infoVacunacion[0].dato = this.formVacunacion.get('radioVacunacion').value;
+    this.infoVacunacion[1].dato = this.infoVacunacion[0].dato=='true'?this.formVacunacion.get('fechaVacunacion').value:"";
+
+    const isValidTerm = await this.utilService.termsAndConditional();
+
+    if (isValidTerm) {
+      Swal.fire({
+        title: 'Información de vacunación',
+        text: `Se ${this.isPost ? 'almacenará' : 'actualizará'} la información correspondiente al esquema de vacunación`,
+        icon: 'warning',
+        showCancelButton: true,
+        cancelButtonText: 'Cancelar',
+        confirmButtonText: this.isPost ? 'Guardar' : 'Actualizar',
+      }).then(result => {
+
+        if (this.tercero && result.value) {
+          Swal.fire({
+            title: this.isPost ? 'Guardando' : 'Actualizando' + ' caracterización',
+            html: `<b></b> de ${this.infoVacunacion.length} registros ${this.isPost ? 'almacenados' : 'actualizados'}`,
+            timerProgressBar: true,
+            willOpen: () => {
+              Swal.showLoading();
+            },
+          });
+
+          let updated = 0;
+
+          from(this.infoVacunacion)
+            .subscribe((itemVacunacion: any) => {
+
+              let itemVacunacionTercero = {
+                TerceroId: { Id: this.tercero.Id },
+                InfoComplementariaId: {
+                  Id: itemVacunacion.Id,
+                },
+                Dato: JSON.stringify({ dato: itemVacunacion.dato }),
+                Activo: true,
+              };
+
+              if (this.isPost) {
+                this.request
+                  .post(environment.TERCEROS_SERVICE, 'info_complementaria_tercero/', itemVacunacionTercero)
+                  .subscribe((data: any) => {
+                    updated += 1;
+                    const content = Swal.getContent();
+                    if (content) {
+                      const b = content.querySelector('b');
+                      if (b) {
+                        b.textContent = `${updated}`;
+                      }
+                    }
+
+                    if (updated === (this.infoVacunacion.length)) {
+                      Swal.close();
+                      Swal.fire({
+                        title: `Registro correcto`,
+                        text: `Se ingresaron correctamente ${this.infoVacunacion.length} registros`,
+                        icon: 'success',
+                      }).then((result) => {
+                        if (result.value) {
+                          this.isPost = false;
+                          window.location.reload();
+                        }
+                      })
+                      this.isPost = false;
+                    }
+
+                  }),
+                  error => {
+                    Swal.fire({
+                      title: 'error',
+                      text: `${JSON.stringify(error)}`,
+                      icon: 'error',
+                      showCancelButton: true,
+                      cancelButtonText: 'Cancelar',
+                      confirmButtonText: `Aceptar`,
+                    });
+                  };
+              } else {
+
+                this.request
+                  .put(environment.TERCEROS_SERVICE, 'info_complementaria_tercero', itemVacunacionTercero, itemVacunacion.form.Id)
+                  .subscribe((data: any) => {
+                    updated += 1;
+                    const content = Swal.getContent();
+                    if (content) {
+                      const b = content.querySelector('b');
+                      if (b) {
+                        b.textContent = `${updated}`;
+                      }
+                    }
+
+                    if (updated === (this.infoVacunacion.length)) {
+                      Swal.close();
+                      Swal.fire({
+                        title: `Actualización correcta`,
+                        text: `Se actualizaron correctamente ${this.infoVacunacion.length} registros`,
+                        icon: 'success',
+                      }).then((result) => {
+                        if (result.value) {
+                          this.isPost = false;
+                          window.location.reload();
+                        }
+                      })
+                      this.isPost = false;
+                    }
+
+                  }),
+                  error => {
+                    Swal.fire({
+                      title: 'error',
+                      text: `${JSON.stringify(error)}`,
+                      icon: 'error',
+                      showCancelButton: true,
+                      cancelButtonText: 'Cancelar',
+                      confirmButtonText: `Aceptar`,
+                    });
+                  };
+
+              }
+
+            });
+        }
+      });
+    }
+  }
+
+  
+
   ngOnInit(): void {
+    this.formVacunacion = this.formBuilder.group({
+      radioVacunacion: ['', Validators.required],
+      fechaVacunacion: ['', this.conditionallyRequiredValidator]
+    });
+    this.formVacunacion.get('radioVacunacion').valueChanges
+        .subscribe(value => {
+            this.formVacunacion.get('fechaVacunacion').setValue("");
+            this.formVacunacion.get('fechaVacunacion').updateValueAndValidity();
+    });
+
     this.cargarCampos();
     this.userService.user$.subscribe((data) => {
       this.request.get(environment.TERCEROS_SERVICE, `datos_identificacion/?query=Numero:` + data['userService']['documento'])
@@ -144,63 +357,68 @@ export class InformacionBasicaComponent implements OnInit {
             ...{ FechaExpedicion: datosInfoTercero[0].FechaExpedicion ? this.corregirFecha(datosInfoTercero[0].FechaExpedicion) : '' }
           }
           this.tercero = this.datosIdentificacion.TerceroId;
-          this.tercero.FechaNacimiento = this.corregirFecha(this.tercero.FechaNacimiento);
-          this.edad = this.calcularEdad(this.tercero ? this.tercero.FechaNacimiento ? this.tercero.FechaNacimiento : null : null);
-          this.request.get(environment.TERCEROS_SERVICE, `info_complementaria_tercero/?query=TerceroId.Id:${!!this.tercero ? this.tercero.Id ? this.tercero.Id : '' : ''}`
-            + `,InfoComplementariaId.GrupoInfoComplementariaId.Id:6`)
-            .subscribe((datosInfoGenero: any) => {
-              this.datosGenero = datosInfoGenero[0];
-            }, (error) => {
-              console.log(error);
-            })
 
-          this.request.get(environment.TERCEROS_SERVICE, `info_complementaria_tercero/?query=TerceroId.Id:${!!this.tercero ? this.tercero.Id ? this.tercero.Id : '' : ''}`
-            + `,InfoComplementariaId.GrupoInfoComplementariaId.Id:2`)
-            .subscribe((datosInfoEstadoCivil: any) => {
-              this.datosEstadoCivil = datosInfoEstadoCivil[0];
-            }, (error) => {
-              console.log(error);
-            })
+          if (this.tercero) {
+            this.tercero.FechaNacimiento = this.corregirFecha(this.tercero.FechaNacimiento);
+
+            this.edad = this.calcularEdad(this.tercero ? this.tercero.FechaNacimiento ? this.tercero.FechaNacimiento : null : null);
+            this.request.get(environment.TERCEROS_SERVICE, `info_complementaria_tercero/?query=TerceroId.Id:${!!this.tercero ? this.tercero.Id ? this.tercero.Id : '' : ''}`
+              + `,InfoComplementariaId.GrupoInfoComplementariaId.Id:6`)
+              .subscribe((datosInfoGenero: any) => {
+                this.datosGenero = datosInfoGenero[0];
+              }, (error) => {
+                console.log(error);
+              })
 
             this.request.get(environment.TERCEROS_SERVICE, `info_complementaria_tercero/?query=TerceroId.Id:${!!this.tercero ? this.tercero.Id ? this.tercero.Id : '' : ''}`
-            + `,InfoComplementariaId.GrupoInfoComplementariaId.CodigoAbreviacion:LOCBOG`)
-            .subscribe((datosInfoLocalidad: any) => {
-              this.datosLocalidad = datosInfoLocalidad[0];
-            }, (error) => {
-              console.log(error);
-            })
-          
-          
-          
-          this.request.get(environment.TERCEROS_SERVICE, `vinculacion/?query=Activo:true,TerceroPrincipalId.Id:${!!this.tercero ? this.tercero.Id ? this.tercero.Id : '' : ''}`)
-            .subscribe((datosInfoVinculaciones: any) => {
-              this.vinculaciones = datosInfoVinculaciones;
-              this.vinculacionesDocente = [];
-              this.vinculacionesEstudiante = [];
-              this.vinculacionesOtros = [];
-              for (let i = 0; i < this.vinculaciones.length; i++) {
-                this.vinculaciones[i] = {
-                  ...datosInfoVinculaciones[i],
-                  ...{ FechaInicioVinculacion: this.vinculaciones[i].FechaInicioVinculacion ? this.corregirFecha(this.vinculaciones[i].FechaInicioVinculacion) : '' },
-                  ...{ FechaFinVinculacion: this.vinculaciones[i].FechaFinVinculacion ? this.corregirFecha(this.vinculaciones[i].FechaFinVinculacion) : '' }
+              + `,InfoComplementariaId.GrupoInfoComplementariaId.Id:2`)
+              .subscribe((datosInfoEstadoCivil: any) => {
+                this.datosEstadoCivil = datosInfoEstadoCivil[0];
+              }, (error) => {
+                console.log(error);
+              })
+
+            this.request.get(environment.TERCEROS_SERVICE, `info_complementaria_tercero/?query=TerceroId.Id:${!!this.tercero ? this.tercero.Id ? this.tercero.Id : '' : ''}`
+              + `,InfoComplementariaId.GrupoInfoComplementariaId.CodigoAbreviacion:LOCBOG`)
+              .subscribe((datosInfoLocalidad: any) => {
+                this.datosLocalidad = datosInfoLocalidad[0];
+              }, (error) => {
+                console.log(error);
+              })
+
+            this.consultarInfoVacunacion();
+
+            this.request.get(environment.TERCEROS_SERVICE, `vinculacion/?query=Activo:true,TerceroPrincipalId.Id:${!!this.tercero ? this.tercero.Id ? this.tercero.Id : '' : ''}`)
+              .subscribe((datosInfoVinculaciones: any) => {
+                this.vinculaciones = datosInfoVinculaciones;
+                this.vinculacionesDocente = [];
+                this.vinculacionesEstudiante = [];
+                this.vinculacionesOtros = [];
+                for (let i = 0; i < this.vinculaciones.length; i++) {
+                  this.vinculaciones[i] = {
+                    ...datosInfoVinculaciones[i],
+                    ...{ FechaInicioVinculacion: this.vinculaciones[i].FechaInicioVinculacion ? this.corregirFecha(this.vinculaciones[i].FechaInicioVinculacion) : '' },
+                    ...{ FechaFinVinculacion: this.vinculaciones[i].FechaFinVinculacion ? this.corregirFecha(this.vinculaciones[i].FechaFinVinculacion) : '' }
+                  }
+                  if (JSON.stringify(this.vinculaciones[i]) !== '{}') {
+                    this.request.get(environment.PARAMETROS_SERVICE, `parametro/?query=Id:` + this.vinculaciones[i].TipoVinculacionId)
+                      .subscribe((vinculacion: any) => {
+                        this.vinculaciones[i].TipoVinculacion = vinculacion['Data'][0];
+                        if (this.vinculaciones[i].DependenciaId) {
+                          this.request.get(environment.OIKOS_SERVICE, `dependencia/` + this.vinculaciones[i].DependenciaId)
+                            .subscribe((dependencia: any) => {
+                              this.vinculaciones[i].Dependencia = dependencia;
+                            }, (error) => {
+                              console.log(error);
+                            })
+                        }
+                        this.asignarVinculacion(this.vinculaciones[i]);
+                      })
+                  }
                 }
-                if (JSON.stringify(this.vinculaciones[i]) !== '{}') {
-                  this.request.get(environment.PARAMETROS_SERVICE, `parametro/?query=Id:` + this.vinculaciones[i].TipoVinculacionId)
-                    .subscribe((vinculacion: any) => {
-                      this.vinculaciones[i].TipoVinculacion = vinculacion['Data'][0];
-                      if (this.vinculaciones[i].DependenciaId) {
-                        this.request.get(environment.OIKOS_SERVICE, `dependencia/` + this.vinculaciones[i].DependenciaId)
-                          .subscribe((dependencia: any) => {
-                            this.vinculaciones[i].Dependencia = dependencia;
-                          }, (error) => {
-                            console.log(error);
-                          })
-                      }
-                      this.asignarVinculacion(this.vinculaciones[i]);
-                    })
-                }
-              }
-            })
+
+              })
+          }
         }, (error) => {
           console.log(error);
           Swal.close();

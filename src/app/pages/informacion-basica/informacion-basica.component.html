@@ -6,8 +6,7 @@
         <mat-card-title>Información básica</mat-card-title>
     </mat-card-header>
     <mat-card-content>
-        <mat-grid-list [appOasGridCols]="{xs: 1, sm: 2, md: 2, lg: 3, xl: 4}" rowHeight="80px" gutterSize="10px">
-
+        <mat-grid-list [appOasGridCols]="{xs: 1, sm: 2, md: 2, lg: 3, xl: 4}" rowHeight="40px" gutterSize="10px">
             <mat-grid-tile>
                 <mat-form-field appearance="fill" [style.width.%]="100">
                     <mat-label>Primer nombre</mat-label>
@@ -34,8 +33,8 @@
             </mat-grid-tile>
 
         </mat-grid-list>
-
-        <mat-grid-list [appOasGridCols]="{xs: 1, sm: 2, md: 2, lg: 3, xl: 4}" rowHeight="80px" gutterSize="10px">
+        <br>
+        <mat-grid-list [appOasGridCols]="{xs: 1, sm: 2, md: 2, lg: 3, xl: 4}" rowHeight="40px" gutterSize="10px">
 
             <mat-grid-tile>
                 <mat-form-field appearance="fill" [style.width.%]="100">
@@ -52,29 +51,36 @@
             <mat-grid-tile>
                 <mat-form-field appearance="fill" [style.width.%]="100">
                     <mat-label>Fecha de expedicion del documento</mat-label>
-                    <input matInput type="text" [value]="datosIdentificacion.FechaExpedicion | date: 'dd/MM/yyyy'" disabled>
+                    <input matInput type="text" [value]="datosIdentificacion.FechaExpedicion | date: 'dd/MM/yyyy'"
+                        disabled>
                 </mat-form-field>
             </mat-grid-tile>
             <mat-grid-tile>
                 <mat-form-field appearance="fill" [style.width.%]="100">
                     <mat-label>Localidad </mat-label>
-                    <input matInput type="text" value="{{datosLocalidad?datosLocalidad.InfoComplementariaId?datosLocalidad.InfoComplementariaId.Nombre:'':''}}" disabled>
+                    <input matInput type="text"
+                        value="{{datosLocalidad?datosLocalidad.InfoComplementariaId?datosLocalidad.InfoComplementariaId.Nombre:'':''}}"
+                        disabled>
                 </mat-form-field>
             </mat-grid-tile>
         </mat-grid-list>
 
-
-        <mat-grid-list [appOasGridCols]="{xs: 1, sm: 2, md: 2, lg: 3, xl: 4}" rowHeight="80px" gutterSize="10px">
+        <br>
+        <mat-grid-list [appOasGridCols]="{xs: 1, sm: 2, md: 2, lg: 3, xl: 4}" rowHeight="40px" gutterSize="10px">
             <mat-grid-tile>
                 <mat-form-field appearance="fill" [style.width.%]="100">
                     <mat-label>Género</mat-label>
-                    <input matInput type="text" value="{{datosGenero?datosGenero.InfoComplementariaId?datosGenero.InfoComplementariaId.Nombre:'':''}}" disabled>
+                    <input matInput type="text"
+                        value="{{datosGenero?datosGenero.InfoComplementariaId?datosGenero.InfoComplementariaId.Nombre:'':''}}"
+                        disabled>
                 </mat-form-field>
             </mat-grid-tile>
             <mat-grid-tile>
                 <mat-form-field appearance="fill" [style.width.%]="100">
                     <mat-label>Estado civil</mat-label>
-                    <input matInput type="text" value="{{datosEstadoCivil?datosEstadoCivil.InfoComplementariaId?datosEstadoCivil.InfoComplementariaId.Nombre:'':''}}" disabled>
+                    <input matInput type="text"
+                        value="{{datosEstadoCivil?datosEstadoCivil.InfoComplementariaId?datosEstadoCivil.InfoComplementariaId.Nombre:'':''}}"
+                        disabled>
                 </mat-form-field>
             </mat-grid-tile>
             <mat-grid-tile>
@@ -95,6 +101,57 @@
     </mat-card-content>
 </mat-card>
 <br />
+
+<mat-card class="card-oas" *ngIf="tercero && datosIdentificacion">
+
+    <mat-card-header>
+
+        <mat-card-title>Información de vacunación</mat-card-title>
+
+
+    </mat-card-header>
+    <form [formGroup]="formVacunacion" (ngSubmit)="save()">
+        <mat-card-content>
+            <div class="vacunacion-content">
+
+                <ng-container *ngIf="infoVacunacion">
+                    <br>
+                    <label id="vacunacion-radio-group-label">{{infoVacunacion?infoVacunacion[0].name:""}}</label>
+                    <mat-radio-group formControlName="radioVacunacion" class="example-radio-group"
+                        aria-labelledby="example-radio-group-label" required [checked]="infoVacunacion[0].dato"
+                        >
+                        <mat-radio-button class="example-radio-button" value="true">Si</mat-radio-button>
+                        <mat-radio-button class="example-radio-button" value="false">No</mat-radio-button>
+                    </mat-radio-group>
+
+                </ng-container>
+                <ng-container *ngIf="formVacunacion.get('radioVacunacion').value === 'true'">
+                    <br>
+                    <label>{{infoVacunacion?infoVacunacion[1].name:""}}</label>
+                   
+                    <br><br>
+                    <mat-form-field appearance="outline">
+                        <mat-label>Fecha segunda dosis</mat-label>
+                        <input matInput [matDatepicker]="fechaVacunacionPicker" formControlName="fechaVacunacion" [min]="minDate" [max]="maxDate">
+                        <mat-datepicker-toggle matSuffix [for]="fechaVacunacionPicker"></mat-datepicker-toggle>
+                        <mat-datepicker #fechaVacunacionPicker></mat-datepicker>
+                        <mat-error *ngIf="formVacunacion.get('fechaVacunacion').invalid">{{getErrorMessage(formVacunacion.get('fechaVacunacion'))}}</mat-error>
+                    </mat-form-field>
+                </ng-container>
+            </div>
+        </mat-card-content>
+        <mat-card-actions>
+            <div style="margin: 1rem;">
+                <button [disabled]="!formVacunacion.valid" mat-raised-button color="primary" type="submit" class="col-3 mt-2 mb-3">
+                    Guardar
+                </button>
+            </div>
+        </mat-card-actions>
+    </form>
+</mat-card>
+
+<br>
+
 <mat-card class="card-oas" *ngIf="tercero && datosIdentificacion">
 
     <mat-card-header>
@@ -113,24 +170,29 @@
 
                 </mat-expansion-panel-header>
 
-                <mat-grid-list [appOasGridCols]="{xs: 1, sm: 2, md: 2, lg: 2, xl: 4}" rowHeight="80px" gutterSize="10px">
+                <mat-grid-list [appOasGridCols]="{xs: 1, sm: 2, md: 2, lg: 2, xl: 4}" rowHeight="80px"
+                    gutterSize="10px">
 
                     <mat-grid-tile>
                         <mat-form-field appearance="fill" [style.width.%]="100">
                             <mat-label>Fecha de inicio</mat-label>
-                            <input matInput type="text" value="{{vinculacion.FechaInicioVinculacion | date: 'dd/MM/yyyy'}}" disabled>
+                            <input matInput type="text"
+                                value="{{vinculacion.FechaInicioVinculacion | date: 'dd/MM/yyyy'}}" disabled>
                         </mat-form-field>
                     </mat-grid-tile>
                     <mat-grid-tile>
                         <mat-form-field appearance="fill" [style.width.%]="100">
                             <mat-label>Fecha de finalización</mat-label>
-                            <input matInput type="text" value="{{vinculacion.FechaFinVinculacion | date: 'dd/MM/yyyy'}}" disabled>
+                            <input matInput type="text" value="{{vinculacion.FechaFinVinculacion | date: 'dd/MM/yyyy'}}"
+                                disabled>
                         </mat-form-field>
                     </mat-grid-tile>
                     <mat-grid-tile>
                         <mat-form-field appearance="fill" [style.width.%]="100">
                             <mat-label>Dependencia</mat-label>
-                            <input matInput type="text" value="{{vinculacion?vinculacion.Dependencia?vinculacion.Dependencia.Nombre:'':''}}" disabled>
+                            <input matInput type="text"
+                                value="{{vinculacion?vinculacion.Dependencia?vinculacion.Dependencia.Nombre:'':''}}"
+                                disabled>
                         </mat-form-field>
                     </mat-grid-tile>
                 </mat-grid-list>
