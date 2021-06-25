@@ -25,7 +25,7 @@ import { SaludActualComponent } from './salud-actual/salud-actual.component';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { PreexistenciaComponent } from './preexistencia/preexistencia.component';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule} from '@angular/forms';
 import { OasGridColsDirective } from './directives/oas-grid-cols.directive';
 import { QrCodeModule } from 'ng-qrcode';
 import { QrComponent } from './qr/qr.component';
@@ -73,6 +73,7 @@ const materialModules = [
     HttpClientModule,
     CommonModule,
     FormsModule,
+    ReactiveFormsModule,
     PagesRoutingModule,
     QrCodeModule,
     Ng2SmartTableModule,
