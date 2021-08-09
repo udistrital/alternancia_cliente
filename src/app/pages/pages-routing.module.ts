@@ -23,7 +23,7 @@ const routes: Routes = [{
       path: 'caracterizacion',
       component: PreexistenciaComponent,
     },
-    /* {
+    {
       path: 'sintomas',
       component: SaludActualComponent,
     },
@@ -34,7 +34,7 @@ const routes: Routes = [{
     {
       path: 'qrcode',
       component: QrComponent,
-    }, */
+    },
     {
       path: '', redirectTo: 'dashboard', pathMatch: 'full',
     },
