@@ -134,7 +134,7 @@ export class InformacionBasicaComponent implements OnInit {
       let dateObj = new Date();
       let weekdayNumber = dateObj.getDay();
       this.vinculacionesDocente.push(vinculacion);
-      this.request.get(environment.ACADEMICA_JBPM_SERVICE, `carga_academica/2021/1/${this.datosIdentificacion.Numero}/${weekdayNumber}`)
+      this.request.get(environment.ACADEMICA_JBPM_SERVICE, `carga_academica/${new Date().getFullYear()}/1/${this.datosIdentificacion.Numero}/${weekdayNumber}`)
         .subscribe((carga: any) => {
           if (carga) {
             this.cargaAcademica = carga['carga_academica']['docente'];
