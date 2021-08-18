@@ -5,7 +5,7 @@ import { PagesRoutingModule } from './pages-routing.module';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { PagesComponent } from './pages.component';
 import { InformacionBasicaComponent } from './informacion-basica/informacion-basica.component';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { RequestManager } from './services/requestManager';
 
 import {MatRadioModule} from '@angular/material/radio';
@@ -24,6 +24,8 @@ import { MatGridListModule } from '@angular/material/grid-list';
 import { SaludActualComponent } from './salud-actual/salud-actual.component';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatExpansionModule } from '@angular/material/expansion';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner'
 import { PreexistenciaComponent } from './preexistencia/preexistencia.component';
 import { FormsModule, ReactiveFormsModule} from '@angular/forms';
 import { OasGridColsDirective } from './directives/oas-grid-cols.directive';
@@ -35,6 +37,7 @@ import { QrscanComponent } from './qrscan/qrscan.component';
 import { NgQrScannerModule } from 'angular2-qrscanner';
 import { UtilService } from './services/utilService';
 import { UserService } from './services/userService';
+import { InterceptorService } from '../loader/interceptor.service';
 
 
 const pagesComponents = [
@@ -59,7 +62,9 @@ const materialModules = [
   MatExpansionModule,
   MatButtonModule,
   MatStepperModule,
-  MatRadioModule
+  MatRadioModule,
+  MatProgressBarModule,
+  MatProgressSpinnerModule
 ];
 @NgModule({
   declarations: [
@@ -82,6 +87,7 @@ const materialModules = [
   providers: [
     RequestManager,
     MatDatepickerModule,
+    {provide:HTTP_INTERCEPTORS,useClass:InterceptorService,multi:true},
     { provide: MAT_DATE_LOCALE, useValue: 'es-CO' },
     { provide: DateAdapter, useClass: MomentDateAdapter, deps: [MAT_DATE_LOCALE, MAT_MOMENT_DATE_ADAPTER_OPTIONS] },
     { provide: MAT_DATE_FORMATS, useValue: MAT_MOMENT_DATE_FORMATS}
