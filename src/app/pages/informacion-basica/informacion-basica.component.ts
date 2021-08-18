@@ -134,8 +134,10 @@ export class InformacionBasicaComponent implements OnInit {
       let dateObj = new Date();
       let weekdayNumber = dateObj.getDay();
       this.vinculacionesDocente.push(vinculacion);
-      this.request.get(environment.ACADEMICA_JBPM_SERVICE, `carga_academica/2021/1/${this.datosIdentificacion.Numero}/${weekdayNumber}`)
+      console.log("Consultando...")
+      this.request.get(environment.ACADEMICA_JBPM_SERVICE, `carga_academica/2021/1/1020712388/${weekdayNumber}`)
         .subscribe((carga: any) => {
+          console.log(carga)
           if (carga) {
             this.cargaAcademica = carga['carga_academica']['docente'];
             let datosCarga = this.cargaAcademica.map((carga) =>
@@ -412,6 +414,7 @@ export class InformacionBasicaComponent implements OnInit {
                               console.log(error);
                             })
                         }
+                        console.log("Asignando vinculacion")
                         this.asignarVinculacion(this.vinculaciones[i]);
                       })
                   }
