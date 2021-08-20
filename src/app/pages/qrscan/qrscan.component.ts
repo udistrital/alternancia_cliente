@@ -75,7 +75,7 @@ export class QrscanComponent implements AfterViewInit {
 
   consultarAcceso(){
     this.userService.tercero$.subscribe((tercero: any)=> {
-      this.request.get(environment.ALTERNANCIA_MID_SERVICE, `acceso/`+this.lectura.Id+`/`+tercero['Id']+"/?sede="+this.sedeSeleccionada+"&edificio="+this.edificioSeleccionado+"&aula="+this.salon+"&tipo="+this.tipo)
+      this.request.get(environment.ALTERNANCIA_MID_SERVICE, `acceso/`+this.lectura.Id+`/`+tercero['Id']+"/"+this.tipo+"/?sede="+this.sedeSeleccionada+(this.edificioSeleccionado?"&edificio="+this.edificioSeleccionado:"")+(this.salon?"&aula="+this.salon:""))
         .subscribe(async(respuesta: any) => {          
           this.persona =await respuesta["Data"];
           let codeHtml=`
