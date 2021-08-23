@@ -36,7 +36,7 @@ export class QrComponent implements OnInit {
             ...datosInfoTercero[0]
           }
           this.tercero = this.datosIdentificacion.TerceroId;
-          this.qrValue=btoa(JSON.stringify({Id:this.tercero.Id,cc:this.datosIdentificacion.Numero}));
+          this.qrValue=btoa(JSON.stringify({IdTercero:this.tercero.Id,cc:this.datosIdentificacion.Numero}));
         }, (error) => {
           console.log(error);
           Swal.close();

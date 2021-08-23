@@ -24,13 +24,27 @@ export class QrscanComponent implements AfterViewInit {
   edificiosSeleccion={};
   sedeSeleccionada:string;
   edificioSeleccionado:string;
-  edificioActivado=false;
-  sedeCambiada=false;
-  edificioCambiado=false;
-  salon=""
-  tipo=""
+  idRol:number;
+  edificioActivado:boolean;
+  sedeCambiada:boolean;
+  edificioCambiado:boolean;
+  permisos:boolean;
+  salon:string;
+  tipo:string;
 
-  constructor(private request: RequestManager, private userService: UserService, public loaderService: LoaderService) { }
+  constructor(private request: RequestManager, private userService: UserService, public loaderService: LoaderService) {
+    this.userService.tercero$.subscribe((tercero: any)=> {
+      if (tercero.Id){
+        this.request.get(environment.TERCEROS_SERVICE, `vinculacion/?query=Activo:true,TerceroPrincipalId.Id:${tercero.Id? tercero.Id : ''}`)
+          .subscribe((datosInfoVinculaciones: any) => {
+            if (datosInfoVinculaciones.length>0){
+              this.idRol=datosInfoVinculaciones[0].TipoVinculacionId
+              this.permisos = (this.idRol == 377 || this.idRol == 293 || this.idRol == 294 || (this.idRol >= 296 && this.idRol <= 299))
+            }
+          })
+      }
+    })
+   }
 
   ngAfterViewInit(): void {
     this.cargarSedes()
@@ -41,7 +55,21 @@ export class QrscanComponent implements AfterViewInit {
     this.qrScannerComponent.capturedQr.subscribe(async (result) => {      
       try{
         this.lectura = JSON.parse(atob(result));
-        this.consultarAcceso()
+        if (this.lectura.IdTercero && this.permisos){
+          this.consultarAcceso()
+        }
+        else if(this.lectura.IdEspacio){
+          this.accesoEspacio()
+        }
+        else{
+          Swal.fire({
+            title: 'Error',
+            text: `Error escaneando QR, por favor escanea nuevamente`,
+            icon: 'error',
+            confirmButtonText: 'Aceptar',
+          })
+          this.dispositivoActual = null;
+        }
       }catch(error){
         console.log(error);
         Swal.fire({
@@ -73,14 +101,47 @@ export class QrscanComponent implements AfterViewInit {
     this.lectura = ''
   }
 
+  accesoEspacio(){
+    this.request.get(environment.ALTERNANCIA_MID_SERVICE, `acceso/${this.lectura.IdEspacio}/${this.lectura.tipo}`)
+    .subscribe(async(respuesta: any) => {
+      this.persona =await respuesta["Data"];
+      if (this.persona.Causa!=""){
+        const { value: accept } = await Swal.fire({
+          title:'Control de aforo',
+          icon: 'error',
+          text: 'No se puede acceder\nCausa: '+this.persona.Causa,
+          confirmButtonText: 'Aceptar',
+        })
+      }{
+        const { value: accept } = await Swal.fire({
+          title:'Control de aforo',
+          icon: 'success',
+          text: 'Hecho, puede continuar',
+          confirmButtonText: 'Aceptar',
+        })
+      }
+    }, (error) => {
+      console.log(error);
+      Swal.close();
+      Swal.fire({
+        title: 'Error',
+        text: `Error consultando datos, por favor escanea nuevamente`,
+        icon: 'error',
+        confirmButtonText: 'Aceptar',
+      })
+    });
+  this.dispositivoActual = null;
+  return
+  }
+
   consultarAcceso(){
     this.userService.tercero$.subscribe((tercero: any)=> {
-      this.request.get(environment.ALTERNANCIA_MID_SERVICE, `acceso/`+this.lectura.Id+`/`+tercero['Id']+"/"+this.tipo+"/?sede="+this.sedeSeleccionada+(this.edificioSeleccionado?"&edificio="+this.edificioSeleccionado:"")+(this.salon?"&aula="+this.salon:""))
+      this.request.get(environment.ALTERNANCIA_MID_SERVICE, `acceso/${this.lectura.IdTercero}/${tercero['Id']}/${this.tipo}/?sede=${this.sedeSeleccionada}${this.edificioSeleccionado?"&edificio="+this.edificioSeleccionado:""}${this.salon?"&aula="+this.salon:""}`)
         .subscribe(async(respuesta: any) => {          
           this.persona =await respuesta["Data"];
           let codeHtml=`
-          <h3 class="title-term-conditional">Control de aforo</h3>
-          <p class="text-term-condional">
+              <h3 class="title-term-conditional">Control de aforo</h3>
+              <p class="text-term-condional">
               <b>Usuario:</b> ${this.persona.Nombre}<br>
               <b>Identificación:</b> ${this.lectura.cc}<br>`
           if(this.tipo=="in"){
@@ -158,4 +219,7 @@ export class QrscanComponent implements AfterViewInit {
     }
   }
 
+  consultarVinculacion(){
+    
+  }
 }
