@@ -21,7 +21,7 @@ import { Router } from '@angular/router';
 })
 export class InformacionBasicaComponent implements OnInit {
   isPost: boolean = true;
-  infoVacunacion: any[] = [{ dato: '' }, { dato: '' }];
+  infoVacunacion: any[] = [{ dato: '' }, { dato: '' }, { dato: '' }];
   maxDate: Date = new Date();
   minDate: Date = new Date(2021, 0, 1);
   tercero: Tercero;
@@ -179,6 +179,8 @@ export class InformacionBasicaComponent implements OnInit {
           if (consultaInfoVacunacion) {
             if (datosInfoVacunacion && JSON.stringify(datosInfoVacunacion) !== '[{}]') {
               datosInfoVacunacion.sort((a, b) => (a.InfoComplementariaId.Id < b.InfoComplementariaId.Id ? -1 : 1));
+              console.log(datosInfoVacunacion)
+              console.log(consultaInfoVacunacion)
               this.isPost = false;
               this.infoVacunacion = consultaInfoVacunacion.map((itemVacunacion, index) => ({
                 ...itemVacunacion,
@@ -189,6 +191,7 @@ export class InformacionBasicaComponent implements OnInit {
               }))
               this.formVacunacion.get('radioVacunacion').setValue(this.infoVacunacion[0].dato);
               this.formVacunacion.get('fechaVacunacion').setValue(this.infoVacunacion[1].dato);
+              this.formVacunacion.get('empresaVacunacion').setValue(this.infoVacunacion[2].dato);
             } else {
               this.isPost = true;
               this.infoVacunacion = consultaInfoVacunacion.map((itemVacunacion, index) => ({
@@ -205,11 +208,13 @@ export class InformacionBasicaComponent implements OnInit {
 
   radioVacunacionActualizado() {
     this.formVacunacion.get('fechaVacunacion').setValue("");
+    this.formVacunacion.get('empresaVacunacion').setValue("");
   }
 
   async save() {
     this.infoVacunacion[0].dato = this.formVacunacion.get('radioVacunacion').value;
     this.infoVacunacion[1].dato = this.infoVacunacion[0].dato=='true'?this.formVacunacion.get('fechaVacunacion').value:"";
+    this.infoVacunacion[2].dato = this.infoVacunacion[0].dato=='true'?this.formVacunacion.get('empresaVacunacion').value:"";
 
     const isValidTerm = await this.utilService.termsAndConditional();
 
@@ -335,17 +340,18 @@ export class InformacionBasicaComponent implements OnInit {
     }
   }
 
-  
-
   ngOnInit(): void {
     this.formVacunacion = this.formBuilder.group({
       radioVacunacion: ['', Validators.required],
-      fechaVacunacion: ['', this.conditionallyRequiredValidator]
+      fechaVacunacion: ['', this.conditionallyRequiredValidator],
+      empresaVacunacion: ['', this.conditionallyRequiredValidator]
     });
     this.formVacunacion.get('radioVacunacion').valueChanges
         .subscribe(value => {
             this.formVacunacion.get('fechaVacunacion').setValue("");
             this.formVacunacion.get('fechaVacunacion').updateValueAndValidity();
+            this.formVacunacion.get('empresaVacunacion').setValue("");
+            this.formVacunacion.get('empresaVacunacion').updateValueAndValidity();
     });
 
     this.cargarCampos();
