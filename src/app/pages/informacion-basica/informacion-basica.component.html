@@ -137,6 +137,22 @@
                         <mat-datepicker #fechaVacunacionPicker></mat-datepicker>
                         <mat-error *ngIf="formVacunacion.get('fechaVacunacion').invalid">{{getErrorMessage(formVacunacion.get('fechaVacunacion'))}}</mat-error>
                     </mat-form-field>
+                    <br>
+                    <label>{{infoVacunacion?infoVacunacion[2].name:""}}</label>
+                   
+                    <br><br>
+                    <mat-form-field appearance="outline">
+                        <mat-label>Empresa</mat-label>
+                        <mat-select formControlName="empresaVacunacion" >
+                            <mat-option disabled selected> Selecciona una opcion</mat-option>
+                            <mat-option value="PFIZER">Pfizer</mat-option>
+                            <mat-option value="ASTRAZENECA">AstraZeneca</mat-option>
+                            <mat-option value="SINOVAC">Sinovac</mat-option>
+                            <mat-option value="JANSSEN">Janssen</mat-option>
+                            <mat-option value="MODERNA">Moderna</mat-option>
+                          </mat-select>
+                          <mat-error *ngIf="formVacunacion.get('empresaVacunacion').invalid">{{getErrorMessage(formVacunacion.get('empresaVacunacion'))}}</mat-error>
+                    </mat-form-field>
                 </ng-container>
             </div>
         </mat-card-content>

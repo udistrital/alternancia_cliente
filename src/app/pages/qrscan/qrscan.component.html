@@ -2,7 +2,7 @@
     <mat-spinner style="top: 50%;left: 50%;"></mat-spinner>
 </div>
 <br>
-<mat-card class="card-oas" >
+<mat-card class="{{permisos?'card-oas':'card-oas hidden'}}">
     <mat-card-header>
         <mat-card-title>Seleccione el espacio</mat-card-title>
     </mat-card-header>
@@ -35,7 +35,7 @@
     </mat-card-content>
 </mat-card>
 <br>
-<mat-card class="card-oas" *ngIf="sedeCambiada">
+<mat-card class='card-oas'>
     <mat-card-header>
         <mat-card-title>Seleccione dispositivo</mat-card-title>
     </mat-card-header>
