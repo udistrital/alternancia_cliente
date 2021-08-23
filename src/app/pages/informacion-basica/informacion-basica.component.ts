@@ -179,8 +179,6 @@ export class InformacionBasicaComponent implements OnInit {
           if (consultaInfoVacunacion) {
             if (datosInfoVacunacion && JSON.stringify(datosInfoVacunacion) !== '[{}]') {
               datosInfoVacunacion.sort((a, b) => (a.InfoComplementariaId.Id < b.InfoComplementariaId.Id ? -1 : 1));
-              console.log(datosInfoVacunacion)
-              console.log(consultaInfoVacunacion)
               this.isPost = false;
               this.infoVacunacion = consultaInfoVacunacion.map((itemVacunacion, index) => ({
                 ...itemVacunacion,
