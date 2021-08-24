@@ -6,9 +6,13 @@
     <mat-card-content>
 
         <div class="item-default" *ngFor="let item of task">
-            <mat-checkbox [(ngModel)]="item.isSelected" [color]="'primary'">
+            <mat-checkbox [(ngModel)]="item.isSelected" [color]="'primary'"  (change)="validarChecksS()">
             </mat-checkbox>
             <div class="text-justify">{{item.label}}</div>
+        </div>
+        <div class="item-default">
+            <mat-checkbox [color]="'primary'" [(ngModel)]="allNullSintomas" (change)="vaciarChecksS()"></mat-checkbox>
+            <div class="text-justify">Ninguna</div>
         </div>
 
         <br>
