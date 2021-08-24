@@ -102,21 +102,33 @@ export class QrscanComponent implements AfterViewInit {
   }
 
   accesoEspacio(){
-    this.request.get(environment.ALTERNANCIA_MID_SERVICE, `acceso/${this.lectura.IdEspacio}/${this.lectura.tipo}`)
+    let id:string
+    this.userService.tercero$.subscribe((tercero: any)=> {
+      id = tercero['Id']
+    })
+    this.request.get(environment.ALTERNANCIA_MID_SERVICE, `acceso/${id}/${this.lectura.IdEspacio}/${this.lectura.tipo}`)
     .subscribe(async(respuesta: any) => {
       this.persona =await respuesta["Data"];
       if (this.persona.Causa!=""){
         const { value: accept } = await Swal.fire({
           title:'Control de aforo',
           icon: 'error',
-          text: 'No se puede acceder\nCausa: '+this.persona.Causa,
+          html:`<p class="text-term-condional">
+            <b>Usuario:</b> ${this.persona.Nombre}<br>
+            <b>Fecha:</b> ${this.persona.Fecha}<br>
+            <b>Acceso:</b> ${this.persona.Acceso}<br>
+            <b>Causa:</b> ${this.persona.Causa}<br></p>`,
           confirmButtonText: 'Aceptar',
         })
-      }{
+      }
+      else{
         const { value: accept } = await Swal.fire({
           title:'Control de aforo',
           icon: 'success',
-          text: 'Hecho, puede continuar',
+          html:`<p class="text-term-condional">
+            <b>Usuario:</b> ${this.persona.Nombre}<br>
+            <b>Fecha:</b> ${this.persona.Fecha}<br>
+            <b>Acceso:</b> ${this.persona.Acceso}<br></p>`,
           confirmButtonText: 'Aceptar',
         })
       }

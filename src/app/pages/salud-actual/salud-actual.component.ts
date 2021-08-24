@@ -18,6 +18,8 @@ export interface Task {
 })
 export class SaludActualComponent implements OnInit {
   tercero = null;
+  cantidad: number = 0;
+  allNullSintomas = false;
   task: Task[] = [
     { name: 'fiebre', isSelected: false, label: 'Registra una temperatura superior a 37°C'},
     { name: 'congestion_nasal', isSelected: false, label: 'Congestión Nasal'},
@@ -41,13 +43,19 @@ export class SaludActualComponent implements OnInit {
         .subscribe(
           (data: any) => {
             if(data.Data.length > 0){
+            this.allNullSintomas = true;
             const actualStatus = data.Data[0].info_salud;
-            this.task = this.task.map((c: Task) => {
+            this.task = this.task.map((c: Task) => {              
               return {
                 ...c,
                 isSelected: actualStatus.hasOwnProperty(c.name) ? actualStatus[c.name] : false
               }
             })
+            for (let reg of this.task){
+              if (reg.isSelected){
+                this.allNullSintomas = false;
+              }
+            }
           }
           },
           (error: any) => {
@@ -60,8 +68,23 @@ export class SaludActualComponent implements OnInit {
 
   clear(): void {
     this.task = this.task.map((option)=>({...option, ...{isSelected: false}}))
+    this.allNullSintomas = true;
   }
 
+  vaciarChecksS() {
+    if (this.allNullSintomas) {
+      this.task = this.task.map(option => ({ ...option, ...{ isSelected: false } }));      
+    }
+  }
+
+  validarChecksS() {    
+    this.cantidad = this.task.filter(t => t.isSelected).length;          
+     if (this.cantidad  > 0) {
+       this.allNullSintomas = false;       
+    } else {
+      this.allNullSintomas = true;
+    } 
+  }
 
   save(): void {
     let saveData = {};
