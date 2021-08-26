@@ -128,7 +128,7 @@ export class QrscanComponent implements AfterViewInit {
           html:`<p class="text-term-condional">
             <b>Usuario:</b> ${this.persona.Nombre}<br>
             <b>Fecha:</b> ${this.persona.Fecha}<br>
-            <b>Acceso:</b> ${this.persona.Acceso}<br></p>`,
+            ${this.lectura.tipo=="in"?"<b>Acceso:</b> "+this.persona.Acceso+"<br>":"<center>Puede continuar</center>"}</p>`,
           confirmButtonText: 'Aceptar',
         })
       }
@@ -204,7 +204,7 @@ export class QrscanComponent implements AfterViewInit {
   }
 
   cargarSedes(){
-    this.request.get(environment.OIKOS_SERVICE,"espacio_fisico/?query=TipoEspacioFisicoId.Id:1")
+    this.request.get(environment.OIKOS_SERVICE,"espacio_fisico/?limit=-1&query=TipoEspacio.Id:1")
     .subscribe((res :any) =>{
       if (res != [] && res!=null){
         this.sedes=res
@@ -222,7 +222,7 @@ export class QrscanComponent implements AfterViewInit {
       .subscribe((res :any) =>{
         let edificios:EspacioFisico[]=[]
         for(let respuesta of res){
-          edificios.push(respuesta.HijoId)
+          edificios.push(respuesta.Hijo)
         }
         this.edificiosSeleccion[sede.Id.toString()]=edificios
       }, (error) => {
