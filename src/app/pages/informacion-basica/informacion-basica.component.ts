@@ -111,10 +111,8 @@ export class InformacionBasicaComponent implements OnInit {
     .subscribe((res:any)=>{
       var lista=res.Data
       lista.forEach(reg=>{
-        console.log(reg.Nombre)
         this.epsLista.push(reg.Nombre)
       })
-      console.log(this.epsLista)
     })
   }
 
