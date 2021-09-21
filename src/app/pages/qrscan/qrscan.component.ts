@@ -110,7 +110,7 @@ export class QrscanComponent implements AfterViewInit {
     this.request.get(environment.ALTERNANCIA_MID_SERVICE, `acceso/${id}/${this.lectura.IdEspacio}/${this.lectura.tipo}`)
     .subscribe(async(respuesta: any) => {
       this.persona =await respuesta["Data"];
-      if (this.persona.Causa!=""){
+      if (this.persona.Acceso=="No autorizado"){
         const { value: accept } = await Swal.fire({
           title:'Control de aforo',
           icon: 'error',
@@ -118,7 +118,8 @@ export class QrscanComponent implements AfterViewInit {
             <b>Usuario:</b> ${this.persona.Nombre}<br>
             <b>Fecha:</b> ${this.persona.Fecha}<br>
             <b>Acceso:</b> ${this.persona.Acceso}<br>
-            <b>Causa:</b> ${this.persona.Causa}<br></p>`,
+            <b>Causa:</b> ${this.persona.Causa}<br>
+            <b>Cupo restante:</b> ${this.persona.Cupo}<br></p>`,
           confirmButtonText: 'Aceptar',
         })
       }
@@ -129,7 +130,9 @@ export class QrscanComponent implements AfterViewInit {
           html:`<p class="text-term-condional">
             <b>Usuario:</b> ${this.persona.Nombre}<br>
             <b>Fecha:</b> ${this.persona.Fecha}<br>
-            ${this.lectura.tipo=="in"?"<b>Acceso:</b> "+this.persona.Acceso+"<br>":"<center>Puede continuar</center>"}</p>`,
+            <b>Acceso:</b> ${this.persona.Acceso}<br>
+            <b>Cupo restante:</b> ${this.persona.Cupo}<br><br>
+            <center>Puede continuar</center></p>`,
           confirmButtonText: 'Aceptar',
         })
       }
