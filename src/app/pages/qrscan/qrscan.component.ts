@@ -159,17 +159,16 @@ export class QrscanComponent implements AfterViewInit {
               <h3 class="title-term-conditional">Control de aforo</h3>
               <p class="text-term-condional">
               <b>Usuario:</b> ${this.persona.Nombre}<br>
-              <b>Identificación:</b> ${this.lectura.cc}<br>`
-          if(this.tipo=="in"){
-            codeHtml=codeHtml+`<b>Ingreso:</b> ${this.persona.Acceso}<br>`
-            if(this.persona.Causa!=""){
-              codeHtml=codeHtml+`<b>Causa:</b> ${this.persona.Causa}<br>`
-            }
+              <b>Identificación:</b> ${this.lectura.cc}<br>
+              <b>Ingreso:</b> ${this.persona.Acceso}<br>`
+          if(this.persona.Causa!=""){
+            codeHtml=codeHtml+`<b>Causa:</b> ${this.persona.Causa}<br>`
           }
           codeHtml=codeHtml+`<b>Cupo restante:</b> ${this.persona.Cupo}<br>
           </p>`
           const { value: accept } = await Swal.fire({
             html: codeHtml,
+            icon: this.persona.Acceso=="Autorizado"?'success':'error',
             confirmButtonText: 'Aceptar',
           })
         }, (error) => {
