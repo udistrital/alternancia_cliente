@@ -136,7 +136,7 @@
                             <mat-option disabled selected> Selecciona una opcion</mat-option>
                             <mat-option *ngFor='let eps of epsLista' value="{{eps}}">{{eps}}</mat-option>
                           </mat-select>
-                          <mat-error *ngIf="formVacunacion.get('empresaVacunacion').invalid">{{getErrorMessage(formVacunacion.get('eps'))}}</mat-error>
+                          <mat-error *ngIf="formVacunacion.get('eps').invalid">{{getErrorMessage(formVacunacion.get('eps'))}}</mat-error>
                     </mat-form-field>
                 </ng-container>
                 <ng-container *ngIf="formVacunacion.get('radioVacunacion').value === 'true'">
@@ -152,8 +152,7 @@
                         <mat-error *ngIf="formVacunacion.get('fechaVacunacion').invalid">{{getErrorMessage(formVacunacion.get('fechaVacunacion'))}}</mat-error>
                     </mat-form-field>
                     <br>
-                    <label>{{infoVacunacion?infoVacunacion[2].name:""}}</label>
-                   
+                    <label>{{infoVacunacion?infoVacunacion[2].name:""}}</label>                   
                     <br><br>
                     <mat-form-field appearance="outline">
                         <mat-label>Empresa</mat-label>
@@ -167,7 +166,29 @@
                           </mat-select>
                           <mat-error *ngIf="formVacunacion.get('empresaVacunacion').invalid">{{getErrorMessage(formVacunacion.get('empresaVacunacion'))}}</mat-error>
                     </mat-form-field>
-                </ng-container>
+                    <br>
+                    <label>{{infoVacunacion?infoVacunacion[5].name:""}}</label>                   
+                    <br><br>
+                    <mat-form-field appearance="outline">
+                        <mat-label>Fase</mat-label>
+                        <mat-select formControlName="faseVacunacion" >
+                            <mat-option disabled selected> Selecciona una opcion</mat-option>
+                            <mat-option value="Esquema incompleto">Esquema incompleto</mat-option>
+                            <mat-option value="Esquema completo">Esquema completo</mat-option>
+                            <mat-option value="Dosis de refuerzo">Dosis de refuerzo</mat-option>
+                          </mat-select>
+                          <mat-error *ngIf="formVacunacion.get('faseVacunacion').invalid">{{getErrorMessage(formVacunacion.get('faseVacunacion'))}}</mat-error>
+                    </mat-form-field>
+                </ng-container>                
+                <br>
+                    
+                <label>{{infoVacunacion[4]?infoVacunacion[4].name:""}}</label>
+                <br><br>
+                    <mat-form-field appearance="outline">
+                        <mat-label>URL</mat-label>
+                        <input matInput placeholder="https://mivacuna.sispro.gov.co/MiVacuna/..." value="" type="url" pattern="https:\/\/[mivacuna.sispro.gov.co/MiVacuna\-]+[/#?]?.*$" formControlName="urlCertificado">
+                        <mat-error *ngIf="formVacunacion.get('urlCertificado').invalid">{{getErrorMessage(formVacunacion.get('urlCertificado'))}}</mat-error>
+                    </mat-form-field>
             </div>
         </mat-card-content>
         <mat-card-actions>
