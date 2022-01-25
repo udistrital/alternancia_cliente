@@ -358,7 +358,7 @@ export class InformacionBasicaComponent implements OnInit {
       eps: ['', Validators.required],
       fechaVacunacion: ['', this.conditionallyRequiredValidator],
       empresaVacunacion: ['', this.conditionallyRequiredValidator],
-      urlCertificado: ['', [Validators.required, Validators.pattern("https:\/\/(mivacuna.sispro.gov.co\/MiVacuna){1}[/#?]?.*$")]],
+      urlCertificado: ['', [Validators.required, Validators.pattern("https:\/\/(mivacuna.sispro.gov.co\/MiVacuna\/CDVCOL\/ValCertDigVac){1}[/#?]?.*$")]],
       faseVacunacion: ['', this.conditionallyRequiredValidator]
     });
     this.formVacunacion.get('radioVacunacion').valueChanges
