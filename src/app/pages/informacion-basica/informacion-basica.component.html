@@ -186,7 +186,7 @@
                 <br><br>
                     <mat-form-field appearance="outline">
                         <mat-label>URL</mat-label>
-                        <input matInput placeholder="https://mivacuna.sispro.gov.co/MiVacuna/..." value="" type="url" pattern="https:\/\/[mivacuna.sispro.gov.co/MiVacuna\-]+[/#?]?.*$" formControlName="urlCertificado">
+                        <input matInput placeholder="https://mivacuna.sispro.gov.co/MiVacuna/CDVCOL/..." value="" type="url" pattern="https:\/\/[mivacuna.sispro.gov.co/MiVacuna\-]+[/#?]?.*$" formControlName="urlCertificado">
                         <mat-error *ngIf="formVacunacion.get('urlCertificado').invalid">{{getErrorMessage(formVacunacion.get('urlCertificado'))}}</mat-error>
                     </mat-form-field>
             </div>
