@@ -5,8 +5,8 @@ Cliente del Sistema de XX
 ## Especificaciones Técnicas
 
 ### Tecnologías Implementadas y Versiones
-* [Angular 11.2.1](https://angular.io/)
-
+* [Angular v11.2.1](https://angular.io/)
+* [Node v14.21.3](https://nodejs.org/es)
 ### Variables de Entorno
 ```shell
 # En Pipeline
@@ -27,6 +27,8 @@ cd alternancia_cliente
 Iniciar el servidor en local
 ```bash
 # install dependency
+nvm use v14.21.3
+
 npx npm install
 or
 npm install
