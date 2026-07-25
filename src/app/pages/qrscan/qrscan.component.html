@@ -1,3 +1,14 @@
+<div class="mobile-container" >
+  <!-- Encabezado Superior -->
+  <header class="app-header">
+    
+    <div class="header-title">
+      <span class="university-text">UNIVERSIDAD DISTRITAL</span>
+      <span class="sub-text">FRANCISCO JOSÉ DE CALDAS</span>
+    </div>
+    
+  </header>
+<main class="main-content">
 <div *ngIf="loaderService.isLoading | async" class="loader-container">
     <mat-spinner style="top: 50%;left: 50%;"></mat-spinner>
 </div>
@@ -68,4 +79,41 @@
     </qr-scanner>
     </mat-card-content>
 </mat-card>
-<br>
+
+</main>
+
+<nav class="bottom-nav">
+    <a class="nav-item" 
+       routerLink="/pages/dashboard" 
+       routerLinkActive="active"
+       matTooltip="Carnet" 
+       matTooltipPosition="above">
+        <mat-icon>assignment</mat-icon>
+        
+       </a>
+      <a class="nav-item" 
+       routerLink="/pages/qrcode"
+       routerLinkActive="active" matTooltip="Mi QR" matTooltipPosition="above">
+        <mat-icon>qr_code_2</mat-icon>
+        
+       </a>
+      <a class="nav-item" 
+       routerLink="/pages/ingreso" 
+       routerLinkActive="active" matTooltip="Leer QR" matTooltipPosition="above">
+        <mat-icon>qr_code_1</mat-icon>
+        
+       </a>
+      <a class="nav-item" 
+       routerLink="/pages/vehiculo"  
+       routerLinkActive="active" matTooltip="Vehiculo" matTooltipPosition="above">
+        <mat-icon>directions_car</mat-icon>
+        
+       </a>
+     
+      <a class="nav-item" 
+       routerLink="/pages/informacion_basica" 
+       routerLinkActive="active" matTooltip="Perfil" matTooltipPosition="above">
+        <mat-icon>person_outline</mat-icon>
+        
+       </a>
+  </nav>

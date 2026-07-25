@@ -1,0 +1,100 @@
+  <div class="mobile-container" *ngIf="tercero && datosIdentificacion">
+  <!-- Encabezado Superior -->
+  <header class="app-header">
+    
+    <div class="header-title">
+      <span class="university-text">UNIVERSIDAD DISTRITAL</span>
+      <span class="sub-text">FRANCISCO JOSÉ DE CALDAS</span>
+    </div>
+    
+  </header>
+
+  <!-- Contenido Central -->
+  <main class="main-content">
+
+    <mat-tab-group class="tabs-rojas">
+  <mat-tab label="Placas registradas"> <!-- Tarjeta Central de Información de Vehículo -->
+    <mat-card class="vehicle-card" >
+      <mat-card-content class="card-body">
+        
+        <!-- Insignia Amarilla de Placa N/A -->
+        <div class="plate-badge">
+          <span>N/A</span>
+        </div>
+        <!-- Automóvil -->
+<mat-icon>directions_car</mat-icon>
+
+<!-- Motocicleta -->
+<mat-icon>two_wheeler</mat-icon>
+
+<!-- Bicicleta -->
+<mat-icon>directions_bike</mat-icon>
+<mat-icon>moped</mat-icon>
+        <!-- Texto descriptivo inferior -->
+        <p class="status-text">Vehículo aprobado</p>
+        
+      </mat-card-content>
+    </mat-card>  </mat-tab>
+  <mat-tab label="Historial">  
+    <mat-card class="vehicle-card" >
+      <mat-card-content class="card-body">
+        
+          No se encontraron registros
+        
+      </mat-card-content>
+    </mat-card>  
+
+
+
+  </mat-tab>
+  
+</mat-tab-group>
+
+
+
+
+   
+  </main>
+
+  <!-- Barra de Navegación Inferior -->
+  <nav class="bottom-nav">
+    <a class="nav-item" 
+       routerLink="/pages/dashboard" 
+       routerLinkActive="active"
+       matTooltip="Carnet" 
+       matTooltipPosition="above">
+        <mat-icon>assignment</mat-icon>
+        
+       </a>
+      <a class="nav-item" 
+       routerLink="/pages/qrcode" 
+       routerLinkActive="active" matTooltip="Mi QR" matTooltipPosition="above">
+        <mat-icon>qr_code_2</mat-icon>
+        
+       </a>
+      <a class="nav-item" 
+       routerLink="/pages/ingreso" 
+       routerLinkActive="active" matTooltip="Leer QR" matTooltipPosition="above">
+        <mat-icon>qr_code_1</mat-icon>
+        
+       </a>
+      <a class="nav-item" 
+       routerLink="/pages/vehiculo" 
+       routerLinkActive="active" matTooltip="Parqueadero" matTooltipPosition="above">
+        <mat-icon>directions_car</mat-icon>
+        
+       </a>
+      
+      <a class="nav-item" 
+       routerLink="/pages/informacion_basica" 
+       routerLinkActive="active" matTooltip="Perfil" matTooltipPosition="above">
+        <mat-icon>person_outline</mat-icon>
+        
+       </a>
+  </nav>
+</div>
+
+
+
+
+

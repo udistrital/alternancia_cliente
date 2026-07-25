@@ -4,11 +4,9 @@ export const environment = {
     autenticacion: true,
     notificaciones: false,
     menuApps: true,
-    appname: 'alternancia',
-    appMenu: 'alternancia',
-    NUXEO: {
-      PATH: 'https://documental.udistrital.edu.co/nuxeo/',
-  },
+    appname: 'metis',
+    appMenu: 'accesoud',
+   
     ALTERNANCIA_MID_SERVICE: 'https://autenticacion.portaloas.udistrital.edu.co/apioas/alternancia_mid/v1/',
     SINTOMAS_SERVICE: 'https://autenticacion.portaloas.udistrital.edu.co/apioas/sintomas_crud/v1/',
     TERCEROS_SERVICE: 'https://autenticacion.portaloas.udistrital.edu.co/apioas/terceros_crud/v1/',
@@ -18,6 +16,9 @@ export const environment = {
     CONFIGURACION_SERVICE: 'https://autenticacion.portaloas.udistrital.edu.co/apioas/configuracion_crud_api/v1/',
     CONF_MENU_SERVICE: 'https://autenticacion.portaloas.udistrital.edu.co/apioas/configuracion_crud_api/v1/menu_opcion_padre/ArbolMenus/',
     NOTIFICACION_SERVICE: 'wss://pruebasapi.portaloas.udistrital.edu.co:8116/ws',
+    GESTOR_DOCUMENTAL: 'https://autenticacion.portaloas.udistrital.edu.co/apioas/gestor_documental_mid/v1/',
+    VALIDAR_IMAGEN: 'https://autenticacion.portaloas.udistrital.edu.co/apioas/imagenes/v1',
+  TOKEN: {
     TOKEN: {
       AUTORIZATION_URL: 'https://autenticacion.portaloas.udistrital.edu.co/oauth2/authorize',
       CLIENTE_ID: 'Wr8pla31bD51cT_IPEis1e_Opt4a',
