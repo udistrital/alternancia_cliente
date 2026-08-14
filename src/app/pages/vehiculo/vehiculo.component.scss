@@ -42,7 +42,9 @@
   /* Contenido Principal */
   .main-content {
       flex: 1;
-      overflow-y: auto;
+      
+        height: auto;
+        overflow: visible;
   }
 
  
@@ -155,14 +157,30 @@
     text-align: center;
     border-radius: 6px;
     margin-bottom: 16px;
+    margin-top: 16px;
 }
-
+.plate-badge-inactivo {
+    background-color: #a3a2a0;
+    /* Amarillo vivo de la imagen */
+    color: #000000;
+    width: 70%;
+    max-width: 200px;
+    padding: 16px 0;
+    text-align: center;
+    border-radius: 6px;
+    margin-bottom: 16px;
+    margin-top: 16px;
+}
 .plate-badge span {
     font-size: 32px;
     font-weight: 800;
     letter-spacing: 2px;
 }
-
+.plate-badge-inactivo span {
+    font-size: 32px;
+    font-weight: 800;
+    letter-spacing: 2px;
+}
 /* Texto de estado inferior */
 .status-text {
     font-size: 15px;
@@ -176,7 +194,7 @@
         border-radius: 12px !important;
         box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05) !important;
         padding: 24px !important;
-            left: 10px;
+            left: -15px;
 }
 .mat-tab-group {
     position: relative;
@@ -202,4 +220,27 @@
 .tabs-rojas ::ng-deep .mat-tab-group.mat-primary .mat-ink-bar {
     background-color: #ffb300;
     /* Un rojo más oscuro o transparente si prefieres ocultarla */
+}
+.example-button-container
+{
+    position: relative;
+    display: flex;
+    left: 85%;
+}
+.sedes-box {
+        color: #ffffff;
+        background-color: #7f1d1d;
+        border-radius: 10px;
+        padding: 7px;
+        display: inline-flex;
+}
+:host ::ng-deep .mat-tab-body-content {
+    overflow: visible !important;
+    /* Permite que el contenido se estire hacia afuera */
+    height: auto !important;
+    /* Evita que mantenga una altura fija interna */
+}
+:host ::ng-deep .mat-tab-label
+{
+    min-width: 100px !important; 
 }
