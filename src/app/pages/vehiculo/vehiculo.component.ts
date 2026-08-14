@@ -127,6 +127,7 @@ export class VehiculoComponent implements OnInit {
 
   }
   cargarDatosAprobados(): void{
+        this.vehiculos=[];
          this.request.get(environment.TERCEROS_SERVICE, `info_complementaria_tercero/?query=TerceroId.Id:${!!this.tercero ? this.tercero.Id ? this.tercero.Id : '' : ''}`
               + `,InfoComplementariaId.GrupoInfoComplementariaId.CodigoAbreviacion:PARQUEADERO,Activo:true`)
               .subscribe((datosParqueadero: any) => {
@@ -145,6 +146,7 @@ export class VehiculoComponent implements OnInit {
               })
   }
    cargarDatosNoAprobados(): void{
+         this.vehiculos_inactivos=[];
          this.request.get(environment.TERCEROS_SERVICE, `info_complementaria_tercero/?query=TerceroId.Id:${!!this.tercero ? this.tercero.Id ? this.tercero.Id : '' : ''}`
               + `,InfoComplementariaId.GrupoInfoComplementariaId.CodigoAbreviacion:PARQUEADERO,Activo:false`)
               .subscribe((datosInactivos: any) => {
