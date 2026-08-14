@@ -12,7 +12,7 @@
   <!-- Contenido Central -->
   <main class="main-content">
 
-    <mat-tab-group class="tabs-rojas">
+    <mat-tab-group [(selectedIndex)]="pestanaActiva" class="tabs-rojas">
   <mat-tab label="Vehiculos">
     <ul>
       <li *ngFor="let vehiculo of vehiculos">

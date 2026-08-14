@@ -27,7 +27,7 @@ export class VehiculoComponent implements OnInit {
   selectedFile: File | null = null;
   imagePreview: string | ArrayBuffer | null = null;
   errorMessage: string | null = null;
-
+   pestanaActiva: number = 0; 
   readonly allowedTypes = ['image/png', 'image/jpeg', 'image/jpg'];
   readonly maxFileSize = 5242880; // 5 MB en bytes
   isPost: boolean = true;
@@ -127,6 +127,7 @@ export class VehiculoComponent implements OnInit {
 
   }
   cargarDatosAprobados(): void{
+        this.vehiculos=[];
          this.request.get(environment.TERCEROS_SERVICE, `info_complementaria_tercero/?query=TerceroId.Id:${!!this.tercero ? this.tercero.Id ? this.tercero.Id : '' : ''}`
               + `,InfoComplementariaId.GrupoInfoComplementariaId.CodigoAbreviacion:PARQUEADERO,Activo:true`)
               .subscribe((datosParqueadero: any) => {
@@ -145,6 +146,7 @@ export class VehiculoComponent implements OnInit {
               })
   }
    cargarDatosNoAprobados(): void{
+         this.vehiculos_inactivos=[];
          this.request.get(environment.TERCEROS_SERVICE, `info_complementaria_tercero/?query=TerceroId.Id:${!!this.tercero ? this.tercero.Id ? this.tercero.Id : '' : ''}`
               + `,InfoComplementariaId.GrupoInfoComplementariaId.CodigoAbreviacion:PARQUEADERO,Activo:false`)
               .subscribe((datosInactivos: any) => {
@@ -172,7 +174,7 @@ export class VehiculoComponent implements OnInit {
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
         this.cargarDatosNoAprobados();
-        
+         this.pestanaActiva = 1; 
         // Aquí ejecutas tu servicio para guardar en la base de datos
       } else {
         console.log('El usuario canceló la acción.');
