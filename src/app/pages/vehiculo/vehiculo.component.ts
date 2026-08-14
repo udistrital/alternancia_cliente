@@ -113,7 +113,21 @@ export class VehiculoComponent implements OnInit {
 
           if (this.tercero) {
           
-            this.request.get(environment.TERCEROS_SERVICE, `info_complementaria_tercero/?query=TerceroId.Id:${!!this.tercero ? this.tercero.Id ? this.tercero.Id : '' : ''}`
+           this.cargarDatosAprobados();
+           this.cargarDatosNoAprobados();
+         
+          }
+        }, (error) => {
+          console.log(error);
+          Swal.close();
+        })
+    })
+
+
+
+  }
+  cargarDatosAprobados(): void{
+         this.request.get(environment.TERCEROS_SERVICE, `info_complementaria_tercero/?query=TerceroId.Id:${!!this.tercero ? this.tercero.Id ? this.tercero.Id : '' : ''}`
               + `,InfoComplementariaId.GrupoInfoComplementariaId.CodigoAbreviacion:PARQUEADERO,Activo:true`)
               .subscribe((datosParqueadero: any) => {
 
@@ -129,7 +143,9 @@ export class VehiculoComponent implements OnInit {
               }, (error) => {
                 console.log(error);
               })
-            this.request.get(environment.TERCEROS_SERVICE, `info_complementaria_tercero/?query=TerceroId.Id:${!!this.tercero ? this.tercero.Id ? this.tercero.Id : '' : ''}`
+  }
+   cargarDatosNoAprobados(): void{
+         this.request.get(environment.TERCEROS_SERVICE, `info_complementaria_tercero/?query=TerceroId.Id:${!!this.tercero ? this.tercero.Id ? this.tercero.Id : '' : ''}`
               + `,InfoComplementariaId.GrupoInfoComplementariaId.CodigoAbreviacion:PARQUEADERO,Activo:false`)
               .subscribe((datosInactivos: any) => {
 
@@ -145,16 +161,6 @@ export class VehiculoComponent implements OnInit {
               }, (error) => {
                 console.log(error);
               })
-         
-          }
-        }, (error) => {
-          console.log(error);
-          Swal.close();
-        })
-    })
-
-
-
   }
   openInsertDialog(): void {
     const dialogRef = this.dialog.open(VehiculoFormDialogComponent, {
@@ -165,7 +171,8 @@ export class VehiculoComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        console.log('Datos recibidos del formulario:', result);
+        this.cargarDatosNoAprobados();
+        
         // Aquí ejecutas tu servicio para guardar en la base de datos
       } else {
         console.log('El usuario canceló la acción.');
