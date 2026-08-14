@@ -13,39 +13,125 @@
   <main class="main-content">
 
     <mat-tab-group class="tabs-rojas">
-  <mat-tab label="Placas registradas"> <!-- Tarjeta Central de Información de Vehículo -->
-    <mat-card class="vehicle-card" >
-      <mat-card-content class="card-body">
-        
-        <!-- Insignia Amarilla de Placa N/A -->
-        <div class="plate-badge">
-          <span>N/A</span>
-        </div>
-        <!-- Automóvil -->
-<mat-icon>directions_car</mat-icon>
+  <mat-tab label="Vehiculos">
+    <ul>
+      <li *ngFor="let vehiculo of vehiculos">
 
-<!-- Motocicleta -->
-<mat-icon>two_wheeler</mat-icon>
+        <!-- Tarjeta Central de Información de Vehículo -->
+            <mat-card class="vehicle-card" >
+              <mat-card-content class="card-body">
+              <mat-chip-list
+          class="sedes-chip"
+          >
+          <mat-chip
+            class="sedes-box"
+            *ngFor="let sede of vehiculo.sedes">
+            {{sede}}
+          </mat-chip>
+        </mat-chip-list>
+            
+                <!-- Insignia Amarilla de Placa N/A -->
+                <div *ngIf="vehiculo.placa === ''" class="plate-badge">
+                  <span>N/A</span>
+                </div>
+                <div *ngIf="vehiculo.placa  !== ''" class="plate-badge">
+                  <div *ngIf="vehiculo.tipoVehiculo === 'CARRO'">
+                <mat-icon>directions_car</mat-icon>
+            </div>
+            <div *ngIf="vehiculo.tipoVehiculo === 'MOTO'">
+                <mat-icon>two_wheeler</mat-icon>
+            </div>
+            <div *ngIf="vehiculo.tipoVehiculo === 'BICICLETA'">
+                <mat-icon>directions_bike</mat-icon>
+            </div>
+            <div *ngIf="vehiculo.tipoVehiculo === 'MOTO ELECTRICA'">
+                <mat-icon>moped</mat-icon>
+            </div>
+                  <span>{{vehiculo.placa}}</span>
+                </div>
+                
 
-<!-- Bicicleta -->
-<mat-icon>directions_bike</mat-icon>
-<mat-icon>moped</mat-icon>
-        <!-- Texto descriptivo inferior -->
-        <p class="status-text">Vehículo aprobado</p>
-        
-      </mat-card-content>
-    </mat-card>  </mat-tab>
+                <!-- Texto descriptivo inferior -->
+                <div *ngIf="vehiculo.activo === true" >
+                <p class="status-text">Vehículo aprobado</p>
+                </div>
+                <div *ngIf="vehiculo.activo !== true" >
+                <p class="status-text">Vehículo no aprobado</p>
+                </div>
+              </mat-card-content>
+            </mat-card>  
+        </li>
+      </ul>
+      <div class="example-button-container">
+          <button mat-fab color="primary" class="left-align-btn" (click)="openInsertDialog()">
+            <mat-icon>add</mat-icon>
+             </button>
+      </div>
+    </mat-tab>
+    <mat-tab label="Solicitudes">  
+       <ul>
+      <li *ngFor="let vehiculo_inactivo of vehiculos_inactivos">
+
+        <!-- Tarjeta Central de Información de Vehículo -->
+            <mat-card class="vehicle-card" >
+              <mat-card-content class="card-body">
+              <mat-chip-list
+          class="sedes-chip"
+          >
+          <mat-chip
+            class="sedes-box"
+            *ngFor="let sede of vehiculo_inactivo.sedes">
+            {{sede}}
+          </mat-chip>
+        </mat-chip-list>
+            
+                <!-- Insignia Amarilla de Placa N/A -->
+                <div *ngIf="vehiculo_inactivo.placa === ''" class="plate-badge-inactivo">
+                  <span>N/A</span>
+                </div>
+                <div *ngIf="vehiculo_inactivo.placa  !== ''" class="plate-badge-inactivo">
+                  <div *ngIf="vehiculo_inactivo.tipoVehiculo === 'CARRO'">
+                <mat-icon>directions_car</mat-icon>
+            </div>
+            <div *ngIf="vehiculo_inactivo.tipoVehiculo === 'MOTO'">
+                <mat-icon>two_wheeler</mat-icon>
+            </div>
+            <div *ngIf="vehiculo_inactivo.tipoVehiculo === 'BICICLETA'">
+                <mat-icon>directions_bike</mat-icon>
+            </div>
+            <div *ngIf="vehiculo_inactivo.tipoVehiculo === 'MOTO ELECTRICA'">
+                <mat-icon>moped</mat-icon>
+            </div>
+                  <span>{{vehiculo_inactivo.placa}}</span>
+                </div>
+                
+
+                <!-- Texto descriptivo inferior -->
+                <div *ngIf="vehiculo_inactivo.activo === true" >
+                <p class="status-text">Vehículo aprobado</p>
+                </div>
+                <div *ngIf="vehiculo_inactivo.activo !== true" >
+                <p class="status-text">Vehículo no aprobado</p>
+                </div>
+              </mat-card-content>
+            </mat-card>  
+        </li>
+      </ul>
+  </mat-tab>
   <mat-tab label="Historial">  
-    <mat-card class="vehicle-card" >
-      <mat-card-content class="card-body">
+        <ul>
+      <li>
+            <mat-card class="vehicle-card" >
+          
+              <mat-card-content class="card-body">
+                
+                  No se encontraron registros
+                
+              </mat-card-content>
+            </mat-card>  
         
-          No se encontraron registros
-        
-      </mat-card-content>
-    </mat-card>  
-
-
-
+         </li>
+          </ul>
   </mat-tab>
   
 </mat-tab-group>
