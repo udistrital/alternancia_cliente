@@ -27,7 +27,7 @@ export class VehiculoComponent implements OnInit {
   selectedFile: File | null = null;
   imagePreview: string | ArrayBuffer | null = null;
   errorMessage: string | null = null;
-
+   pestanaActiva: number = 0; 
   readonly allowedTypes = ['image/png', 'image/jpeg', 'image/jpg'];
   readonly maxFileSize = 5242880; // 5 MB en bytes
   isPost: boolean = true;
@@ -172,7 +172,7 @@ export class VehiculoComponent implements OnInit {
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
         this.cargarDatosNoAprobados();
-        
+         this.pestanaActiva = 1; 
         // Aquí ejecutas tu servicio para guardar en la base de datos
       } else {
         console.log('El usuario canceló la acción.');
