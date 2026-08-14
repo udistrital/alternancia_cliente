@@ -17,7 +17,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatSelectModule } from '@angular/material/select';
 import { MatDatepickerModule } from '@angular/material/datepicker';
-import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatFormFieldModule, MatLabel } from '@angular/material/form-field';
 import { MatStepperModule } from '@angular/material/stepper';
 import { MAT_MOMENT_DATE_FORMATS, MomentDateAdapter, MAT_MOMENT_DATE_ADAPTER_OPTIONS,} from '@angular/material-moment-adapter';
 import { MatNativeDateModule, DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material/core';
@@ -41,6 +41,8 @@ import { UserService } from './services/userService';
 import { InterceptorService } from '../loader/interceptor.service';
 import { MatMenuModule } from '@angular/material/menu';
 import { VehiculoComponent } from './vehiculo/vehiculo.component';
+import { VehiculoFormDialogComponent } from './vehiculo/vehiculo-form-dialog.component';
+import { MatDialogModule } from '@angular/material/dialog';
 
 
 const pagesComponents = [
@@ -50,7 +52,8 @@ const pagesComponents = [
   SaludActualComponent,
   PreexistenciaComponent,
   CarnetComponent,
-  VehiculoComponent
+  VehiculoComponent,
+  VehiculoFormDialogComponent
 ];
 
 const materialModules = [
@@ -72,7 +75,8 @@ const materialModules = [
   MatProgressSpinnerModule,
   MatTabsModule,
   MatMenuModule,
-  MatTooltipModule 
+  MatTooltipModule,
+  MatDialogModule  
 ];
 @NgModule({
   declarations: [

@@ -16,6 +16,8 @@ import { LocalDataSource } from 'ng2-smart-table';
 import { Router } from '@angular/router';
 import { Observable, ReplaySubject } from 'rxjs';
 import { DomSanitizer } from '@angular/platform-browser';
+import { MatDialog } from '@angular/material/dialog';
+import { VehiculoFormDialogComponent } from './vehiculo-form-dialog.component';
 @Component({
   selector: 'app-vehiculo',
   templateUrl: './vehiculo.component.html',
@@ -32,7 +34,18 @@ export class VehiculoComponent implements OnInit {
   infoVacunacion: any[] = [{ dato: '' }, { dato: '' }, { dato: '' }, { dato: '' }, { dato: '' }, { dato: '' }];
   maxDate: Date = new Date();
   minDate: Date = new Date(2021, 0, 1);
-  tercero: Tercero | undefined ;
+  tercero: Tercero = {
+    Id: 0,
+    NombreCompleto: '',
+    PrimerNombre: '',
+    SegundoNombre: '',
+    PrimerApellido: '',
+    SegundoApellido: '',
+    LugarOrigen: 0,
+    FechaNacimiento: undefined,
+    Activo: false,
+    UsuarioWSO2: ''
+  };
   datosIdentificacion: DatosIdentificacion | undefined ;
   datosGenero: InfoComplementariaTercero | undefined ;
   datosLocalidad: InfoComplementariaTercero | undefined ;
@@ -52,7 +65,13 @@ export class VehiculoComponent implements OnInit {
   enlace : string;
   extension: string;
   ifImagen: boolean;
-  
+  tipo_vehiculo: string;
+  placa:string;
+  ubicacion:any[]= [];
+  vehiculo:any = {};
+  vehiculo_inactivo:any = {};
+  vehiculos:any[]= [];
+  vehiculos_inactivos:any[]= [];
   nombreArchivo: string;
   imageSrc: any;
   base64String: any;
@@ -64,6 +83,7 @@ export class VehiculoComponent implements OnInit {
   constructor(
     private request: RequestManager,
     private userService: UserService,
+    private dialog: MatDialog,
     private sanitizer:DomSanitizer,
     private utilService: UtilService,
     private router: Router,
@@ -74,6 +94,9 @@ export class VehiculoComponent implements OnInit {
     this.extension="";
     this.nombreArchivo="";
     this.fotoCarnet="";
+    this.tipo_vehiculo="";
+    this.placa="";
+   
  
     }
 
@@ -90,64 +113,39 @@ export class VehiculoComponent implements OnInit {
 
           if (this.tercero) {
           
-
-          
             this.request.get(environment.TERCEROS_SERVICE, `info_complementaria_tercero/?query=TerceroId.Id:${!!this.tercero ? this.tercero.Id ? this.tercero.Id : '' : ''}`
-              + `,InfoComplementariaId.GrupoInfoComplementariaId.Id:6`)
-              .subscribe((datosInfoGenero: any) => {
-                this.datosGenero = datosInfoGenero[0];
-              }, (error) => {
-                console.log(error);
-              })
+              + `,InfoComplementariaId.GrupoInfoComplementariaId.CodigoAbreviacion:PARQUEADERO,Activo:true`)
+              .subscribe((datosParqueadero: any) => {
 
-            this.request.get(environment.TERCEROS_SERVICE, `info_complementaria_tercero/?query=TerceroId.Id:${!!this.tercero ? this.tercero.Id ? this.tercero.Id : '' : ''}`
-              + `,InfoComplementariaId.GrupoInfoComplementariaId.Id:2`)
-              .subscribe((datosInfoEstadoCivil: any) => {
-                this.datosEstadoCivil = datosInfoEstadoCivil[0];
-              }, (error) => {
-                console.log(error);
-              })
-
-            this.request.get(environment.TERCEROS_SERVICE, `info_complementaria_tercero/?query=TerceroId.Id:${!!this.tercero ? this.tercero.Id ? this.tercero.Id : '' : ''}`
-              + `,InfoComplementariaId.GrupoInfoComplementariaId.CodigoAbreviacion:LOCBOG`)
-              .subscribe((datosInfoLocalidad: any) => {
-                this.datosLocalidad = datosInfoLocalidad[0];
-              }, (error) => {
-                console.log(error);
-              })
-            
-          //  this.consultarInfoVacunacion();
-/*
-            this.request.get(environment.TERCEROS_SERVICE, `vinculacion/?query=Activo:true,TerceroPrincipalId.Id:${!!this.tercero ? this.tercero.Id ? this.tercero.Id : '' : ''}`)
-              .subscribe((datosInfoVinculaciones: any) => {
-                this.vinculaciones = datosInfoVinculaciones;
-                this.vinculacionesDocente = [];
-                this.vinculacionesEstudiante = [];
-                this.vinculacionesOtros = [];
-                for (let i = 0; i < this.vinculaciones.length; i++) {
-                  this.vinculaciones[i] = {
-                    ...datosInfoVinculaciones[i],
-                    ...{ FechaInicioVinculacion: this.vinculaciones[i].FechaInicioVinculacion ? this.corregirFecha(this.vinculaciones[i].FechaInicioVinculacion) : '' },
-                    ...{ FechaFinVinculacion: this.vinculaciones[i].FechaFinVinculacion ? this.corregirFecha(this.vinculaciones[i].FechaFinVinculacion) : '' }
-                  }
-                  if (JSON.stringify(this.vinculaciones[i]) !== '{}') {
-                    this.request.get(environment.PARAMETROS_SERVICE, `parametro/?query=Id:` + this.vinculaciones[i].TipoVinculacionId)
-                      .subscribe((vinculacion: any) => {
-                        this.vinculaciones[i].TipoVinculacion = vinculacion['Data'][0];
-                        if (this.vinculaciones[i].DependenciaId) {
-                          this.request.get(environment.OIKOS_SERVICE, `dependencia/` + this.vinculaciones[i].DependenciaId)
-                            .subscribe((dependencia: any) => {
-                              this.vinculaciones[i].Dependencia = dependencia;
-                            }, (error) => {
-                              console.log(error);
-                            })
-                        }
-                        this.asignarVinculacion(this.vinculaciones[i]);
-                      })
-                  }
+                for (let i = 0; i < datosParqueadero.length; i++) {
+                  this.vehiculo={};
+                  this.vehiculo.tipoVehiculo = (JSON.parse(datosParqueadero[i].Dato)).tipoVehiculo;   
+                  this.vehiculo.placa = (JSON.parse(datosParqueadero[i].Dato)).placa;
+                  this.vehiculo.sedes = (JSON.parse(datosParqueadero[i].Dato)).sedes; 
+                  this.vehiculo.activo = datosParqueadero[i].Activo; 
+                  this.vehiculos.push(this.vehiculo);
                 }
+                 console.log(this.vehiculos);
+              }, (error) => {
+                console.log(error);
+              })
+            this.request.get(environment.TERCEROS_SERVICE, `info_complementaria_tercero/?query=TerceroId.Id:${!!this.tercero ? this.tercero.Id ? this.tercero.Id : '' : ''}`
+              + `,InfoComplementariaId.GrupoInfoComplementariaId.CodigoAbreviacion:PARQUEADERO,Activo:false`)
+              .subscribe((datosInactivos: any) => {
 
-              })*/
+                for (let i = 0; i < datosInactivos.length; i++) {
+                  this.vehiculo_inactivo={};
+                  this.vehiculo_inactivo.tipoVehiculo = (JSON.parse(datosInactivos[i].Dato)).tipoVehiculo;   
+                  this.vehiculo_inactivo.placa = (JSON.parse(datosInactivos[i].Dato)).placa;
+                  this.vehiculo_inactivo.sedes = (JSON.parse(datosInactivos[i].Dato)).sedes; 
+                  this.vehiculo_inactivo.activo = datosInactivos[i].Activo; 
+                  this.vehiculos_inactivos.push(this.vehiculo_inactivo);
+                }
+                 console.log(this.vehiculos_inactivos);
+              }, (error) => {
+                console.log(error);
+              })
+         
           }
         }, (error) => {
           console.log(error);
@@ -158,7 +156,23 @@ export class VehiculoComponent implements OnInit {
 
 
   }
- 
+  openInsertDialog(): void {
+    const dialogRef = this.dialog.open(VehiculoFormDialogComponent, {
+      width: '400px',
+      disableClose: true, // Evita que se cierre haciendo clic afuera
+      data: { terceroid: this.tercero.Id} // Datos iniciales opcionales
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        console.log('Datos recibidos del formulario:', result);
+        // Aquí ejecutas tu servicio para guardar en la base de datos
+      } else {
+        console.log('El usuario canceló la acción.');
+      }
+    });
+  }
+  
  
  
 }

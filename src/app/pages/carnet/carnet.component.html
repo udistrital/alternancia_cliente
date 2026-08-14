@@ -12,8 +12,9 @@
   <!-- Contenido Central -->
   <main class="main-content">
     <div class="profile-hero-section">
-      <!-- Reemplaza con tu ruta de imagen local -->
-      <div class="image-clickable-zone" (click)="fileInput.click()">
+      
+     <div class="image-clickable-zone"      [class.disabled]="!isClickEnabled"     (click)="isClickEnabled && fileInput.click()">
+
         <img [src]="imagePreview ? imagePreview : 'assets/imagen_defecto.png'" alt="Foto de perfil" class="profile-bg-image">
           <div class="hover-overlay">
       <span>Cambiar imagen</span>
@@ -29,19 +30,19 @@
               <p class="meta-text">{{datosIdentificacion.TipoDocumentoId.CodigoAbreviacion}} {{datosIdentificacion.Numero}} / RH: {{RH}}</p>
               
               <div *ngIf="vinculaciones?.length">
-                  <p class="dep-text">{{vinculaciones[0].Dependencia?vinculaciones[0].Dependencia.Nombre:''}}</p>
-                  <p class="dep-text">ACTIVO - {{ vinculaciones[0].FechaFinVinculacion ? (vinculaciones[0].FechaFinVinculacion | date: 'dd/MM/yyyy':'') : '' }}</p>
+                  <p class="dep-text">{{ opcionSeleccionada?.Dependencia?.Nombre || '' }}</p>
+                  <p class="dep-text">{{ opcionSeleccionada.Activo?'ACTIVO':'INACTIVO'}} - {{ opcionSeleccionada.FechaFinVinculacion ? (opcionSeleccionada.FechaFinVinculacion | date: 'dd/MM/yyyy':'') : '' }}</p>
                   <!-- Botón Desplegable Tradicional -->
                   <button mat-flat-button color="warn" class="badge-button" [matMenuTriggerFor]="menu">
-                    {{vinculaciones[0].TipoVinculacion?vinculaciones[0].TipoVinculacion.Nombre:""}} 
+                    {{ opcionSeleccionada?.TipoVinculacion?.Nombre || ''}}
+                    
                   </button>
                   <mat-menu #menu="matMenu">
                     <button 
                     mat-menu-item 
                     *ngFor="let opcion of vinculaciones; trackBy: trackByAccion" 
-                    (click)="ejecutarAccion(opcion.accion)">
-                    <mat-icon>{{ opcion.icono }}</mat-icon>
-                    <span>{{ opcion.texto }}</span>
+                    (click)="ejecutarAccion(opcion)">
+                     <span>{{ opcion.TipoVinculacion?.Nombre || '' }}</span>
                   </button>
                   </mat-menu>
                   
