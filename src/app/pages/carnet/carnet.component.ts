@@ -172,6 +172,7 @@ export class CarnetComponent implements OnInit {
                       });
                      } else
                       {
+                        Swal.close();
                         this.enableClick();  
                       }  
                
