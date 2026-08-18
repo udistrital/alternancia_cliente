@@ -41,6 +41,8 @@ export class QrscanComponent implements AfterViewInit {
             if (datosInfoVinculaciones.length>0){
               this.idRol=datosInfoVinculaciones[0].TipoVinculacionId
               this.permisos = (this.idRol == 377 || this.idRol == 293 || this.idRol == 294 || (this.idRol >= 296 && this.idRol <= 299))
+              if(this.permisos)
+              this.cargarSedes();
             }
           })
       }
@@ -48,7 +50,7 @@ export class QrscanComponent implements AfterViewInit {
    }
 
   ngAfterViewInit(): void {
-    this.cargarSedes()
+    
     this.qrScannerComponent.getMediaDevices()
       .then((devices) => {
         this.videoDevices = devices.filter((video) => (video.kind === 'videoinput'));
@@ -207,7 +209,7 @@ export class QrscanComponent implements AfterViewInit {
   }
 
   cargarSedes(){
-    this.request.get(environment.OIKOS_SERVICE,"espacio_fisico/?limit=-1&query=TipoEspacio.Id:1")
+    this.request.get(environment.OIKOS_SERVICE,"espacio_fisico/?limit=-1&query=TipoEspacio.Id:38,Activo:true")
     .subscribe((res :any) =>{
       if (res != [] && res!=null){
         this.sedes=res
