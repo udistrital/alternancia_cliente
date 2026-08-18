@@ -176,7 +176,8 @@ export class CarnetComponent implements OnInit {
                         this.enableClick();  
                       }  
                
-
+                      Swal.close();
+                        this.enableClick();  
 
               }, (error) => {
                 console.log(error);
