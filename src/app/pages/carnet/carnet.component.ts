@@ -144,7 +144,7 @@ export class CarnetComponent implements OnInit {
             this.request.get(environment.TERCEROS_SERVICE, `info_complementaria_tercero/?query=TerceroId.Id:${!!this.tercero ? this.tercero.Id ? this.tercero.Id : '' : ''}`
               + `,InfoComplementariaId.CodigoAbreviacion:FOTOCARNET,Activo:true`)
               .subscribe((fotoCarnet: any) => {
-                    if(JSON.stringify(fotoCarnet[0]) !== '{}')
+                    if(JSON.stringify(fotoCarnet[0]) !== '')
                     {
                     this.fotoCarnet = (JSON.parse(fotoCarnet[0].Dato)).dato;
                     this.infoComplementariaTerceroId = fotoCarnet[0].Id;
