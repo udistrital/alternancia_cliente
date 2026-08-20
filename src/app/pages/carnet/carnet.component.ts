@@ -154,7 +154,7 @@ export class CarnetComponent implements OnInit {
                       reader.onload = () => {
                         this.imagePreview = reader.result;
                         }
-                        
+                        console.log(imagen_base64.toString());
                         const imageBlob = this.base64ToBlob(imagen_base64.file, 'image/png');
                         reader.readAsDataURL(imageBlob);
                         this.enableClick();  
@@ -176,8 +176,7 @@ export class CarnetComponent implements OnInit {
                         this.enableClick();  
                       }  
                
-                      Swal.close();
-                        this.enableClick();  
+                     
 
               }, (error) => {
                 console.log(error);
