@@ -91,9 +91,10 @@
   </div>
 
   <!-- SECCIÓN NUEVA: Subida de Tarjeta de Propiedad (Condicional, oculta si es Bicicleta) -->
-   <p>Es necesario llenar el formulario Solicitud de Parqueadero, que se encuentra en <a href="https://udistrital.darumasoftware.com/app.php/staff/document/viewPublic?index=948" target="_blank">Solicitud de Parqueadero</a>  y adjuntar soportes como tarjeta de propiedad, carta de autorización de no ser el dueño del vehiculo, etc, en un solo PDF</p>
-  
-   
+   <div class="campos-bicicleta-container" *ngIf="vehiculoForm.get('tipoVehiculo')?.value === 'CARRO'">
+   <p>Para CARROS necesario llenar el formulario Solicitud de Parqueadero, que se encuentra en <a href="https://udistrital.darumasoftware.com/app.php/staff/document/viewPublic?index=948" target="_blank">Solicitud de Parqueadero</a>   y</p>
+  </div>
+  <p>adjuntar soportes como tarjeta de propiedad, carta de autorización de no ser el dueño del vehiculo, registro en SECRETARIA DE MOVILIDAD etc, en un solo PDF</p>
   <div class="file-upload-container">
     <label class="file-label">Soportes (PDF) *</label>
     <div class="file-actions">
