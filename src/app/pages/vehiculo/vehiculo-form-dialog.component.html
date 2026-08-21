@@ -26,7 +26,9 @@
 
     </mat-radio-group>
   </div>
+
   <div class="campos-bicicleta-container" *ngIf="vehiculoForm.get('tipoVehiculo')?.value === 'BICICLETA'">
+    <p>En el campo “PLACA/REFERENCIA” deberá registrarse el número de serie del marco de la bicicleta o, en su defecto, el número de registro asignado por la plataforma del Registro Distrital de Bicicletas de la Secretaría Distrital de Movilidad, el cual se obtiene al finalizar el proceso de registro en el siguiente enlace: <a href="https://registrobicibogota.movilidadbogota.gov.co" target="_blank">Secretaría Distrital de Movilidad</a></p>  
      <mat-form-field>
   <mat-label>¿ BICICLETA REGISTRADA EN MOVILIDAD ?</mat-label>
   <select matNativeControl formControlName="registradaMovilidad">
@@ -89,8 +91,9 @@
   </div>
 
   <!-- SECCIÓN NUEVA: Subida de Tarjeta de Propiedad (Condicional, oculta si es Bicicleta) -->
-   <p>Adjuntar soportes como tarjeta de propiedad, carta de autorización de no ser el dueño del vehiculo, etc </p>
-   <p>En un solo PDF </p>
+   <p>Es necesario llenar el formulario Solicitud de Parqueadero, que se encuentra en <a href="https://udistrital.darumasoftware.com/app.php/staff/document/viewPublic?index=948" target="_blank">Solicitud de Parqueadero</a>  y adjuntar soportes como tarjeta de propiedad, carta de autorización de no ser el dueño del vehiculo, etc, en un solo PDF</p>
+  
+   
   <div class="file-upload-container">
     <label class="file-label">Soportes (PDF) *</label>
     <div class="file-actions">
