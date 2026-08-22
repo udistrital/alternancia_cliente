@@ -5,7 +5,7 @@
 
   <form [formGroup]="vehiculoForm" class="form-container">
         <mat-form-field appearance="outline">
-          <mat-label>PLACA / REFERENCIA</mat-label>
+          <mat-label>PLACA / REFERENCIA *</mat-label>
           <input matInput formControlName="placa" placeholder="Ej. CVD568">
         </mat-form-field>
        
@@ -40,7 +40,7 @@
 </mat-form-field>
 </div>
 <div class="checkbox-container">
-    <label class="checkbox-group-label">Sedes</label>
+    <label class="checkbox-group-label">Sedes *</label>
     
     <!-- Opción Padre: Controlada con funciones auxiliares -->
     <mat-checkbox 
@@ -62,7 +62,7 @@
     </div>
   </div>
  <div class="radio-container">
-    <label class="radio-group-label">Días</label>
+    <label class="radio-group-label">Días *</label>
     
     <mat-radio-group 
       formControlName="horario" 
@@ -90,11 +90,15 @@
     </div>
   </div>
 
-  <!-- SECCIÓN NUEVA: Subida de Tarjeta de Propiedad (Condicional, oculta si es Bicicleta) -->
-   <div class="campos-bicicleta-container" *ngIf="vehiculoForm.get('tipoVehiculo')?.value === 'CARRO'">
-   <p>Para CARROS necesario llenar el formulario Solicitud de Parqueadero, que se encuentra en <a href="https://udistrital.darumasoftware.com/app.php/staff/document/viewPublic?index=948" target="_blank">Solicitud de Parqueadero</a>   y</p>
+    <div class="campos-bicicleta-container" *ngIf="vehiculoForm.get('tipoVehiculo')?.value === 'MOTO ELECTRICA' || vehiculoForm.get('tipoVehiculo')?.value === 'MOTO'">
+   <p>Adjuntar soportes como tarjeta de propiedad y carta de autorización del dueño, en caso de no estar a nombre del solicitante</p>
   </div>
-  <p>adjuntar soportes como tarjeta de propiedad, carta de autorización de no ser el dueño del vehiculo, registro en SECRETARIA DE MOVILIDAD etc, en un solo PDF</p>
+   <div class="campos-bicicleta-container" *ngIf="vehiculoForm.get('tipoVehiculo')?.value === 'CARRO'">
+   <p>Para CARROS necesario llenar el formulario Solicitud de Parqueadero, que se encuentra en <a href="https://udistrital.darumasoftware.com/app.php/staff/document/viewPublic?index=948" target="_blank">Solicitud de Parqueadero</a>  y  adjuntar soportes como tarjeta de propiedad y carta de autorización del dueño en caso de no estar a nombre del solicitante</p>
+  </div>
+   <div class="campos-bicicleta-container" *ngIf="vehiculoForm.get('tipoVehiculo')?.value === 'BICICLETA'">
+   <p>Para BICICLETAS adjuntar soportes como Registro Distrital de bicicletas de la Secretaria Distrital de Movilidad o Factura de compra.</p>
+  </div>
   <div class="file-upload-container">
     <label class="file-label">Soportes (PDF) *</label>
     <div class="file-actions">
