@@ -317,7 +317,15 @@ export class CarnetComponent implements OnInit {
   }
   onUpload(): void {
     if (!this.selectedFile) return;
-
+        Swal.fire({
+      title: 'Guardando imagen...',
+      text: 'Por favor, espere un momento.',
+      allowOutsideClick: false,
+      allowEscapeKey: false,
+      didOpen: () => {
+        Swal.showLoading(); // Muestra el spinner de carga clásico
+      }
+    });
       const documento :Documento ={
               IdTipoDocumento : 202,
               nombre : 'carnet_' +this.tercero.Id+'.'+ this.selectedFile.type.split("/")[1],
@@ -351,6 +359,7 @@ export class CarnetComponent implements OnInit {
                        this.request
                     .put(environment.TERCEROS_SERVICE, '/info_complementaria_tercero', itemInfoComplementariaTercero, this.infoComplementariaTerceroId)
                     .subscribe((data: any) => {
+                      this.selectedFile = null;
                       Swal.fire({
                         title: 'informacion',
                         text: `imagen guardada correctamente`,
@@ -379,6 +388,7 @@ export class CarnetComponent implements OnInit {
                     this.request
                     .post(environment.TERCEROS_SERVICE, 'info_complementaria_tercero/', itemInfoComplementariaTercero)
                     .subscribe((data: any) => {
+                      this.selectedFile = null;
                       Swal.fire({
                         title: 'informacion',
                         text: `imagen guardada correctamente`,
