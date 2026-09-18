@@ -137,7 +137,7 @@ steps:
     event:
     - push
 
-- #name: notify_telegram
+  #- name: notify_telegram
   #image: appleboy/drone-telegram
   #settings:
   #  token:
