@@ -13,6 +13,7 @@ import { Vinculacion } from '../../@core/models/vinculacion';
 import { LocalDataSource } from 'ng2-smart-table';
 import { Router } from '@angular/router';
 import { DomSanitizer } from '@angular/platform-browser';
+import { StorageService } from '../services/storageService';
 @Component({
   selector: 'app-carnet',
   templateUrl: './carnet.component.html',
@@ -46,6 +47,7 @@ export class CarnetComponent implements OnInit {
   enlace : string;
   extension: string;
   ifImagen: boolean;
+  imagenLocal: any;
   RH: string;
   nombreArchivo: string;
   imageSrc: any;
@@ -54,6 +56,7 @@ export class CarnetComponent implements OnInit {
   data:any;
   isClickEnabled: boolean = false; 
   opcionSeleccionada: any = null;
+  
 
   constructor(
     private request: RequestManager,
@@ -61,7 +64,8 @@ export class CarnetComponent implements OnInit {
     private sanitizer:DomSanitizer,
     private utilService: UtilService,
     private router: Router,
-    private formBuilder: FormBuilder
+    private formBuilder: FormBuilder,
+    private storageService: StorageService
   ) {
     this.ifImagen=false;
     this.enlace="";
@@ -69,7 +73,7 @@ export class CarnetComponent implements OnInit {
     this.nombreArchivo="";
     this.fotoCarnet="";
     this.RH="";
- 
+    this.imagenLocal=null;
     }
 
  
@@ -109,6 +113,20 @@ export class CarnetComponent implements OnInit {
         Swal.showLoading(); // Muestra el spinner de carga clásico
       }
     });
+
+    
+    this.storageService.obtenerImagen(btoa("tercero_id")).then((terceroLocal) => {
+      if (terceroLocal) {
+        this.storageService.obtenerImagen(terceroLocal).then((imagen) => {
+          if (imagen) {
+            this.imagenLocal = imagen;
+          }
+        });
+      }
+      
+    });
+  
+    
     this.request.get(environment.TERCEROS_SERVICE, `info_complementaria?query=CodigoAbreviacion:FOTOCARNET`)
     .subscribe((datosInfoComplementaria: any) => {
           this.infoComplementariaId = datosInfoComplementaria[0].Id;
@@ -122,6 +140,7 @@ export class CarnetComponent implements OnInit {
             ...{ FechaExpedicion: datosInfoTercero[0].FechaExpedicion ? this.corregirFecha(datosInfoTercero[0].FechaExpedicion) : '' }
           }
           this.tercero = this.datosIdentificacion.TerceroId;
+          this.storageService.guardarImagen(btoa("tercero_id"), btoa(this.tercero.Id.toString()));
 
           if (this.tercero) {
           
@@ -154,7 +173,7 @@ export class CarnetComponent implements OnInit {
                       reader.onload = () => {
                         this.imagePreview = reader.result;
                         }
-                        console.log(imagen_base64.toString());
+                      
                         const imageBlob = this.base64ToBlob(imagen_base64.file, 'image/png');
                         reader.readAsDataURL(imageBlob);
                         this.enableClick();  
@@ -202,6 +221,9 @@ export class CarnetComponent implements OnInit {
                           this.request.get(environment.OIKOS_SERVICE, `dependencia/` + this.vinculaciones[i].DependenciaId)
                             .subscribe((dependencia: any) => {
                               this.vinculaciones[i].Dependencia = dependencia;
+                                let id=btoa("vinculaciones");
+                                let datos=JSON.stringify(this.vinculaciones);
+                                this.storageService.guardarImagen(id, btoa(datos));
                             }, (error) => {
                               console.log(error);
                             })
@@ -212,6 +234,8 @@ export class CarnetComponent implements OnInit {
                   }
                 }
                 if (this.vinculaciones && this.vinculaciones.length > 0) {
+                      
+                         
                          this.opcionSeleccionada = this.vinculaciones[0];
                   }
               })
@@ -292,6 +316,7 @@ export class CarnetComponent implements OnInit {
                     if(data.Data.valida&&data.Data.tiene_rostro&&data.Data.es_rostro_humano)
                     {
                       this.selectedFile = file;
+                      
                     }
                     else
                     {
@@ -359,6 +384,7 @@ export class CarnetComponent implements OnInit {
                        this.request
                     .put(environment.TERCEROS_SERVICE, '/info_complementaria_tercero', itemInfoComplementariaTercero, this.infoComplementariaTerceroId)
                     .subscribe((data: any) => {
+                      this.storageService.guardarImagen(btoa(this.tercero.Id.toString()), this.base64);
                       this.selectedFile = null;
                       Swal.fire({
                         title: 'informacion',
