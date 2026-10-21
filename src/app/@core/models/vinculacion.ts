@@ -13,5 +13,6 @@ export class Vinculacion  {
 	//PeriodoId: number;
   FechaInicioVinculacion: string;
   FechaFinVinculacion: string;
+  Activo: boolean;
 
 }
