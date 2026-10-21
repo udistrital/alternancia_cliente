@@ -370,7 +370,7 @@ export class CarnetComponent implements OnInit {
 
                 let itemInfoComplementariaTercero = 
                 {
-                  TerceroId: { Id: this.tercero.Id },
+                  TerceroId: { Id: this.tercero?.Id },
                   InfoComplementariaId: {
                     Id: this.infoComplementariaId,
                   },
