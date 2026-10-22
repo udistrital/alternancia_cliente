@@ -327,6 +327,7 @@ export class QrscanComponent implements AfterViewInit {
     this.request.get(environment.SEGUIMIENTO_SERVICE, `/seguimiento/?limit=1&order=desc&sortby=fecha_creacion&query=tercero_id:${this.lectura.IdTercero ? this.lectura.IdTercero : ''}`)
       .subscribe((accesos: any) => {
         if (accesos.Data.length > 0) {
+          console.log("ingreso acceso array");
           this.tipo = accesos.Data[0].tipo_registro;
           console.log("tipo",this.tipo);
           if (this.tipo == "I") {
@@ -339,6 +340,7 @@ export class QrscanComponent implements AfterViewInit {
           console.log(this.tipo);
         }else
         {
+          console.log("ingreso acceso no array");
           this.tipo="in";
           this.consultarAcceso();
         }

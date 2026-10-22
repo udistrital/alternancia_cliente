@@ -218,15 +218,22 @@ export class QrComponent implements OnInit {
       .margin([0, 0, 0, 2])
       .end;
 
-    const programaCargo = new Txt(this.vinculaciones[0].Dependencia.Nombre)
-      .color('#ffffff')
-      .fontSize(9.5)
-      .margin([0, 0, 0, 15])
+    const programaCargo = new Table([
+      [
+        new Txt(this.vinculaciones[0].Dependencia.Nombre)
+          .color('#ffffff')
+          .fontSize(6)
+          .end
+      ]
+    ])
+      .widths([140]) // <- TABLA: Aquí 'widths' sí existe y recibe un array con el ancho
+      .layout('noBorders') // <- Oculta las líneas de la tabla
+      .margin([0, 0, 0, 2])
       .end;
     const estado = new Txt(this.vinculaciones[0].Activo ? 'ACTIVO' + " " + `${this.vinculaciones[0].FechaFinVinculacion}` : 'INACTIVO' + " " + `${this.vinculaciones[0].FechaFinVinculacion}`)
       .color('#ffffff')
       .fontSize(9.5)
-      .margin([0, 0, 0, 15])
+      .margin([0, 0, 0, 2])
       .end;
    
     // 5. El componente de Imagen del QR
@@ -243,10 +250,11 @@ export class QrComponent implements OnInit {
         .color('#ffffff')
         .bold()
         .fontSize(8.5)
+        
         .margin([0, -14, 0, 0]) // Centrado vertical manual sobre el rectángulo
         .end
     ])
-      .margin([0, 0, 0, 20])
+      
       .end;
 
     const imagenCarnet = 'data:image/png;base64,' + this.imagenLocal;
@@ -260,14 +268,16 @@ export class QrComponent implements OnInit {
       await new Img(imagenCarnet).fit([70, 70]).absolutePosition(170, 60).build(),
       nombres,
       identificacion,
-      programaCargo,
-      badgeRol,
-      estado
+      programaCargo, // El texto ahora saltará de línea al llegar a los 140pt
+      estado,
+      badgeRol
+      
     ])
       .absolutePosition(10, 25) // Margen de separación de los bordes del carnet
+     
       .end;
 
-
+    
     pdf.add(fondoAzul);
     pdf.add(contenedorInterno);
     pdf.add(fondoBlanco);
