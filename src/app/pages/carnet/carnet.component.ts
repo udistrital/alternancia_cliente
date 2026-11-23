@@ -23,7 +23,7 @@ export class CarnetComponent implements OnInit {
   selectedFile: File | null = null;
   imagePreview: string | ArrayBuffer | null = null;
   errorMessage: string | null = null;
-
+  show: boolean = false;
   readonly allowedTypes = ['image/png', 'image/jpeg', 'image/jpg'];
   readonly maxFileSize = 5242880; // 5 MB en bytes
   isPost: boolean = true;
@@ -93,6 +93,7 @@ export class CarnetComponent implements OnInit {
       }
       if (idRol == 346 ) {
         vinculacion.TipoVinculacion.Nombre = 'ESTUDIANTE';
+        
       }
       if (idRol == 300 || idRol == 301 || idRol == 302 || idRol == 303 || idRol == 304 || idRol == 305 || idRol == 306 || idRol == 307 || idRol == 311 || idRol == 347 ) {
         vinculacion.TipoVinculacion.Nombre = 'FUNCIONARIO';
@@ -100,7 +101,10 @@ export class CarnetComponent implements OnInit {
       if (idRol == 292 || idRol == 293 || idRol == 294 || idRol == 295 || idRol == 296 || idRol == 297 || idRol == 298 || idRol == 299 ) {
         vinculacion.TipoVinculacion.Nombre = 'DOCENTE';
       }
-
+      if (idRol == 377 ) {
+        this.show = true;
+      }
+      //console.log("show", this.show);
   }
 
   ngOnInit(): void {
@@ -132,6 +136,7 @@ export class CarnetComponent implements OnInit {
           this.infoComplementariaId = datosInfoComplementaria[0].Id;
           
     });
+    
     this.userService.user$.subscribe((data) => {
       this.request.get(environment.TERCEROS_SERVICE, `datos_identificacion/?query=Numero:` + data['userService']['documento'])
         .subscribe((datosInfoTercero: any) => {
@@ -139,9 +144,11 @@ export class CarnetComponent implements OnInit {
             ...datosInfoTercero[0],
             ...{ FechaExpedicion: datosInfoTercero[0].FechaExpedicion ? this.corregirFecha(datosInfoTercero[0].FechaExpedicion) : '' }
           }
+          
           this.tercero = this.datosIdentificacion.TerceroId;
+         
+          
           this.storageService.guardarImagen(btoa("tercero_id"), btoa(this.tercero.Id.toString()));
-
           if (this.tercero) {
           
              this.request.get(environment.TERCEROS_SERVICE, `info_complementaria_tercero?query=TerceroId.Id:${!!this.tercero ? this.tercero.Id ? this.tercero.Id : '' : ''}`
@@ -206,6 +213,7 @@ export class CarnetComponent implements OnInit {
             this.request.get(environment.TERCEROS_SERVICE, `vinculacion/?query=Activo:true,TerceroPrincipalId.Id:${!!this.tercero ? this.tercero.Id ? this.tercero.Id : '' : ''}&sortby=FechaFinVinculacion&order=desc`)
               .subscribe((datosInfoVinculaciones: any) => {
                 this.vinculaciones = datosInfoVinculaciones;
+                //console.log("vinculaciones", this.vinculaciones);
                 for (let i = 0; i < this.vinculaciones.length; i++) {
                   this.vinculaciones[i] = {
                     ...datosInfoVinculaciones[i],
@@ -213,10 +221,14 @@ export class CarnetComponent implements OnInit {
                     ...{ FechaFinVinculacion: this.vinculaciones[i].FechaFinVinculacion ? this.corregirFecha(this.vinculaciones[i].FechaFinVinculacion) : '' }
                   }
                   if (JSON.stringify(this.vinculaciones[i]) !== '{}') {
+                    if (this.vinculaciones[i].TipoVinculacionId == 346) {
+                      this.vinculaciones[i].Codigo = data['userService']['Codigo'];
+                    }
                     this.request.get(environment.PARAMETROS_SERVICE, `parametro/?query=Id:` + this.vinculaciones[i].TipoVinculacionId)
                       .subscribe((vinculacion: any) => {
                         this.vinculaciones[i].TipoVinculacion = vinculacion['Data'][0];
                         this.vinculacion=vinculacion['Data'][0];
+                        
                         if (this.vinculaciones[i].DependenciaId) {
                           this.request.get(environment.OIKOS_SERVICE, `dependencia/` + this.vinculaciones[i].DependenciaId)
                             .subscribe((dependencia: any) => {
@@ -228,6 +240,7 @@ export class CarnetComponent implements OnInit {
                               console.log(error);
                             })
                         }
+                        //console.log("vinculaciones", this.vinculaciones[i]);
                         this.asignarVinculacion(this.vinculaciones[i]);
                         
                       })
