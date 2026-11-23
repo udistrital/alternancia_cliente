@@ -10,6 +10,7 @@ export class Vinculacion  {
 	CargoId: number;
 	DependenciaId: number;
 	Dependencia: Dependencia;
+	Codigo: string;
 	//PeriodoId: number;
   FechaInicioVinculacion: string;
   FechaFinVinculacion: string;

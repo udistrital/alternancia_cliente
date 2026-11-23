@@ -286,12 +286,20 @@
         <mat-icon>assignment</mat-icon>
         
        </a>
-      <a class="nav-item" 
-       routerLink="/pages/qrcode" 
-       routerLinkActive="active" matTooltip="Mi QR" matTooltipPosition="above">
-        <mat-icon>qr_code_2</mat-icon>
-        
-       </a>
+    <div *ngIf="show; else elseBlock">
+        <a class="nav-item" routerLink="/pages/qrscanblue" routerLinkActive="active" matTooltip="Scanear QR"
+            matTooltipPosition="above">
+            <mat-icon>scanner</mat-icon>
+        </a>
+    </div>
+    <ng-template #elseBlock>
+        <a class="nav-item" routerLink="/pages/qrcode" routerLinkActive="active" matTooltip="Mi QR"
+            matTooltipPosition="above">
+            <mat-icon>qr_code_2</mat-icon>
+    
+        </a>
+    
+    </ng-template>
       <a class="nav-item" 
        routerLink="/pages/ingreso" 
        routerLinkActive="active" matTooltip="Leer QR" matTooltipPosition="above">

@@ -35,7 +35,7 @@ import { QrComponent } from './qr/qr.component';
 import { MatTabsModule } from '@angular/material/tabs';
 import { Ng2SmartTableModule } from 'ng2-smart-table';
 import { QrscanComponent } from './qrscan/qrscan.component';
-import { NgQrScannerModule } from 'angular2-qrscanner';
+import { ZXingScannerModule } from '@zxing/ngx-scanner';
 import { UtilService } from './services/utilService';
 import { UserService } from './services/userService';
 import { InterceptorService } from '../loader/interceptor.service';
@@ -43,6 +43,8 @@ import { MatMenuModule } from '@angular/material/menu';
 import { VehiculoComponent } from './vehiculo/vehiculo.component';
 import { VehiculoFormDialogComponent } from './vehiculo/vehiculo-form-dialog.component';
 import { MatDialogModule } from '@angular/material/dialog';
+import { QrscanBlueComponent } from './qrscanblue/qrscanblue.component';
+import { RouterModule } from '@angular/router';
 
 
 const pagesComponents = [
@@ -53,7 +55,8 @@ const pagesComponents = [
   PreexistenciaComponent,
   CarnetComponent,
   VehiculoComponent,
-  VehiculoFormDialogComponent
+  VehiculoFormDialogComponent,
+  
 ];
 
 const materialModules = [
@@ -82,14 +85,16 @@ const materialModules = [
   declarations: [
     ...pagesComponents,
     OasGridColsDirective,
-    QrComponent,
+    QrscanBlueComponent,
     QrscanComponent,
+    QrComponent,
   ],
   imports: [
-    NgQrScannerModule,
+    ZXingScannerModule,
     HttpClientModule,
     CommonModule,
     FormsModule,
+    RouterModule,
     ReactiveFormsModule,
     PagesRoutingModule,
     QrCodeModule,

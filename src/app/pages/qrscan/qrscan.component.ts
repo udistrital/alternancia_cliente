@@ -1,5 +1,5 @@
 import { Component, ViewChild, ViewEncapsulation, OnInit, AfterViewInit } from '@angular/core';
-import { QrScannerComponent } from 'angular2-qrscanner';
+
 import Swal from 'sweetalert2';
 import { RequestManager } from '../services/requestManager';
 import { environment } from './../../../environments/environment';
@@ -16,11 +16,14 @@ import { HttpErrorResponse } from '@angular/common/http';
 export class QrscanComponent implements AfterViewInit {
   lectura: any = {};
   persona: any = {};
-  @ViewChild(QrScannerComponent, { static: false })
+ 
+  show: boolean = false;
+ 
+  formatosPermitidos: any[] = [];
+  videoDevices: MediaDeviceInfo[] = [];
+  dispositivoActual?: MediaDeviceInfo;
+ 
 
-  qrScannerComponent: QrScannerComponent;
-  videoDevices: any = null;
-  dispositivoActual: any = null;
   sedes: EspacioFisico[];
   edificios: EspacioFisico[];
   edificiosSeleccion = {};
@@ -37,6 +40,7 @@ export class QrscanComponent implements AfterViewInit {
   vehiculos: any[] = [];
   opcionesRadio: Record<string, string> = {};
   data: any;
+  private procesandoLectura: boolean = false;
   constructor(private request: RequestManager, private userService: UserService, public loaderService: LoaderService) {
     this.userService.tercero$.subscribe((tercero: any) => {
       if (tercero.Id) {
@@ -60,61 +64,78 @@ export class QrscanComponent implements AfterViewInit {
   }
 
   ngAfterViewInit(): void {
+  
+  }
 
-    this.qrScannerComponent.getMediaDevices()
+ /* private inicializarEscaner(): void {
+    console.log('Inicializando escáner de QR...');
+    this._qrScannerComponent.getMediaDevices()
       .then((devices) => {
-        this.videoDevices = devices.filter((video) => (video.kind === 'videoinput'));
-      });
-    this.qrScannerComponent.capturedQr.subscribe(async (result) => {
-      try {
-        console.log(atob(result));
-        this.lectura = JSON.parse(atob(result));
-        if (this.lectura.IdTercero && this.permisos) {
-          this.verificarAcceso();
-          this.cargarDatosAprobados();
+        this.videoDevices = devices.filter((video) => video.kind === 'videoinput');
 
+        if (this.videoDevices.length > 0) {
+          // 1. Buscar la cámara trasera en celulares (back / rear / environment)
+          let camaraElegida = this.videoDevices.find((dev) =>
+            /back|rear|trás|environment/i.test(dev.label)
+          );
 
+          // 2. En iOS Safari, las etiquetas vienen vacías antes de aceptar permisos;
+          // la cámara trasera suele ser la última del arreglo.
+          if (!camaraElegida) {
+            camaraElegida = this.videoDevices[this.videoDevices.length - 1];
+          }
+
+          this.dispositivoActual = camaraElegida;
+          this._qrScannerComponent.chooseCamera.next(camaraElegida);
         }
-        else if (this.lectura.IdEspacio) {
-          this.accesoEspacio();
-        }
-        else {
-          Swal.fire({
-            title: 'Error',
-            text: `Error escaneando QR, por favor escanea nuevamente`,
-            icon: 'error',
-            confirmButtonText: 'Aceptar',
-          })
-          this.dispositivoActual = null;
-        }
-      } catch (error) {
-        console.log(error);
-        Swal.fire({
-          title: 'Error',
-          text: `Error escaneando QR, por favor escanea nuevamente`,
-          icon: 'error',
-          confirmButtonText: 'Aceptar',
-        })
-        this.dispositivoActual = null;
-      }
-    }, (error) => {
-      console.log(error);
-      Swal.fire({
-        title: 'Error',
-        text: `Error escaneando QR, por favor escanea nuevamente`,
-        icon: 'error',
-        confirmButtonText: 'Aceptar',
       })
+      .catch((err) => {
+        console.error('Error al obtener cámaras (verifica HTTPS y permisos):', err);
+      });
+
+    this._qrScannerComponent.capturedQr.subscribe(
+      async (result) => {
+        try {
+          console.log(atob(result));
+          this.lectura = JSON.parse(atob(result));
+
+          if (this.lectura.IdTercero && this.permisos) {
+            this.verificarAcceso();
+            this.cargarDatosAprobados();
+          } else if (this.lectura.IdEspacio) {
+            this.accesoEspacio();
+          } else {
+            this.mostrarErrorQr();
+          }
+        } catch (error) {
+          console.log(error);
+          this.mostrarErrorQr();
+        }
+      },
+      (error) => {
+        console.log(error);
+        this.mostrarErrorQr();
+      }
+    );
+  }
+
+  private mostrarErrorQr(): void {
+    Swal.fire({
+      title: 'Error',
+      text: 'Error escaneando QR, por favor escanea nuevamente',
+      icon: 'error',
+      confirmButtonText: 'Aceptar',
     });
+    this.dispositivoActual = null;
   }
 
   selectDevice(device) {
     this.dispositivoActual = device;
     this.qrScannerComponent.chooseCamera.next(device);
   }
-
+*/
   clear() {
-    this.dispositivoActual = null;
+  
     this.lectura = ''
   }
 
@@ -166,7 +187,7 @@ export class QrscanComponent implements AfterViewInit {
           confirmButtonText: 'Aceptar',
         })
       });
-    this.dispositivoActual = null;
+
     return
   }
   async seleccionarPlan() {
@@ -236,7 +257,7 @@ export class QrscanComponent implements AfterViewInit {
           })
         });
     })
-    this.dispositivoActual = null;
+
     return
   }
 
@@ -324,16 +345,21 @@ export class QrscanComponent implements AfterViewInit {
   }
 
   verificarAcceso() {
-    this.request.get(environment.SEGUIMIENTO_SERVICE, `/seguimiento/?limit=1&order=desc&sortby=fecha_creacion&query=tercero_id:${this.lectura.IdTercero ? this.lectura.IdTercero : ''}`)
+    //la verificacion se realiza por espacio fisico, por lo que se consulta el ultimo registro de acceso del tercero y se determina si es entrada o salida
+    // a futuro es necesario que el servicio de seguimiento tenga un endpoint que permita consultar el ultimo registro de acceso del tercero y determinar si es entrada o salida
+    // y la forma de controlar los cupos de los espacios fisicos padres
+    this.request.get(environment.SEGUIMIENTO_SERVICE, `/seguimiento/?limit=1&order=desc&sortby=fecha_creacion&query=oikos_id:${this.sedeSeleccionada ? this.sedeSeleccionada : ''}&query:${this.lectura.IdTercero ? this.lectura.IdTercero : ''}`)
       .subscribe((accesos: any) => {
         if (accesos.Data.length > 0) {
           console.log("ingreso acceso array");
           this.tipo = accesos.Data[0].tipo_registro;
           console.log("tipo",this.tipo);
           if (this.tipo == "I") {
+            console.log("tipo I");
             this.tipo = "out";
           }
           else {
+            console.log("tipo contrario");
             this.tipo = "in";
           }
           this.consultarAcceso();
@@ -349,6 +375,86 @@ export class QrscanComponent implements AfterViewInit {
         console.log(error);
       })
   }
+  // Se dispara automáticamente cuando el navegador detecta las cámaras
+  onCamerasFound(devices: MediaDeviceInfo[]): void {
+    this.videoDevices = devices;
 
+    if (devices.length > 0) {
+      // Selecciona la cámara trasera por defecto en Android e iOS
+      const camaraTrasera = devices.find((dev) =>
+        /back|rear|trás|environment/i.test(dev.label)
+      );
+      this.dispositivoActual = camaraTrasera || devices[devices.length - 1];
+    }
+  }
+
+  // Se dispara si no hay cámaras o si la página corre en HTTP sin SSL
+  onCamerasNotFound(): void {
+    Swal.fire({
+      title: 'Cámara no encontrada',
+      text: 'No se detectaron cámaras disponibles. Verifica que estés ingresando por HTTPS.',
+      icon: 'warning',
+      confirmButtonText: 'Aceptar',
+    });
+  }
+
+  // Se dispara si el usuario rechaza el permiso de cámara
+  onPermissionResponse(permitido: boolean): void {
+    if (!permitido) {
+      Swal.fire({
+        title: 'Permiso denegado',
+        text: 'Debes permitir el acceso a la cámara en tu navegador para escanear el QR.',
+        icon: 'error',
+        confirmButtonText: 'Aceptar',
+      });
+    }
+  }
+
+  // Se dispara al leer un código QR válido
+  onScanSuccess(result: string): void {
+    // Evita múltiples disparos mientras se muestra una alerta o procesa el QR
+    if (this.procesandoLectura) {
+      return;
+    }
+    this.procesandoLectura = true;
+
+    try {
+      const decodificado = atob(result);
+      console.log(decodificado);
+      this.lectura = JSON.parse(decodificado);
+
+      if (this.lectura.IdTercero && this.permisos) {
+        this.verificarAcceso();
+        this.cargarDatosAprobados();
+        this.habilitarNuevaLectura();
+      } else if (this.lectura.IdEspacio) {
+        this.accesoEspacio();
+        this.habilitarNuevaLectura();
+      } else {
+        this.mostrarErrorQr();
+      }
+    } catch (error) {
+      console.error(error);
+      this.mostrarErrorQr();
+    }
+  }
+
+  private mostrarErrorQr(): void {
+    Swal.fire({
+      title: 'Error',
+      text: 'Error escaneando QR, por favor escanea nuevamente',
+      icon: 'error',
+      confirmButtonText: 'Aceptar',
+    }).then(() => {
+      this.procesandoLectura = false;
+    });
+  }
+
+  private habilitarNuevaLectura(): void {
+    // Pausa de 2 segundos antes de permitir leer otro QR
+    setTimeout(() => {
+      this.procesandoLectura = false;
+    }, 2000);
+  }
 
 }

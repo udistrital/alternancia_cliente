@@ -1,0 +1,82 @@
+<div class="mobile-container" >
+  <!-- Encabezado Superior -->
+  <header class="app-header">
+    
+    <div class="header-title">
+      <span class="university-text">UNIVERSIDAD DISTRITAL</span>
+      <span class="sub-text">FRANCISCO JOSÉ DE CALDAS</span>
+    </div>
+    
+  </header>
+<main class="main-content">
+<div *ngIf="loaderService.isLoading | async" class="loader-container">
+    <mat-spinner style="top: 50%;left: 50%;"></mat-spinner>
+</div>
+<br>
+
+<div class="contenedor-escaner">
+<mat-card class='card-oas'>
+    <mat-card-header>
+        <mat-card-title>Escáner QR Activo</mat-card-title>
+        <mat-card-subtitle>Apunta el lector Bluetooth hacia el código QR.</mat-card-subtitle>
+    </mat-card-header>
+    <mat-card-content>
+        <button type="button" class="btn-activar" (click)="activarEscaner()">
+            {{ escanerActivo ? '🟢 Escáner Listo (Toca aquí si se desconecta)' : '🔴 Tocar aquí para Activar Escáner' }}
+        </button>
+        <input #scannerInput type="text" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
+            class="input-receptor" (input)="alEscribir($event)" (keydown.enter)="procesarInmediato($event)"
+            (blur)="escanerActivo = false" (focus)="escanerActivo = true" />
+        <div class="resultado" *ngIf="codigoCapturado">
+            <strong>Último QR leído:</strong>
+            <p>{{ codigoCapturado }}</p>
+        </div>
+    </mat-card-content>
+</mat-card>
+</div>
+</main>
+
+<nav class="bottom-nav">
+    <a class="nav-item" 
+       routerLink="/pages/dashboard" 
+       routerLinkActive="active"
+       matTooltip="Carnet" 
+       matTooltipPosition="above">
+        <mat-icon>assignment</mat-icon>
+        
+       </a>
+    <div *ngIf="show; else elseBlock">
+        <a class="nav-item" routerLink="/pages/qrcodeblue" routerLinkActive="active" matTooltip="Scanear QR"
+            matTooltipPosition="above">
+            <mat-icon>scanner</mat-icon>
+        </a>
+    </div>
+    <ng-template #elseBlock>
+        <a class="nav-item" routerLink="/pages/qrcode" routerLinkActive="active" matTooltip="Mi QR"
+            matTooltipPosition="above">
+            <mat-icon>qr_code_2</mat-icon>
+    
+        </a>
+    
+    </ng-template>
+       
+      <a class="nav-item" 
+       routerLink="/pages/ingreso" 
+       routerLinkActive="active" matTooltip="Leer QR" matTooltipPosition="above">
+        <mat-icon>qr_code_1</mat-icon>
+        
+       </a>
+      <a class="nav-item" 
+       routerLink="/pages/vehiculo"  
+       routerLinkActive="active" matTooltip="Vehiculo" matTooltipPosition="above">
+        <mat-icon>directions_car</mat-icon>
+        
+       </a>
+     
+      <a class="nav-item" 
+       routerLink="/pages/informacion_basica" 
+       routerLinkActive="active" matTooltip="Perfil" matTooltipPosition="above">
+        <mat-icon>person_outline</mat-icon>
+        
+       </a>
+  </nav>
