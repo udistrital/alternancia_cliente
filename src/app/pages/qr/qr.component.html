@@ -20,7 +20,9 @@
                 <qr-code [value]="qrValue" size="300" errorCorrectionLevel="M"></qr-code>
             </div>
         </div>
-        <button mat-raised-button color="primary" style="display: block; margin: 0 auto;" (click)='imprimirPdf()' [disabled]="!imagen"> Imprimir</button>
+        <button mat-raised-button color="primary" style="display: block; margin: 0 auto;" (click)='generarCarnet()' [disabled]="!imagen"> Imprimir Horizontal</button>
+        <button mat-raised-button color="primary" style="display: block; margin: 0 auto;" (click)='imprimirPdf()'
+            [disabled]="!imagen"> Imprimir Vertical</button>
         <p *ngIf="errorMessage" class="error-text">{{ errorMessage }}</p>
     </mat-card-content>
 </mat-card>

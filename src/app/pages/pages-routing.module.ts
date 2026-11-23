@@ -7,6 +7,7 @@ import { PreexistenciaComponent } from './preexistencia/preexistencia.component'
 import { SaludActualComponent } from './salud-actual/salud-actual.component'
 import { QrComponent } from './qr/qr.component';
 import { QrscanComponent } from './qrscan/qrscan.component';
+import { QrscanBlueComponent } from './qrscanblue/qrscanblue.component';
 import { VehiculoComponent } from './vehiculo/vehiculo.component';
 const routes: Routes = [{
   path: '',
@@ -35,6 +36,10 @@ const routes: Routes = [{
     {
       path: 'qrcode',
       component: QrComponent,
+    },
+    {
+      path: 'qrcodeblue',
+      component: QrscanBlueComponent,
     },
     {
       path: 'vehiculo',

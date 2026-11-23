@@ -1,0 +1,12 @@
+name: Angular MCP server
+version: 0.0.1
+schema: v1
+mcpServers:
+  - name: Angular MCP server
+    command: "/bin/bash"
+    cwd: "${workspaceFolder}"
+    args:
+      - "-c"
+      - "npx -y @angular/cli@21 mcp"
+    env: {}
+

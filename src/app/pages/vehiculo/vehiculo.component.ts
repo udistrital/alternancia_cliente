@@ -140,7 +140,7 @@ export class VehiculoComponent implements OnInit {
                   this.vehiculo.activo = datosParqueadero[i].Activo; 
                   this.vehiculos.push(this.vehiculo);
                 }
-                 console.log(this.vehiculos);
+                 // console.log(this.vehiculos);
               }, (error) => {
                 console.log(error);
               })
@@ -159,7 +159,7 @@ export class VehiculoComponent implements OnInit {
                   this.vehiculo_inactivo.activo = datosInactivos[i].Activo; 
                   this.vehiculos_inactivos.push(this.vehiculo_inactivo);
                 }
-                 console.log(this.vehiculos_inactivos);
+                // console.log(this.vehiculos_inactivos);
               }, (error) => {
                 console.log(error);
               })
