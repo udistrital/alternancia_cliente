@@ -242,7 +242,7 @@ export class QrComponent implements OnInit {
               .color('#000000')
               .margin([0, 5, 0, 2])
               .end,
-            new Txt(`${this.vinculaciones[0]?.Codigo}`)
+            new Txt(`${this.vinculaciones[0]?.Codigo ? this.vinculaciones[0]?.Codigo : " "}`)
               .fontSize(8)
               .color('#000000')
               .margin([0, 5, 0, 2])
@@ -333,7 +333,7 @@ export class QrComponent implements OnInit {
       .fontSize(10)
       .margin([0, 0, 0, 2])
       .end;
-    const codigoVinculacion = new Txt(`${this.vinculaciones[0]?.Codigo}`)
+    const codigoVinculacion = new Txt(`${this.vinculaciones[0]?.Codigo ? this.vinculaciones[0]?.Codigo :" "}`)
       .fontSize(10)
       .color('#000000')
       .margin([0, 0, 0, 2])
